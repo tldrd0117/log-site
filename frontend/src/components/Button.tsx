@@ -14,7 +14,7 @@ const grey = {
   900: '#24292f',
 };
 
-const CustomButton = styled(ButtonUnstyled)(
+const BlueButton = styled(ButtonUnstyled)(
   ({ theme }) => `
   font-family: IBM Plex Sans, sans-serif;
   font-weight: bold;
@@ -48,4 +48,4 @@ const CustomButton = styled(ButtonUnstyled)(
   `,
 );
 
-export default CustomButton
+export default BlueButton
