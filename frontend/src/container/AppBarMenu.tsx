@@ -1,36 +1,38 @@
-import React from "react";
-import OpenableAppBar from "../components/OpenableAppBar";
-import MenuDrawer from "../components/MenuDrawer";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Contents from "../components/Contents"
+import React, { ReactNode } from 'react';
+import OpenableAppBar from '../components/OpenableAppBar';
+import MenuDrawer from '../components/MenuDrawer';
+import { MenuDrawerItemProps } from '../components/MenuDrawerItem';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
 
-const AppBarMenu = () =>{
-    const drawerMenu = {
-
-    }
-    const appBarMenu = {
-
-        
-    }
-    const [open, setOpen] = React.useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-    return <>
-
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <OpenableAppBar drawerWidth={240} open={open} handleDrawerOpen={handleDrawerOpen}/>
-            <MenuDrawer open={open} handleDrawerClose={handleDrawerClose}/>
-            <Contents/>
-        </Box>
-    </>
+interface AppBarMenuProps {
+	title?: string;
+	children?: ReactNode;
+	drawerMenu?: Array<Array<MenuDrawerItemProps>>;
+	appBarMenu?: Array<{}>;
 }
 
-export default AppBarMenu
+const AppBarMenu = (props: AppBarMenuProps) => {
+	const { drawerMenu, appBarMenu, title } = props;
+	const [open, setOpen] = React.useState(false);
+
+	const handleDrawerOpen = () => {
+		setOpen(true);
+	};
+
+	const handleDrawerClose = () => {
+		setOpen(false);
+	};
+	return (
+		<>
+			<Box sx={{ display: 'flex' }} key={title}>
+				<CssBaseline />
+				<OpenableAppBar title={title} drawerWidth={240} open={open} handleDrawerOpen={handleDrawerOpen} />
+				<MenuDrawer key={title} drawerMenu={drawerMenu} open={open} handleDrawerClose={handleDrawerClose} />
+				{props.children}
+			</Box>
+		</>
+	);
+};
+
+export default AppBarMenu;

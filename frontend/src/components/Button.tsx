@@ -3,19 +3,19 @@ import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled'
 import { styled } from '@mui/system';
 
 const blue = {
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0059B2',
+	500: '#007FFF',
+	600: '#0072E5',
+	700: '#0059B2',
 };
 
 const grey = {
-  100: '#eaeef2',
-  300: '#afb8c1',
-  900: '#24292f',
+	100: '#eaeef2',
+	300: '#afb8c1',
+	900: '#24292f',
 };
 
 const BlueButton = styled(ButtonUnstyled)(
-  ({ theme }) => `
+	({ theme }) => `
   font-family: IBM Plex Sans, sans-serif;
   font-weight: bold;
   font-size: 0.875rem;
@@ -45,7 +45,7 @@ const BlueButton = styled(ButtonUnstyled)(
     opacity: 0.5;
     cursor: not-allowed;
   }
-  `,
+  `
 );
 
-export default BlueButton
+export default BlueButton;
