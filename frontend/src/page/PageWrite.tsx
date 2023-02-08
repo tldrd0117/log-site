@@ -4,20 +4,19 @@ import Button from '../components/Button';
 import Switch from '../components/Switch';
 import AppBar from '../components/OpenableAppBar';
 import AppBarMenu from '../container/AppBarMenu';
+import Write from '../container/Write';
 import Contents from '../components/Contents';
-import DashBoard from '../container/DashBoard';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import drawerMenu from '../resources/DrawerMenuInfo';
-const PageDashBoard: React.FC = () => {
-    
+const PageMain: React.FC = () => {
 	return (
 		<>
-			<AppBarMenu title={'Dashboard'} drawerMenu={drawerMenu}>
-				<DashBoard />
-
-                {/* <Button onClick={handleClick}/> */}
+			<AppBarMenu title={'Write'} drawerMenu={drawerMenu}>
+				<Write />
 			</AppBarMenu>
 		</>
 	);
 };
 
-export default PageDashBoard;
+export default PageMain;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
+import ButtonUnstyled, { buttonUnstyledClasses, ButtonUnstyledProps } from '@mui/base/ButtonUnstyled';
 import { styled } from '@mui/system';
 
 const blue = {
