@@ -4,23 +4,39 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc mocha ./tests/**/*.spec.ts ./tests/*.spec.ts",
     "tsc:init": "tsc --init",
-    "start:dev": "nodemon --watch 'src/**/*' -e ts --exec ts-node ./src/index.ts"
+    "start:dev": "nodemon --watch 'src/**/*' -e ts --exec ts-node ./src/index.ts",
+    "makeKey": "node secret/makeRSAKey.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jest": "^29.3.1",
+    "@types/mongoose": "^5.11.97",
+    "dotenv": "^16.0.3",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.3.0",
-    "koa-router": "^12.0.0"
+    "koa-jwt": "^4.0.4",
+    "koa-router": "^12.0.0",
+    "mime-types": "^2.1.35",
+    "mongoose": "^6.10.0",
+    "node-jose": "^2.2.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/chai-as-promised": "^7.1.5",
     "@types/koa": "^2.13.5",
     "@types/koa-bodyparser": "^4.3.10",
     "@types/koa-router": "^7.4.4",
+    "@types/mime-types": "^2.1.1",
+    "@types/mocha": "^10.0.1",
+    "@types/supertest": "^2.0.12",
+    "chai": "^4.3.7",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
+    "nyc": "^15.1.0",
+    "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   }
