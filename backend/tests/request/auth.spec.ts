@@ -9,12 +9,21 @@ describe('auth controller test', () => {
         request = supertest(app.callback())
     })
 
-    it('responds jkws', () => {
-        return request.get('/.well-known/jwks.json')
+    it('responds tokens and verify', (done) => {
+        request.get('/auth/tokens')
             .expect(200)
-            .expect('Content-Type', /json/)
             .then((response: any)=>{
-                expect(response.body.keys[0]).to.have.keys('kty', 'kid', 'use', 'alg', 'e', 'n', 'd', 'p', 'q', 'dp', 'dq', 'qi');
+                expect(response.text).to.be.a("string");
+
+                request.post("/auth/verify")
+                    .set('Accept', 'application/json')
+                    .send({token: response.text})
+                    .expect(200)
+                    .then((response: any)=>{
+                        console.log(response.text)
+                        expect(response.text).to.be.a("string");
+                        done()
+                    })
             })
     });
-  });
+});

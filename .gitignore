@@ -2,3 +2,9 @@ node_modules
 package-lock.json
 database/*
 dist
+secret
+.env
+.nycrc
+yarn.lock
+.nyc_output
+coverage/*
