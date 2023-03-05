@@ -1,7 +1,9 @@
 
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-
+import chaiJestSnapshot from "chai-jest-snapshot";
+ 
+chai.use(chaiJestSnapshot);
 chai.use(chaiAsPromised)
 chai.should()
 const expect = chai.expect

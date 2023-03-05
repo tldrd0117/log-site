@@ -8,16 +8,20 @@ router.get("/list", async (ctx) => {
     ctx.body = 'Hello World!';
 });
 
-router.get("/get", async (ctx) => {
+router.get("/", async (ctx) => {
     ctx.body = 'Hello World!';
 });
 
-router.post("/get", async (ctx) => {
+router.post("/", async (ctx) => {
     ctx.body = 'Hello World!';
 });
 
-router.put("/get", async (ctx) => {
+router.put("/", async (ctx) => {
     ctx.body = 'Hello World!';
+});
+
+router.del("/", async (ctx) => {
+    
 });
 
 export default router

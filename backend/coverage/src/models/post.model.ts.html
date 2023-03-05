@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/models/user.model.ts</title>
+    <title>Code coverage report for src/models/post.model.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/models</a> user.model.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/models</a> post.model.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -90,7 +90,16 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -111,40 +120,46 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Schema, model, connect, Date, Types } from "mongoose";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import mongoose, { Schema, model, connect, Date, Types } from "mongoose";
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 &nbsp;
-interface IUser{
+interface IPost{
     _id: Types.ObjectId
-    name: string;
-    email: string;
-    password: string;
+    authorId: Types.ObjectId
+    authorName: string;
+    text: string;
     createAt: Date;
     updateAt: Date;
+    parent: Types.ObjectId;
+    chatId: Types.ObjectId;
+    order: number
 }
 &nbsp;
-export {IUser}
+export {IPost}
 &nbsp;
-const userSchema = new Schema&lt;IUser&gt;({
-    name: {type: String, required: true},
-    email: {type: String, required: true},
-    password: {type: String, required: true},
+const postSchema = new Schema&lt;IPost&gt;({
+    authorId: {type: Schema.Types.ObjectId, required: true, ref:"User"},
+    authorName: {type: String, required: true},
+    text: {type: String, required: true},
     createAt: { type: Date, required: true, default: Date.now },
-    updateAt: { type: Date, required: true, default: Date.now }
+    updateAt: { type: Date, required: true, default: Date.now },
+    parent: { type: Schema.Types.ObjectId, ref:"Post"},
+    chatId: { type: Schema.Types.ObjectId},
+    order: { type: Number }
 })
 &nbsp;
-userSchema.index({name:1}, {unique: true})
-userSchema.index({email:1}, {unique: true})
-userSchema.index({name:1, email:1}, {unique: true})
+postSchema.plugin(AutoIncrement, {inc_field: 'order'})
 &nbsp;
-const User = model&lt;IUser&gt;('User', userSchema);
+const Post = model&lt;IPost&gt;('Post', postSchema);
 &nbsp;
-export default User</pre></td></tr></table></pre>
+export default Post</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->

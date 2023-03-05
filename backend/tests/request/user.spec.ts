@@ -1,6 +1,6 @@
 import app from '../../src/app'
 import { describe, it, afterEach } from 'mocha'
-import { expect } from '../chaiUtils'
+import { expect } from '../utils/chaiUtils'
 import supertest from 'supertest'
 
 describe('user test', () => {

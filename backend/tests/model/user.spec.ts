@@ -2,7 +2,7 @@ import app from '../../src/app'
 import { describe, it, afterEach } from 'mocha'
 import createMongo, { Mongo } from '../../src/utils/mongo'
 import User from '../../src/models/user.model'
-import { expect } from '../chaiUtils'
+import { expect } from '../utils/chaiUtils'
 
 
 describe('user model test', () => {
@@ -24,7 +24,7 @@ describe('user model test', () => {
         expect(indexes.map(v=>v.key)).to.be.deep.equals([{_id:1}, {name:1}, {email:1}, {name:1, email:1}])
     })
 
-    describe("insert user", ()=>{
+    describe("insert user And Find", ()=>{
         it("insert one user", async () => {
             expect(await User.count()).to.be.equal(0)
             await User.create({
@@ -37,7 +37,7 @@ describe('user model test', () => {
             expect(result).to.be.lengthOf(1)
         })
 
-        it("insert duplicated name user", async () => {
+        it("check duplicated name user", async () => {
             expect(await User.count()).to.be.equal(0)
             await User.create({
                 name: "lsj",
@@ -51,7 +51,7 @@ describe('user model test', () => {
             }).should.to.be.rejected
         })
 
-        it("insert duplicated email user", async () => {
+        it("check duplicated email user", async () => {
             expect(await User.count()).to.be.equal(0)
             await User.create({
                 name: "lsj22",

@@ -1,6 +1,7 @@
 import { connect, Mongoose, ConnectionStates } from 'mongoose';
 import dotenv from 'dotenv'
 
+
 const envFound = dotenv.config();
 if (envFound.error) {
   // This error should crash whole process
