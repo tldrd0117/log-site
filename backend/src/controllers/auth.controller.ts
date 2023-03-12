@@ -8,17 +8,18 @@ const router = new Router({
 
 
 router.get('/tokens', async (ctx) => {
-    ctx.body = await authService.getToken({});
+    const token = await authService.getToken({})
+    ctx.body = {token};
 })
 
-router.get('/jwks', async (ctx) => {
-    ctx.body = await authService.getPublicKey()
-})
+// router.get('/publickey', async (ctx) => {
+//     ctx.body = await authService.getPublicKey()
+// })
 
 router.post('/verify', async (ctx) => {
     try{
         const body: any = ctx.request.body;
-        ctx.body = await authService.verifyToekn(body.token)
+        ctx.body = await authService.verifyToken(body.token)
     } catch (e) {
         console.error(e)
     }

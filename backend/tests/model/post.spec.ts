@@ -7,7 +7,7 @@ import { expect } from '../utils/chaiUtils'
 import { makeTree } from '../utils/treeUtils'
 
 
-describe.only('post model test', () => {
+describe('post model test', () => {
     let mongo: Mongo
     let user: IUser
     beforeEach(async () => {

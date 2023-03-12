@@ -1,8 +1,14 @@
 import fs from 'fs'
 import ms from 'ms'
 import jwt, { Secret } from 'jsonwebtoken';
-import jose from 'node-jose'
-import jwktopem, { JWK } from 'jwk-to-pem'
+import jose, { JWK } from 'node-jose'
+import jwktopem from 'jwk-to-pem'
+import { PublicKey } from '../interfaces/auth';
+
+const doLogin = async (payload: any) => {
+    const data = decryptData(payload)
+    console.log(data)
+}
 
 const getToken = async (payload: any) => {
     const ks = fs.readFileSync('secret/Keys.json')
@@ -21,24 +27,40 @@ const getToken = async (payload: any) => {
       .final()
 }
 
-const getPublicKey = async () => {
+const getPublicJWK = async () => {
     const ks = fs.readFileSync('secret/Keys.json')
-    const keyStore = await jose.JWK.asKeyStore(ks.toString())
-    return keyStore.toJSON()
+    const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
+    return enryptKey.toJSON()
 }
 
-const verifyToekn = async (token: string) => {
+const getPrivateJWK = async () => {
+    const ks = fs.readFileSync('secret/Keys.json')
+    const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
+    return enryptKey.toJSON(true)
+}
+
+const decryptData = async (data: string) => {
+    const ks = fs.readFileSync('secret/Keys.json')
+    const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
+    console.log(enryptKey)
+    return await jose.JWE.createDecrypt(enryptKey).decrypt(data)
+}
+
+const verifyToken = async (token: string) => {
     const ks = fs.readFileSync('secret/Keys.json')
     const keyStore = await jose.JWK.asKeyStore(ks.toString())
-    const [ firstKey ] = (keyStore.toJSON() as any).keys
-    const publicKey = jwktopem( firstKey )
-    return jwt.verify(token, publicKey)
+    const [ publicKey ] = keyStore.all({ use: 'sig' })
+    console.log("decode",jwt.decode(token))
+    return jwt.verify(token, publicKey.toPEM())
 }
 
 const authService = {
+    doLogin,
     getToken,
-    getPublicKey,
-    verifyToekn
+    getPublicJWK,
+    getPrivateJWK,
+    verifyToken,
+    decryptData
 }
 
 export default authService

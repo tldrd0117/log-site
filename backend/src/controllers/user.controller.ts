@@ -1,6 +1,7 @@
 
 import Router from 'koa-router';
-var unless = require('koa-unless');
+import authService from '../services/auth.service';
+
 const router = new Router({
     prefix: "/user"
 });
@@ -10,13 +11,15 @@ router.post("/register", async (ctx) => {
     ctx.body = 'register';
 });
 
-router.post("/login", async (ctx) => {
-    // if(ctx.request.body.password === "password"){
-    //     ctx.body = "pwd"
-    // } else {
-        ctx.body = "login";
-    // }
-});
+router.get('/login', async (ctx) => {
+    const body: any = ctx.request.body;
+    const pwd = await authService.decryptData(body.password)
+    if(body.id=="admin" && pwd.plaintext.toString()=="1234"){
+        ctx.body = {
+            result: "success"
+        }
+    }
+})
 
 export default router
 
