@@ -1,0 +1,27 @@
+{
+  "hello": "hello",
+  "user": {
+    "error": {
+      "duplcated": {}
+    },
+    "validate": {
+      "name": {}
+    }
+  },
+  "validate": {
+    "string": "{#label} must be a string.",
+    "required": "{#label} is a required value",
+    "min": "{#label} must be at least {#limit} characters long",
+    "max": "{#label} must be no more than {#limit} characters long",
+    "pattern": {
+      "onlyChar": "Korean and English only"
+    },
+    "password": "Incorrect email or password",
+    "duplicate": "{#label} is duplicated",
+    "email": "Email format is incorrect",
+    "required2": "Incorrect email or password"
+  },
+  "name": "Name",
+  "email": "Email",
+  "password": "password"
+}

@@ -1,17 +1,16 @@
 import app from '../../src/app'
-import { describe, it, afterEach } from 'mocha'
 import createMongo, { Mongo } from '../../src/utils/mongo'
 import User, { IUser } from '../../src/models/user.model'
 import Post, { IPost } from '../../src/models/post.model'
-import { expect } from '../utils/chaiUtils'
 import { makeTree } from '../utils/treeUtils'
+import { createTestHashDbName } from '../utils/testUtils'
 
 
 describe('post model test', () => {
     let mongo: Mongo
     let user: IUser
     beforeEach(async () => {
-        mongo = createMongo(process.env.DB_ADDRESS || "", "log-site-test");
+        mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
         await mongo.useDb();
         await mongo.resetDatabase();
@@ -26,44 +25,47 @@ describe('post model test', () => {
         })
     })
 
-    afterEach(() => {
-        // mongo.db.connection.dropDatabase()
-        return mongo.disconnect()
+    afterEach(async () => {
+        if(mongo.isConnect()){
+            await mongo.db.connection.dropDatabase()
+            return mongo.disconnect()
+        }
     })
+
 
     it("verify user indexes", async () => {
         let indexes = await User.listIndexes()
-        expect(indexes.map(v => v.key)).to.be.deep.equals([{ _id: 1 }, { name: 1 }, { email: 1 }, { name: 1, email: 1 }])
+        expect(indexes.map(v => v.key)).toMatchObject([{ _id: 1 }, { name: 1 }, { email: 1 }, { name: 1, email: 1 }])
     })
 
     describe("insert post and Find", () => {
         it("insert one post", async () => {
-            expect(await Post.count()).to.be.equal(0)
+            expect(await Post.count()).toEqual(0)
             await Post.create({
                 authorId: user._id,
                 authorName: user.name,
                 text: "it is Test",
             })
-            expect(await Post.count()).to.be.equal(1)
+            expect(await Post.count()).toEqual(1)
             const result = await Post.find({})
-            expect(result).to.be.lengthOf(1)
-            expect((result[0] as IPost).order).to.be.equal(1)
+            expect(result).toHaveLength(1)
+            expect((result[0] as IPost).order).toEqual(1)
         })
 
         it("insert 10 Post And check Order Column", async () => {
-            expect(await Post.count()).to.be.equal(0)
+            expect(await Post.count()).toEqual(0)
             for (let i = 0; i < 10; ++i) {
                 await Post.create({
                     authorId: user._id,
                     authorName: user.name,
                     text: "it is Test",
                 })
-                expect(await Post.count()).to.be.equal(i + 1)
+                expect(await Post.count()).toEqual(i + 1)
             }
             const result = await Post.find({}).sort({ createAt: 1 })
-            expect(result).to.be.lengthOf(10)
+            expect(result).toHaveLength(10)
             for (let i = 0; i < 10; ++i) {
-                expect((result[i] as IPost).order).to.be.equal(i + 1)
+                expect((result[i] as IPost).order).toEqual(i + 1)
             }
         })
     })
@@ -103,13 +105,13 @@ describe('post model test', () => {
                 },
             }])
             const tree = makeTree(result)
-            expect(tree).to.be.not.undefined
+            expect(tree).toBeDefined()
             const keys = Object.keys(tree)
-            expect(tree[keys[0]].children.length).to.be.equal(1)
+            expect(tree[keys[0]].children.length).toEqual(1)
             let child: any = tree[keys[0]].children[0]
-            expect(child.children.length).to.be.equal(1)
+            expect(child.children.length).toEqual(1)
             child = tree[keys[0]].children[0].children[0]
-            expect(child.children.length).to.be.equal(0)
+            expect(child.children.length).toEqual(0)
             // console.log(JSON.stringify(tree, null, 2))
         });
     })

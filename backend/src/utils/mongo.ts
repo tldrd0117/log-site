@@ -1,6 +1,7 @@
-import { connect, Mongoose, ConnectionStates } from 'mongoose';
+import { connect, Mongoose, ConnectionStates, set } from 'mongoose';
 import dotenv from 'dotenv'
 
+set("strictQuery", false)
 
 const envFound = dotenv.config();
 if (envFound.error) {
@@ -51,18 +52,16 @@ class Mongo{
 const defaultAddress = process.env.DB_ADDRESS;
 const defaultDatabase = "log-site";
 
-const mongo = new Mongo(defaultAddress, defaultDatabase);
-
 export { Mongo }
 
 const createMongo = (address: string, database: string) => {
-    if(mongo.address === defaultAddress){
-        mongo.address = address;
+    if(!address){
+        address = defaultAddress
     }
-    if(mongo.database === defaultDatabase){
-        mongo.database = database
+    if(!database){
+        database = defaultDatabase
     }
-    return mongo
+    return new Mongo(address, database);
 }
 
 export default createMongo

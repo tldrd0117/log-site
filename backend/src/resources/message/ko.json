@@ -1,0 +1,27 @@
+{
+  "hello": "안녕",
+  "user": {
+    "error": {
+      "duplcated": {}
+    },
+    "validate": {
+      "name": {}
+    }
+  },
+  "validate": {
+    "string": "{#label}은 문자열만 가능합니다.",
+    "required": "{#label}은 필수 값 입니다",
+    "min": "{#label}은 최소 {#limit}글자 이상만 가능합니다",
+    "max": "{#label}은 최대 {#limit}글자 이하만 가능합니다",
+    "pattern": {
+      "onlyChar": "{#label}은 한글과 영어만 가능합니다"
+    },
+    "password": "이메일 또는 비밀번호가 잘못되었습니다",
+    "duplicate": "{#label}이 중복되었습니다",
+    "email": "이메일 형식이 올바르지 않습니다",
+    "required2": "{#label}는 필수 값 입니다"
+  },
+  "name": "이름",
+  "email": "이메일",
+  "password": "비밀번호"
+}

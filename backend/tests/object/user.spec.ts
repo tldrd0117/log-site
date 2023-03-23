@@ -1,0 +1,83 @@
+import { getJoinUserObject } from '../../src/object/user'
+import sha256 from 'crypto-js/sha256'
+import createMongo, { Mongo } from '../../src/utils/mongo'
+import User, { IUser } from '../../src/models/user.model'
+import { createTestHashDbName } from '../utils/testUtils'
+import joi from 'joi'
+
+const validateOptions = {
+    errors: { wrap: { label: '' } },
+    abortEarly: false,
+}
+
+describe("user object", function(){
+    let mongo: Mongo
+    let user: IUser
+    beforeEach(async () => {
+        mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
+        await mongo.connect();
+        await mongo.useDb();
+        await mongo.resetDatabase();
+        await User.syncIndexes()
+    })
+    
+    it("Test for name language format (English/Korean)", async function(){
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "123",
+            password: "456",
+            email:"789"
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 한글과 영어만 가능합니다')
+    })
+
+    it("Minimum name length test",async () => {
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "aa",
+            password: "456",
+            email:"789"
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 최소 3글자 이상만 가능합니다')
+    })
+
+    it("Maximum name length test",async () => {
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "aaaaaaaaaaaaaaaaaaaaa",
+            password: "456",
+            email:"789"
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 최대 20글자 이하만 가능합니다')
+    })
+    
+    it("Test for valid email format",async () => {
+
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "한글이름",
+            email:"789",
+            password: "456",
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이메일 형식이 올바르지 않습니다')
+        
+    })
+    it("Test for valid password format",async () => {
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "한글이름",
+            email:"789@222.co",
+            password: "456",
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이메일 또는 비밀번호가 잘못되었습니다')
+        
+    })
+    it("User test success",async () => {
+        const userObject = await getJoinUserObject("ko")
+        await expect(userObject.validateAsync({
+            name: "한글이름",
+            email:"789@222.co",
+            password: sha256("456").toString(),
+        }, validateOptions)).resolves
+            .toMatchObject({
+                name: "한글이름",
+                email:"789@222.co",
+                password: sha256("456").toString()
+            })
+    })
+})

@@ -1,28 +1,35 @@
 import app from '../../src/app'
-import { describe, it, afterEach } from 'mocha'
-import { expect } from '../utils/chaiUtils'
 import createMongo, {Mongo} from '../../src/utils/mongo'
+import { createTestHashDbName } from '../utils/testUtils'
 
 describe('db Connect', () => {
     let mongo: Mongo
     beforeEach(()=>{
-        mongo = createMongo(process.env.DB_ADDRESS || "", "log-site-test");
+        mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
+    })
+
+    afterEach(async () => {
+        if(mongo.isConnect()){
+            await mongo.db.connection.dropDatabase()
+            return mongo.disconnect()
+        }
     })
 
     it('exist mongo instance', () => {
-        expect(mongo).to.not.undefined
+        expect(mongo).toBeDefined()
     })
 
     it('not Connect test', async () => {
-        await mongo.disconnect().should.be.rejected
-        await mongo.resetDatabase().should.be.rejected
-        await mongo.useDb().should.be.rejected
+        await expect(mongo.disconnect()).rejects.toThrow()
+        await expect(mongo.resetDatabase()).rejects.toThrow()
+        await expect(mongo.useDb()).rejects.toThrow()
     })
 
     it('try db connect', async () => {
-        expect(mongo.isConnect()).to.be.false
+        expect(mongo.isConnect()).toBeFalsy()
         await mongo.connect();
-        expect(mongo.isConnect()).to.be.true
+        expect(mongo.isConnect()).toBeTruthy()
+        await mongo.db.connection.dropDatabase()
         await mongo.disconnect();
     });
   });
