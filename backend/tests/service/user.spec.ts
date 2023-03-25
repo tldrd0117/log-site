@@ -73,9 +73,43 @@ describe("user service test", function(){
         expect(result.password).toBe(sha256("1234").toString())
     })
 
+    it("do Join if name duplicated", async () => {
+        await expect(userService.doJoin({
+            name: "lsj",
+            email: "123@comm.com",
+            password: sha256("1234").toString(),
+        })).rejects.toHaveProperty('errors[0].message', 'user.name.duplicated')
+    })
+
+    it("do Join if email duplicated", async () => {
+        await expect(userService.doJoin({
+            name: "lsj2",
+            email: "root@naver.com",
+            password: sha256("1234").toString(),
+        })).rejects.toHaveProperty('errors[0].message', 'user.email.duplicated')
+    })
+
+    it("do Join if name and email duplicated", async () => {
+        await expect(userService.doJoin({
+            name: "lsj",
+            email: "root@naver.com",
+            password: sha256("1234").toString(),
+        })).rejects.toMatchObject({
+            errors: [
+                expect.objectContaining({
+                    message: 'user.name.duplicated',
+                    status: 400
+                }),
+                expect.objectContaining({
+                    message: 'user.email.duplicated',
+                    status: 400
+                }),
+            ],
+        })
+    })
+
     it("get User by email", async () => {
         const result = await userService.getUserByEmail("root@naver.com")
-        console.log(result)
         expect(result.name).toBe("lsj")
         expect(result.email).toBe("root@naver.com")
     })

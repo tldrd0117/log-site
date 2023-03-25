@@ -4,13 +4,12 @@ import FsBackend from 'i18next-fs-backend'
 let isInit = false;
 let en: any, ko: any
 
-export const geti18next = async (lang: string) => {
-    const i18n: {[k:string]: any} = await getI18n()
-    return i18n[lang]
+export const getI18next = (lang: string) => {
+    if(lang === "ko") return ko
+    else return en
 }
 
-export const getI18n = async () => {
-    if(isInit) return {en, ko}
+export const initI18n = async () => {
     en = i18next.createInstance()
     ko = i18next.createInstance()
     await en
@@ -35,6 +34,4 @@ export const getI18n = async () => {
             ns:["message"],
             defaultNS:["message"]
         })
-    isInit = true
-    return {en, ko}
 }

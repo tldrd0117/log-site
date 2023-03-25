@@ -1,5 +1,5 @@
 import User from '../models/user.model'
-import { MessageError } from '../utils/error'
+import { MessageStatusError, MessageErrors } from '../utils/error'
 import { UserJoin, UserLogin } from '../interfaces/user'
 
 /**
@@ -12,6 +12,16 @@ const doLogin = async (user: UserLogin) => {
 }
 
 const doJoin = async (userJoin: UserJoin)=>{
+    const isPassedName = await checkNameDuplicate(userJoin.name)
+    const isPassedEmail = await checkEmailDuplicate(userJoin.email)
+    const errors = []
+    if(!isPassedName){
+        errors.push(new MessageStatusError('user.name.duplicated', 400))
+    }
+    if(!isPassedEmail){
+        errors.push(new MessageStatusError('user.email.duplicated', 400))
+    }
+    if(errors.length > 0) throw new MessageErrors(errors)
     return await createUser(userJoin)
 }
 

@@ -1,32 +1,11 @@
-import i18next from "i18next";
 import Joi from 'joi'
-import userService from "../services/user.service";
-import { MessageError } from "../utils/error";
-import {getI18n} from "../utils/i18n";
+import { getI18next } from "../utils/i18n";
 
-
-const checkNameDuplicate = async (name: string, helpers: any) => {
-    const result = await userService.checkNameDuplicate(name)
-    if(!result){
-        throw new MessageError(i18next.t("validate.duplicate"))
-    }
-    return name
-}
-
-const checkEmailDuplicate =async (email: string, helpers: any) => {
-    const result = await userService.checkEmailDuplicate(email)
-    if(!result){
-        throw new MessageError(i18next.t("validate.duplicate"))
-    }
-    return email
-}
 
 export const getJoinUserObject = async (lng: string) => {
-    const {en, ko} = await getI18n()
-    const i18next = lng=="en"?en:ko
+    const i18next = await getI18next(lng)
     return Joi.object({
         name: Joi.string().trim().pattern(/^([a-zA-Z]|[가-힣])+$/, "str").min(3).max(20).required()
-            .external(checkNameDuplicate)
             .label(i18next.t("name"))
             .messages({
                 "any.required": i18next.t("validate.required"),
@@ -37,7 +16,6 @@ export const getJoinUserObject = async (lng: string) => {
                 "string.empty": i18next.t("validate.required"),
             }),
         email: Joi.string().email().required().label(i18next.t("email"))
-            .external(checkEmailDuplicate)
             .label(i18next.t("email"))
             .messages({
                 "string.base": i18next.t("validate.string"),
@@ -54,8 +32,7 @@ export const getJoinUserObject = async (lng: string) => {
 }
 
 export const getLoginUserObject = async (lng: string) => {
-    const {en, ko} = await getI18n()
-    const i18next = lng=="en"?en:ko
+    const i18next = await getI18next(lng)
     return Joi.object({
         email: Joi.string().email().required().label(i18next.t("email"))
             .messages({
@@ -73,8 +50,7 @@ export const getLoginUserObject = async (lng: string) => {
 }
 
 export const getUserInfoObject = async (lng: string) => {
-    const {en, ko} = await getI18n()
-    const i18next = lng=="en"?en:ko
+    const i18next = await getI18next(lng)
     return Joi.object({
         email: Joi.string().email().required().label(i18next.t("email"))
             .messages({

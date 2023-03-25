@@ -5,6 +5,7 @@ import helloWorldRouter from './routers/helloworld.routes'
 import authRouter from './routers/auth.routes'
 import postRouter from './routers/post.routes'
 import userRouter from './routers/user.routes'
+import { errorHandleMiddleware } from './middlewares/middlewares';
 
 import Cabin from 'cabin';
 import requestReceived from 'request-received'
@@ -12,6 +13,7 @@ import responseTime from 'koa-better-response-time'
 import requestId from 'koa-better-request-id'
 import { Signale } from 'signale'
 import Axe from 'axe'
+import { initI18n } from './utils/i18n';
 
 const getApp = async () => {
     const app = new Koa();
@@ -28,6 +30,7 @@ const getApp = async () => {
         })
     });
     const port: number = 3000;
+    await initI18n()
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs
@@ -43,6 +46,8 @@ const getApp = async () => {
     app.use(cabin.middleware);
 
     app.use(bodyParser());
+
+    app.use(errorHandleMiddleware)
     
     app.use(helloWorldRouter.routes())
     app.use(authRouter.routes())
@@ -50,6 +55,7 @@ const getApp = async () => {
     app.use(userRouter.routes())
 
     app.use(router.routes());
+    
     return app
 }
 

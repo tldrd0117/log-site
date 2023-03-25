@@ -7,7 +7,7 @@ import { Context, Next } from 'koa';
 import userService from '../services/user.service';
 import { UserJoin, UserLogin } from '../interfaces/user'
 import { decMiddleware, validateMiddlewareFactory, validateTokenMiddleware } from "../middlewares/middlewares"
-import { geti18next } from '../utils/i18n';
+import { getI18next } from '../utils/i18n';
 
 const router = new Router({
     prefix: "/user"
@@ -33,8 +33,7 @@ router.post('/login', decMiddleware, validateMiddlewareFactory(getLoginUserObjec
     }
     else{
         const lang = ctx.acceptsLanguages()[0]
-        console.log(lang)
-        const i18next = await geti18next(lang)
+        const i18next = await getI18next(lang)
         ctx.body = response.makeErrorBody({
             error: i18next.t('validate.password')
         })

@@ -4,6 +4,7 @@ import createMongo, { Mongo } from '../../src/utils/mongo'
 import User, { IUser } from '../../src/models/user.model'
 import { createTestHashDbName } from '../utils/testUtils'
 import joi from 'joi'
+import { initI18n } from '../../src/utils/i18n'
 
 const validateOptions = {
     errors: { wrap: { label: '' } },
@@ -19,6 +20,23 @@ describe("user object", function(){
         await mongo.useDb();
         await mongo.resetDatabase();
         await User.syncIndexes()
+        await initI18n()
+    })
+
+    beforeEach(async () => {
+        user = await User.create({
+            name: "lsj",
+            email: "root@naver.com",
+            password: sha256("123451").toString(),
+            role: "admin",
+        })
+    })
+
+    afterEach(async () => {
+        if(mongo.isConnect()){
+            await mongo.db.connection.dropDatabase()
+            return mongo.disconnect()
+        }
     })
     
     it("Test for name language format (English/Korean)", async function(){
@@ -47,7 +65,7 @@ describe("user object", function(){
             email:"789"
         }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 최대 20글자 이하만 가능합니다')
     })
-    
+
     it("Test for valid email format",async () => {
 
         const userObject = await getJoinUserObject("ko")
