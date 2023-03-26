@@ -19,7 +19,12 @@
     "password": "Incorrect email or password",
     "duplicate": "{#label} is duplicated",
     "email": "Email format is incorrect",
-    "required2": "Incorrect email or password"
+    "required2": "Incorrect email or password",
+    "token": {
+        "invalid": "Invalid token",
+        "expired": "Expired token",
+        "notBefore": "Token is not active yet"
+    }
   },
   "name": "Name",
   "email": "Email",

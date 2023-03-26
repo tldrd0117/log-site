@@ -1,9 +1,10 @@
 import { Context, Next } from "koa";
 import authService from "../services/auth.service";
 import joi from "joi"
-import { MessageError, MessageStatusError, UnknownError } from "../utils/error";
+import { MessageCodeStatusError, MessageError, MessageStatusError, UnknownError } from "../utils/error";
 import { getJoinUserObject, getLoginUserObject } from '../object/user'
 import { ErrorHandler } from '../utils/error'
+import { TokenExpiredError, NotBeforeError } from "jsonwebtoken";
 
 const errorHandler = new ErrorHandler()
 
@@ -26,12 +27,18 @@ export const decMiddleware = async (ctx: Context, next: Next) => {
 }
 
 export const validateTokenMiddleware = async (ctx: Context, next: Next) => {
-    ctx.header.authorization = ctx.header.authorization.replace('Bearer ', '')
-    const result = await authService.verifyToken(ctx.header.authorization)
-    if(Object.hasOwnProperty.call(result, 'exp')){
-        return next();
-    } else {
-        throw new MessageStatusError('validate.token', 400)
+    try{
+        ctx.header.authorization = ctx.header.authorization.replace('Bearer ', '')
+        const result = await authService.verifyToken(ctx.header.authorization)
+        return await next()
+    } catch(e){
+        if(e instanceof TokenExpiredError){
+            throw new MessageCodeStatusError('validate.token.expired', 401)
+        } else if(e instanceof NotBeforeError){
+            throw new MessageCodeStatusError('validate.token.notBefore', 401)
+        } else {
+            throw new MessageCodeStatusError('validate.token.invalid', 401)
+        }
     }
 }
 

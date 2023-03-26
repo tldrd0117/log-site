@@ -1,11 +1,18 @@
 import i18next from 'i18next'
 import FsBackend from 'i18next-fs-backend'
+import { Context } from 'koa';
 
 let isInit = false;
 let en: any, ko: any
 
 export const getI18next = (lang: string) => {
     if(lang === "ko") return ko
+    else return en
+}
+
+export const getI18nextByCtx = (ctx: Context) => {
+    if(ctx.acceptsLanguages().length === 0) return en
+    if(ctx.acceptsLanguages()[0] === "ko") return ko
     else return en
 }
 

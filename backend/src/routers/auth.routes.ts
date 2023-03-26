@@ -1,7 +1,8 @@
 import Router from 'koa-router';
 import mime from 'mime-types'
-import { validateTokenMiddleware } from '../middlewares/middlewares';
+import { decMiddleware, validateTokenMiddleware } from '../middlewares/middlewares';
 import authService from '../services/auth.service';
+import response from '../utils/response';
 
 const router = new Router({
     prefix: "/auth"
@@ -11,19 +12,8 @@ router.get('/publicKey', async (ctx) => {
     ctx.body = await authService.getPublicJWK()
 })
 
-
-// router.get('/tokens', async (ctx) => {
-//     const token = await authService.getToken({})
-//     ctx.body = {token};
-// })
-
-// router.post('/verify', validateTokenMiddleware, async (ctx) => {
-//     try{
-//         const body: any = ctx.request.body;
-//         ctx.body = await authService.verifyToken(body.token)
-//     } catch (e) {
-//         console.error(e)
-//     }
-// })
+router.post('/verify', decMiddleware, validateTokenMiddleware, async (ctx) => {
+    ctx.body = response.makeSuccessBody({})
+})
 
 export default router
