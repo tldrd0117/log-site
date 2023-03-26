@@ -32,7 +32,6 @@ describe('post model test', () => {
         }
     })
 
-
     it("verify user indexes", async () => {
         let indexes = await User.listIndexes()
         expect(indexes.map(v => v.key)).toMatchObject([{ _id: 1 }, { name: 1 }, { email: 1 }, { name: 1, email: 1 }])
@@ -44,6 +43,7 @@ describe('post model test', () => {
             await Post.create({
                 authorId: user._id,
                 authorName: user.name,
+                summary: "it is not title",
                 text: "it is Test",
             })
             expect(await Post.count()).toEqual(1)
@@ -58,6 +58,7 @@ describe('post model test', () => {
                 await Post.create({
                     authorId: user._id,
                     authorName: user.name,
+                    summary: "it is not title",
                     text: "it is Test",
                 })
                 expect(await Post.count()).toEqual(i + 1)
@@ -71,16 +72,18 @@ describe('post model test', () => {
     })
 
     describe("check tree posts", function () {
-        it("loopup posts", async () => {
+        it("loopup posts tree", async () => {
             let onePost = await Post.create({
                 authorId: user._id,
                 authorName: user.name,
+                summary: "it is not title",
                 text: "it is Test",
                 parent: null
             })
             let twoPost = await Post.create({
                 authorId: user._id,
                 authorName: user.name,
+                summary: "it is not title",
                 text: "it is Test2",
                 parent: onePost._id
             })
@@ -88,8 +91,18 @@ describe('post model test', () => {
             let threePost = await Post.create({
                 authorId: user._id,
                 authorName: user.name,
-                text: "it is Test2",
+                summary: "it is not title",
+                text: "it is Test3",
                 parent: twoPost._id
+            })
+
+            let fourPost = await Post.create({
+                authorId: user._id,
+                authorName: user.name,
+                summary: "it is not title",
+                text: "it is Test4",
+                parent: null,
+                relatedPost: [onePost._id, twoPost._id, threePost._id]
             })
 
             const result = await Post.aggregate([
@@ -113,6 +126,60 @@ describe('post model test', () => {
             child = tree[keys[0]].children[0].children[0]
             expect(child.children.length).toEqual(0)
             // console.log(JSON.stringify(tree, null, 2))
+        });
+
+        it("loopup posts tree with relatedPost", async () => {
+            let onePost = await Post.create({
+                authorId: user._id,
+                authorName: user.name,
+                summary: "it is not title",
+                text: "it is Test",
+                parent: null
+            })
+            let twoPost = await Post.create({
+                authorId: user._id,
+                authorName: user.name,
+                summary: "it is not title",
+                text: "it is Test2",
+                parent: onePost._id,
+                relatedPosts: [onePost._id]
+            })
+
+            let threePost = await Post.create({
+                authorId: user._id,
+                authorName: user.name,
+                summary: "it is not title",
+                text: "it is Test3",
+                parent: twoPost._id
+            })
+
+            let fourPost = await Post.create({
+                authorId: user._id,
+                authorName: user.name,
+                summary: "it is not title",
+                text: "it is Test4",
+                parent: null,
+                relatedPosts: [onePost._id, twoPost._id, threePost._id]
+            })
+
+            const result = await Post.aggregate([
+            {
+                $graphLookup: {
+                    from: "posts",
+                    startWith: "$relatedPosts",
+                    connectFromField: "relatedPosts",
+                    connectToField: "_id",
+                    as: "_relatedPosts",
+                    maxDepth: 0,
+                    depthField: "depth"
+                },
+            }])
+            expect(result).toHaveLength(4)
+            expect(result[0]._relatedPosts).toHaveLength(0)
+            expect(result[1]._relatedPosts).toHaveLength(1)
+            expect(result[2]._relatedPosts).toHaveLength(0)
+            expect(result[3]._relatedPosts).toHaveLength(3)
+            // console.log(JSON.stringify(result, null, 2))
         });
     })
 

@@ -54,7 +54,7 @@ export class ErrorHandler{
     constructor(){
     }
     handle(ctx: Context, error: Error|string){
-        console.error(error)
+        // console.error(error)
         if(typeof error === "string"){
             ctx.body = response.makeErrorBodyByMessage(error)
             ctx.status = 400
