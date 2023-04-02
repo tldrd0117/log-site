@@ -14,19 +14,39 @@
     "min": "{#label} must be at least {#limit} characters long",
     "max": "{#label} must be no more than {#limit} characters long",
     "pattern": {
-      "onlyChar": "Korean and English only"
+      "onlyChar": "Korean, English or Number only",
+      "type": "{#label} is not in the correct format."
     },
     "password": "Incorrect email or password",
     "duplicate": "{#label} is duplicated",
     "email": "Email format is incorrect",
     "required2": "Incorrect email or password",
     "token": {
-        "invalid": "Invalid token",
-        "expired": "Expired token",
-        "notBefore": "Token is not active yet"
+      "invalid": "Invalid token",
+      "expired": "Expired token",
+      "notBefore": "Token is not active yet"
+    },
+    "number": {
+      "integer": "{#label} must be a integer",
+      "min": "{#label} must be at least {#limit}",
+      "max": "{#label} must be less than or equal to {#limit}",
+      "type": "{#label} must be a number",
+      "index": "{#label} must be integers greater than 0"
     }
   },
   "name": "Name",
   "email": "Email",
-  "password": "password"
+  "password": "password",
+  "postId": "post ID",
+  "postList": "post list",
+  "limit": "limit",
+  "offset": "offset",
+  "searchWord": "search word",
+  "author": "\bauthor",
+  "authorName": "author's name",
+  "summary": "summary",
+  "text": "\bcontents",
+  "parent": "parent post",
+  "relatedPosts": "related posts",
+  "order": "order"
 }

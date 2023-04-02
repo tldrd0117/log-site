@@ -39,6 +39,10 @@ const checkNameDuplicate =async (name: string) => {
     return !result
 }
 
+const searchUserByName = (name: string) => {
+    return User.find({ name: { $regex: name, $options: 'i' } })
+}
+
 const getUserByEmail = (email: string) => {
     return User.findOne({ email }, {_id: 0, "name": 1, "email": 1, "role": 1, "createAt": 1})
 }
@@ -49,7 +53,8 @@ const userService = {
     doJoin,
     getUserByEmail,
     checkEmailDuplicate,
-    checkNameDuplicate
+    checkNameDuplicate,
+    searchUserByName
 }
 
 export default userService

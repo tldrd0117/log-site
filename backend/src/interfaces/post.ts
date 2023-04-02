@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface PostCreate{
-    authorId: Types.ObjectId
+    author: Types.ObjectId
     authorName: string;
     summary: string;
     text: string;
@@ -12,7 +12,7 @@ export interface PostCreate{
 
 export interface PostUpdate{
     _id: Types.ObjectId
-    authorId: Types.ObjectId
+    author: Types.ObjectId
     authorName: string;
     summary: string;
     text: string;

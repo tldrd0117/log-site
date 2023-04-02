@@ -35,7 +35,7 @@ describe("Post Service Test", function () {
 
     it("Create Post And Find Post", async () => {
         const post1 = await postService.post({
-            authorId: user._id,
+            author: user._id,
             authorName: user.name,
             summary: "it is not title1",
             text: "test1",
@@ -43,7 +43,7 @@ describe("Post Service Test", function () {
         })
         expect(post1).toMatchObject({
             _id: expect.any(Types.ObjectId),
-            authorId: user._id,
+            author: user._id,
             authorName: user.name,
             summary: "it is not title1",
             text: "test1",
@@ -57,7 +57,10 @@ describe("Post Service Test", function () {
         const postVerify = await postService.getPost(post1._id.toString())
         expect(postVerify).toMatchObject({
             _id: expect.any(Types.ObjectId),
-            authorId: user._id,
+            author: {
+                _id: user._id,
+                name: user.name,
+            },
             authorName: user.name,
             summary: "it is not title1",
             text: "test1",
@@ -73,7 +76,7 @@ describe("Post Service Test", function () {
         const arr = []
         for(let i = 0; i < 10; ++i){
             arr.push({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title1",
                 text: "test",
@@ -88,7 +91,7 @@ describe("Post Service Test", function () {
         for(let i = 0; i < 10; ++i){
             expect(result[i]).toMatchObject({
                 _id: expect.any(Types.ObjectId),
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title1",
                 text: "test",
@@ -104,7 +107,7 @@ describe("Post Service Test", function () {
     it("list post", async () => {
         for(let i = 0; i < 100; ++i){
             await postService.post({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title1",
                 text: "test"+i,
@@ -119,7 +122,10 @@ describe("Post Service Test", function () {
             for(let i = 0; i < 10; ++i){
                 expect(postList[i]).toMatchObject({
                     _id: expect.any(Types.ObjectId),
-                    authorId: user._id,
+                    author: {
+                        _id: user._id,
+                        name: user.name,
+                    },
                     authorName: user.name,
                     summary: "it is not title1",
                     text: "test"+(i+(10 * p)),
@@ -136,7 +142,7 @@ describe("Post Service Test", function () {
     it("delete post", async () => {
         await expect(postService.getPostTotalCount()).resolves.toBe(0)
         const post: IPost = await postService.post({
-            authorId: user._id,
+            author: user._id,
             authorName: user.name,
             summary: "it is not title1",
             text: "test",
@@ -155,7 +161,7 @@ describe("Post Service Test", function () {
         const arr = []
         for(let i = 0; i < 10; ++i){
             arr.push({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title1",
                 text: "test",
@@ -174,7 +180,7 @@ describe("Post Service Test", function () {
 
     it("update post", async () => {
         const post: IPost = await postService.post({
-            authorId: user._id,
+            author: user._id,
             authorName: user.name,
             summary: "it is not title1",
             text: "test",
@@ -183,7 +189,7 @@ describe("Post Service Test", function () {
         
         const result = await postService.putPost({
             _id: post._id,
-            authorId: user._id,
+            author: user._id,
             authorName: user.name,
             summary: "update summary",
             text: "update text",
@@ -192,7 +198,10 @@ describe("Post Service Test", function () {
         const postVerify = await postService.getPost(post._id.toString())
         expect(postVerify).toMatchObject({
             _id: expect.any(Types.ObjectId),
-            authorId: user._id,
+            author: {
+                _id: user._id,
+                name: user.name,
+            },
             authorName: user.name,
             summary: "update summary",
             text: "update text",
@@ -208,7 +217,7 @@ describe("Post Service Test", function () {
         const arr = []
         for(let i = 0; i < 10; ++i){
             arr.push({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title1",
                 text: "test",
@@ -222,7 +231,7 @@ describe("Post Service Test", function () {
         await postService.putPosts(result.slice(6).map((v) => {
             return {
                 _id: v._id,
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "update summary",
                 text: "update text",
@@ -236,8 +245,8 @@ describe("Post Service Test", function () {
         const arr = []
         for(let i = 0; i < 5; ++i){
             arr.push({
-                authorId: user._id,
-                authorName: "user",
+                author: user._id,
+                authorName: user.name,
                 summary: "abcde",
                 text: "fghijk",
                 parent: null
@@ -245,8 +254,8 @@ describe("Post Service Test", function () {
         }
         for(let i = 0; i < 5; ++i){
             arr.push({
-                authorId: user._id,
-                authorName: "2user2",
+                author: user._id,
+                authorName: user.name,
                 summary: "lmopqrs",
                 text: "touvwxyz",
                 parent: null
@@ -255,17 +264,18 @@ describe("Post Service Test", function () {
         expect(arr).toHaveLength(10)
         const result = await postService.postMany(arr)
         expect(result).toHaveLength(10)
-        const serarch1  = await postService.searchList(10, 0, "user")
-        expect(serarch1).toHaveLength(10)
-        const serarch2  = await postService.searchList(10, 0, "abcde")
-        expect(serarch2).toHaveLength(5)
-        const serarch3  = await postService.searchList(10, 0, "fghijk")
-        expect(serarch3).toHaveLength(5)
-        const serarch4  = await postService.searchList(10, 0, "2user2")
-        expect(serarch4).toHaveLength(5)
-        const serarch5  = await postService.searchList(10, 0, "lmopqrs")
-        expect(serarch5).toHaveLength(5)
-        const serarch6  = await postService.searchList(10, 0, "touvwxyz")
-        expect(serarch6).toHaveLength(5)
+        const search1  = await postService.searchList(10, 0, "lsj")
+        console.log(search1)
+        expect(search1).toHaveLength(10)
+        const search2  = await postService.searchList(10, 0, "abcde")
+        expect(search2).toHaveLength(5)
+        const search3  = await postService.searchList(10, 0, "fghijk")
+        expect(search3).toHaveLength(5)
+        const search4  = await postService.searchList(10, 0, "2user2")
+        expect(search4).toHaveLength(0)
+        const search5  = await postService.searchList(10, 0, "lmopqrs")
+        expect(search5).toHaveLength(5)
+        const search6  = await postService.searchList(10, 0, "touvwxyz")
+        expect(search6).toHaveLength(5)
     })
 })

@@ -1,11 +1,13 @@
 import Joi from 'joi'
 import { getI18next } from "../utils/i18n";
+import { email, password, userName } from './common'
+import _ from 'lodash'
 
 
 export const getJoinUserObject = async (lng: string) => {
     const i18next = await getI18next(lng)
     return Joi.object({
-        name: Joi.string().trim().pattern(/^([a-zA-Z]|[가-힣])+$/, "str").min(3).max(20).required()
+        name: _.cloneDeep(userName).required()
             .label(i18next.t("name"))
             .messages({
                 "any.required": i18next.t("validate.required"),
@@ -15,14 +17,14 @@ export const getJoinUserObject = async (lng: string) => {
                 "string.pattern.name": i18next.t("validate.pattern.onlyChar"),
                 "string.empty": i18next.t("validate.required"),
             }),
-        email: Joi.string().email().required().label(i18next.t("email"))
+        email: _.cloneDeep(email).required().label(i18next.t("email"))
             .label(i18next.t("email"))
             .messages({
                 "string.base": i18next.t("validate.string"),
                 "string.email": i18next.t("validate.email"),
                 "any.required": i18next.t("validate.required")
             }),
-        password: Joi.string().length(64).required()
+        password: _.cloneDeep(password).required()
             .label(i18next.t("password"))
             .messages({
                 "string.length": i18next.t("validate.password"),
@@ -34,13 +36,13 @@ export const getJoinUserObject = async (lng: string) => {
 export const getLoginUserObject = async (lng: string) => {
     const i18next = await getI18next(lng)
     return Joi.object({
-        email: Joi.string().email().required().label(i18next.t("email"))
+        email: _.cloneDeep(email).required().label(i18next.t("email"))
             .messages({
                 "string.base": i18next.t("validate.string"),
                 "string.email": i18next.t("validate.email"),
                 "any.required": i18next.t("validate.required")
             }),
-        password: Joi.string().length(64).required()
+        password: _.cloneDeep(password).required()
             .label(i18next.t("password"))
             .messages({
                 "string.length": i18next.t("validate.password"),
@@ -52,7 +54,7 @@ export const getLoginUserObject = async (lng: string) => {
 export const getUserInfoObject = async (lng: string) => {
     const i18next = await getI18next(lng)
     return Joi.object({
-        email: Joi.string().email().required().label(i18next.t("email"))
+        email: _.cloneDeep(email).required().label(i18next.t("email"))
             .messages({
                 "string.base": i18next.t("validate.string"),
                 "string.email": i18next.t("validate.email"),

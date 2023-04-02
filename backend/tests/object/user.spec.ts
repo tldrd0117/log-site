@@ -39,13 +39,13 @@ describe("user object", function(){
         }
     })
     
-    it("Test for name language format (English/Korean)", async function(){
+    it("Test for name language format (English/Korean/Number)", async function(){
         const userObject = await getJoinUserObject("ko")
         await expect(userObject.validateAsync({
-            name: "123",
+            name: "###",
             password: "456",
             email:"789"
-        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 한글과 영어만 가능합니다')
+        }, validateOptions)).rejects.toHaveProperty('details[0].message', '이름은 한글, 영어, 숫자만 가능합니다')
     })
 
     it("Minimum name length test",async () => {

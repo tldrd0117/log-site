@@ -41,7 +41,7 @@ describe('post model test', () => {
         it("insert one post", async () => {
             expect(await Post.count()).toEqual(0)
             await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test",
@@ -56,7 +56,7 @@ describe('post model test', () => {
             expect(await Post.count()).toEqual(0)
             for (let i = 0; i < 10; ++i) {
                 await Post.create({
-                    authorId: user._id,
+                    author: user._id,
                     authorName: user.name,
                     summary: "it is not title",
                     text: "it is Test",
@@ -74,14 +74,14 @@ describe('post model test', () => {
     describe("check tree posts", function () {
         it("loopup posts tree", async () => {
             let onePost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test",
                 parent: null
             })
             let twoPost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test2",
@@ -89,7 +89,7 @@ describe('post model test', () => {
             })
 
             let threePost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test3",
@@ -97,7 +97,7 @@ describe('post model test', () => {
             })
 
             let fourPost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test4",
@@ -130,14 +130,14 @@ describe('post model test', () => {
 
         it("loopup posts tree with relatedPost", async () => {
             let onePost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test",
                 parent: null
             })
             let twoPost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test2",
@@ -146,7 +146,7 @@ describe('post model test', () => {
             })
 
             let threePost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test3",
@@ -154,7 +154,7 @@ describe('post model test', () => {
             })
 
             let fourPost = await Post.create({
-                authorId: user._id,
+                author: user._id,
                 authorName: user.name,
                 summary: "it is not title",
                 text: "it is Test4",

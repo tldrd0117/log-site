@@ -4,7 +4,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 interface IPost{
     _id: Types.ObjectId
-    authorId: Types.ObjectId
+    author: Types.ObjectId
     authorName: string;
     summary: string;
     text: string;
@@ -18,7 +18,7 @@ interface IPost{
 export {IPost}
 
 const postSchema = new Schema<IPost>({
-    authorId: {type: Schema.Types.ObjectId, required: true, ref:"User"},
+    author: {type: Schema.Types.ObjectId, required: true, ref:"User"},
     authorName: {type: String, required: true},
     summary: {type: String, required: true},
     text: {type: String, required: true},

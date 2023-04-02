@@ -113,4 +113,32 @@ describe("user service test", function(){
         expect(result.name).toBe("lsj")
         expect(result.email).toBe("root@naver.com")
     })
+
+    it("search User By Name",async () => {
+        
+        await userService.doJoin({
+            name: "lsj3",
+            email: "12323@comm.com",
+            password: sha256("1234").toString(),
+        })
+
+        await userService.doJoin({
+            name: "lsj2",
+            email: "1234444@comm.com",
+            password: sha256("1234").toString(),
+        })
+
+        await userService.doJoin({
+            name: "jjy",
+            email: "12344446@comm.com",
+            password: sha256("1234").toString(),
+        })
+
+        const result = await userService.searchUserByName("lsj")
+        expect(result).toHaveLength(3)
+        const result2 = await userService.searchUserByName("jjy")
+        expect(result2).toHaveLength(1)
+        const result3 = await userService.searchUserByName("lsj2")
+        expect(result3).toHaveLength(1)
+    })
 })

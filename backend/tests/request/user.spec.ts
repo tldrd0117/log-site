@@ -82,7 +82,7 @@ describe('user test', () => {
         expect(joinResponse.body.error[2].message).toBe(`비밀번호는 필수 값 입니다`)
 
         enc = await userEncFactory.makeEncObject({
-            name: "12",
+            name: "##",
             email: "admin@email",
             password: "12323",
         }, rsaPublicKey)
@@ -93,7 +93,7 @@ describe('user test', () => {
 
         expect(joinResponse.body.result).toBe("fail")
         expect(joinResponse.body.error).toHaveLength(4)
-        expect(joinResponse.body.error[0].message).toBe(`이름은 한글과 영어만 가능합니다`)
+        expect(joinResponse.body.error[0].message).toBe(`이름은 한글, 영어, 숫자만 가능합니다`)
         expect(joinResponse.body.error[1].message).toBe(`이름은 최소 3글자 이상만 가능합니다`)
         expect(joinResponse.body.error[2].message).toBe(`이메일 형식이 올바르지 않습니다`)
         expect(joinResponse.body.error[3].message).toBe(`이메일 또는 비밀번호가 잘못되었습니다`)
@@ -139,7 +139,7 @@ describe('user test', () => {
         expect(joinResponse.body.error[2].message).toBe(`Incorrect email or password`)
 
         enc = await userEncFactory.makeEncObject({
-            name: "12",
+            name: "##",
             email: "admin@email",
             password: "12323",
         }, rsaPublicKey)
@@ -150,7 +150,7 @@ describe('user test', () => {
 
         expect(joinResponse.body.result).toBe("fail")
         expect(joinResponse.body.error).toHaveLength(4)
-        expect(joinResponse.body.error[0].message).toBe(`Korean and English only`)
+        expect(joinResponse.body.error[0].message).toBe(`Korean, English or Number only`)
         expect(joinResponse.body.error[1].message).toBe(`Name must be at least 3 characters long`)
         expect(joinResponse.body.error[2].message).toBe(`Email format is incorrect`)
         expect(joinResponse.body.error[3].message).toBe(`Incorrect email or password`)
