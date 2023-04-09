@@ -39,6 +39,11 @@ const checkNameDuplicate =async (name: string) => {
     return !result
 }
 
+const checkExistUserById =async (userId: string) => {
+    const result = await User.findOne({_id: userId})
+    return !!result
+}
+
 const searchUserByName = (name: string) => {
     return User.find({ name: { $regex: name, $options: 'i' } })
 }
@@ -54,6 +59,7 @@ const userService = {
     getUserByEmail,
     checkEmailDuplicate,
     checkNameDuplicate,
+    checkExistUserById,
     searchUserByName
 }
 

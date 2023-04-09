@@ -33,6 +33,15 @@ export class MessageError extends Error {
     }
 }
 
+export class MessageCodeErrors extends Error{
+    errors: Array<Error>
+    constructor(errors: Array<Error>) {
+        const msgs = errors.map((e) => e.message).join(", ")
+        super(msgs);
+        this.errors = errors
+    }
+}
+
 export class MessageErrors extends Error {
     errors: Array<Error>
     constructor(errors: Array<Error>) {
@@ -64,15 +73,18 @@ export class ErrorHandler{
             ctx.status = 400
         }
         else if(error instanceof MessageCodeStatusError){
-            const errorMsg = getI18nextByCtx(ctx).t(error.code)
+            const errorMsg = getI18nextByCtx(ctx).t(error.message)
             ctx.body = response.makeErrorBodyByMessage(errorMsg)
             ctx.status = error.status
         }
         else if(error instanceof MessageStatusError){
-            ctx.body = response.makeErrorBodyByError(error)
+            const errorMsg = getI18nextByCtx(ctx).t(error.message)
+            ctx.body = response.makeErrorBodyByError(errorMsg)
             ctx.status = error.status
         }
         else if(error instanceof MessageErrors){
+            const i18next = getI18nextByCtx(ctx)
+            error.errors.forEach(v=>v.message = i18next.t(v.message))
             ctx.body = response.makeErrorBodyByErrors(error.errors)
             ctx.status = 400
         }

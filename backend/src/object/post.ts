@@ -3,6 +3,7 @@ import { getI18next } from "../utils/i18n";
 import _ from 'lodash'
 import { id, limit, offset, searchWord,
     userName, summary, text, order, idArray } from './common'
+import i18next from 'i18next';
 
 
 export const getPostListObject = async (lng: string) => {
@@ -22,7 +23,11 @@ export const getPostListObject = async (lng: string) => {
         offset: _.cloneDeep(offset).required()
             .label(i18next.t("offset"))
             .messages(messages),
-    }).label(i18next.t("postList"))
+    })
+    .label(i18next.t("postList"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
     
 }
 
@@ -36,6 +41,10 @@ export const getPostObject = async (lng: string) => {
                 "string.base": i18next.t("validate.string"),
                 "string.pattern.name": i18next.t("validate.pattern.type"),
             })
+    })
+    .label(i18next.t("post"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
     })
 }
 
@@ -60,6 +69,10 @@ export const getPostSearchListObject = async (lng: string) => {
             .label(i18next.t("offset")).messages(messages),
         word: _.cloneDeep(searchWord)
             .label(i18next.t("searchWord")).messages(messages)
+    })
+    .label(i18next.t("postSearchList"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
     })
     
 }
@@ -86,6 +99,22 @@ export const getPostCreateObject = async (lng: string) => {
         parent: _.cloneDeep(id).label(i18next.t("parent")).messages(messages),
         relatedPosts: _.cloneDeep(idArray).label(i18next.t("relatedPosts")).messages(messages),
     })
+    .label(i18next.t("postCreate"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
+}
+
+export const getPostCreateArrayObject = async (lng: string) => {
+    const i18next = await getI18next(lng)
+    return Joi.array().items(await getPostCreateObject(lng))
+        .min(1).max(1000)
+        .label(i18next.t("postCreateArray"))
+        .messages({
+            "array.base": i18next.t("validate.array.type"),
+            "array.max": i18next.t("validate.array.max"),
+            "array.min": i18next.t("validate.array.min")
+        })
 }
 
 export const getPostUpdateObject = async (lng: string) => {
@@ -107,6 +136,10 @@ export const getPostUpdateObject = async (lng: string) => {
         parent: _.cloneDeep(id).label(i18next.t("parent")).messages(messages),
         relatedPosts: _.cloneDeep(idArray).label(i18next.t("relatedPosts")).messages(messages),
     })
+    .label(i18next.t("postUpdate"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
 }
 
 export const getPostDelObject = async (lng: string) => {
@@ -119,5 +152,21 @@ export const getPostDelObject = async (lng: string) => {
             "string.pattern.name": i18next.t("validate.pattern.type"),
         })
     })
+    .label(i18next.t("postDel"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
     
+}
+
+export const getPostDelArrayObject = async (lng: string) => {
+    const i18next = await getI18next(lng)
+    return Joi.array().items(await getPostDelObject(lng))
+        .min(1).max(1000)
+        .label(i18next.t("postDelList"))
+        .messages({
+            "array.base": i18next.t("validate.array.type"),
+            "array.max": i18next.t("validate.array.max"),
+            "array.min": i18next.t("validate.array.min")
+        })
 }

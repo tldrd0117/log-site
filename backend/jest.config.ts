@@ -2,5 +2,5 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  verbose: false
+  verbose: false,
 };

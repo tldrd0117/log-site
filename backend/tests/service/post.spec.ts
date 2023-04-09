@@ -1,5 +1,6 @@
 import sha256 from "crypto-js/sha256";
 import { Types } from "mongoose";
+import { PostList } from "../../src/interfaces/post";
 import Post, { IPost } from "../../src/models/post.model";
 import User, { IUser } from "../../src/models/user.model";
 import postService from "../../src/services/post.service";
@@ -9,6 +10,7 @@ import { createTestHashDbName } from "../utils/testUtils";
 describe("Post Service Test", function () {
     let mongo: Mongo
     let user: IUser
+
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
@@ -104,6 +106,38 @@ describe("Post Service Test", function () {
         }
     })
 
+    it("Create many posts above the maximum", async () => {
+        const arr = []
+        for(let i = 0; i < 1000; ++i){
+            arr.push({
+                author: user._id,
+                authorName: user.name,
+                summary: "it is not title1",
+                text: "test",
+                parent: null
+            })
+        }
+        expect(arr).toHaveLength(1000)
+        const result = await postService.postMany(arr)
+        expect(result).toHaveLength(1000)
+        // 순서를 유지 하지 않기 때문에 정렬을 해줘야 한다.
+        result.sort((a, b) => a.order - b.order)
+        for(let i = 0; i < 1000; ++i){
+            expect(result[i]).toMatchObject({
+                _id: expect.any(Types.ObjectId),
+                author: user._id,
+                authorName: user.name,
+                summary: "it is not title1",
+                text: "test",
+                createAt: expect.any(Date),
+                updateAt: expect.any(Date),
+                order: i+1,
+                relatedPosts: [],
+                parent: null
+            })
+        }
+    })
+
     it("list post", async () => {
         for(let i = 0; i < 100; ++i){
             await postService.post({
@@ -115,12 +149,12 @@ describe("Post Service Test", function () {
             })
         }
 
-        let postList
+        let postList: PostList
         for(let p = 0; p < 10; ++p){
             postList = await postService.getList(10, p*10)
-            expect(postList).toHaveLength(10)
+            expect(postList.list).toHaveLength(10)
             for(let i = 0; i < 10; ++i){
-                expect(postList[i]).toMatchObject({
+                expect(postList.list[i]).toMatchObject({
                     _id: expect.any(Types.ObjectId),
                     author: {
                         _id: user._id,
@@ -137,6 +171,7 @@ describe("Post Service Test", function () {
                 })
             }
         }
+        expect(postList.total).toBe(100)
     })
 
     it("delete post", async () => {
@@ -241,7 +276,7 @@ describe("Post Service Test", function () {
         await expect(postService.getPostTotalCount()).resolves.toBe(10)
     })
 
-    it("searchList", async () => {
+    it("search list", async () => {
         const arr = []
         for(let i = 0; i < 5; ++i){
             arr.push({
@@ -264,18 +299,24 @@ describe("Post Service Test", function () {
         expect(arr).toHaveLength(10)
         const result = await postService.postMany(arr)
         expect(result).toHaveLength(10)
-        const search1  = await postService.searchList(10, 0, "lsj")
+        const search1: PostList  = await postService.searchList(10, 0, "lsj")
         console.log(search1)
-        expect(search1).toHaveLength(10)
+        expect(search1.list).toHaveLength(10)
+        expect(search1.total).toBe(10)
         const search2  = await postService.searchList(10, 0, "abcde")
-        expect(search2).toHaveLength(5)
+        expect(search2.list).toHaveLength(5)
+        expect(search2.total).toBe(5)
         const search3  = await postService.searchList(10, 0, "fghijk")
-        expect(search3).toHaveLength(5)
+        expect(search3.list).toHaveLength(5)
+        expect(search3.total).toBe(5)
         const search4  = await postService.searchList(10, 0, "2user2")
-        expect(search4).toHaveLength(0)
+        expect(search4.list).toHaveLength(0)
+        expect(search4.total).toBe(0)
         const search5  = await postService.searchList(10, 0, "lmopqrs")
-        expect(search5).toHaveLength(5)
+        expect(search5.list).toHaveLength(5)
+        expect(search5.total).toBe(5)
         const search6  = await postService.searchList(10, 0, "touvwxyz")
-        expect(search6).toHaveLength(5)
+        expect(search6.list).toHaveLength(5)
+        expect(search6.total).toBe(5)
     })
 })

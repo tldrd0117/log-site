@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.d.ts",
   "scripts": {
-    "test": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --config ./jest.config.ts",
+    "test": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --config ./jest.config.ts --runInBand",
     "test:clear": "jest --clearCache",
-    "test:coverage": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --coverage --config ./jest.config.ts",
+    "test:coverage": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --coverage --config ./jest.config.ts --runInBand",
     "tsc:init": "tsc --init",
     "start:dev": "nodemon --watch 'src/**/*' -e ts --exec ts-node ./src/index.ts",
     "makeKey": "node secret/makeRSAKey.js"

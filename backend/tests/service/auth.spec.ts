@@ -3,7 +3,7 @@ import authService from '../../src/services/auth.service';
 import {PublicKey} from '../../src/interfaces/auth'
 import jose, {CompactEncrypt, compactDecrypt, importJWK, JSONWebKeySet, KeyLike, JWK} from 'jose'
 import exp from 'constants';
-import { userEncFactory } from '../utils/userUtils';
+import { encFactory } from '../utils/encUtils';
 import sha256 from 'crypto-js/sha256';
 
 describe('auth service test', () => {
@@ -17,7 +17,7 @@ describe('auth service test', () => {
         // Encrypting plaintext using a public key
         const email = "admin@nnn.com"
         const password = sha256('1234').toString()
-        const jwt = await userEncFactory.makeEncObject({email, password}, rsaPublicKey)
+        const jwt = await encFactory.makeEncObject({email, password}, rsaPublicKey)
         expect(jwt).toBeDefined()
         const result = await authService.decryptJSON(jwt)
         expect(result.email).toEqual(email)

@@ -1,12 +1,14 @@
 {
   "hello": "hello",
   "user": {
-    "error": {
-      "duplcated": {}
+    "name": {
+        "duplicated": "Name is duplicated"
     },
-    "validate": {
-      "name": {}
-    }
+    "email": {
+        "duplicated": "Email is duplicated"
+    },
+    "notFound": "User not found",
+    "diff": "You can only add posts from the same user"
   },
   "validate": {
     "string": "{#label} must be a string.",
@@ -32,6 +34,14 @@
       "max": "{#label} must be less than or equal to {#limit}",
       "type": "{#label} must be a number",
       "index": "{#label} must be integers greater than 0"
+    },
+    "array": {
+        "min": "{#label} must contain at least {#limit} items",
+        "max": "{#label} must contain no more than {#limit} items",
+        "type": "{#label} must be an array"
+    },
+    "object": {
+        "type": "{#label} must be an object"
     }
   },
   "name": "Name",
@@ -48,5 +58,15 @@
   "text": "\bcontents",
   "parent": "parent post",
   "relatedPosts": "related posts",
-  "order": "order"
+  "order": "order",
+  "joinUser": "join user",
+  "loginUser": "login user",
+  "userinfo": "user info",
+  "post": "post",
+  "postSearchList": "post search list",
+  "postCreate": "post create",
+  "postCreateArray": "post create array",
+  "postUpdate": "post update",
+  "postDel": "post delete",
+  "postDelList": "post del list"
 }

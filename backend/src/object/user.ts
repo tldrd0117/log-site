@@ -31,6 +31,10 @@ export const getJoinUserObject = async (lng: string) => {
                 "any.required": i18next.t("validate.required2")
             })
     })
+    .label(i18next.t("joinUser"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
 }
 
 export const getLoginUserObject = async (lng: string) => {
@@ -49,6 +53,10 @@ export const getLoginUserObject = async (lng: string) => {
                 "any.required": i18next.t("validate.required2")
             })
     })
+    .label(i18next.t("loginUser"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
 }
 
 export const getUserInfoObject = async (lng: string) => {
@@ -60,5 +68,9 @@ export const getUserInfoObject = async (lng: string) => {
                 "string.email": i18next.t("validate.email"),
                 "any.required": i18next.t("validate.required")
             })
+    })
+    .label(i18next.t("userinfo"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
     })
 }

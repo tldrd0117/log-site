@@ -1,12 +1,14 @@
 {
   "hello": "안녕",
   "user": {
-    "error": {
-      "duplcated": {}
+    "name": {
+        "duplicated": "이름이 중복되었습니다"
     },
-    "validate": {
-      "name": {}
-    }
+    "email": {
+        "duplicated": "이메일이 중복되었습니다"
+    },
+    "notFound": "유저를 찾을 수 없습니다",
+    "diff": "동일한 유저의 글만 추가할 수 있습니다"
   },
   "validate": {
     "string": "{#label}은 문자열만 가능합니다.",
@@ -32,6 +34,14 @@
       "integer": "{#label}은 정수만 가능합니다",
       "type": "{#label}은 숫자만 가능합니다",
       "index": "{#label}은 0이상의 정수만 가능합니다"
+    },
+    "array": {
+        "min": "{#label}은 최소 {#limit}개 이상만 가능합니다",
+        "max": "{#label}은 최대 {#limit}개 이하만 가능합니다",
+        "type": "{#label}은 배열만 가능합니다"
+    },
+    "object": {
+        "type": "{#label}은 객체만 가능합니다"
     }
   },
   "name": "이름",
@@ -48,5 +58,15 @@
   "text": "내용",
   "parent": "부모 게시물",
   "relatedPosts": "관련된 게시물",
-  "order": "순서"
+  "order": "순서",
+  "joinUser": "가입 유저",
+  "loginUser": "로그인 유저",
+  "userinfo": "유저 정보",
+  "post": "게시물",
+  "postSearchList": "게시물 검색 리스트",
+  "postCreate": "게시물 작성",
+  "postCreateArray": "게시물 작성 리스트",
+  "postUpdate": "게시물 갱신",
+  "postDel": "게시물 삭제",
+  "postDelList": "게시물 삭제 리스트"
 }

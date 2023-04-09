@@ -1,6 +1,6 @@
 import jose, {EncryptJWT, KeyLike, CompactEncrypt} from 'jose'
 
-class UserEncFactory{
+class EncFactory{
     constructor(){
 
     }
@@ -14,8 +14,8 @@ class UserEncFactory{
     }
 }
 
-const userEncFactory = new UserEncFactory()
+const encFactory = new EncFactory()
 
 export {
-    userEncFactory
+    encFactory
 }

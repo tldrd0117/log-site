@@ -14,6 +14,7 @@ const validateOptions = {
 describe("user object", function(){
     let mongo: Mongo
     let user: IUser
+    
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();

@@ -2,7 +2,7 @@ import getApp from '../../src/app'
 import supertest, { SuperTest, Test, Response, Request } from 'supertest'
 import { importJWK, JWK, KeyLike } from 'jose';
 import authService from '../../src/services/auth.service';
-import { userEncFactory } from '../utils/userUtils';
+import { encFactory } from '../utils/encUtils';
 import sha256 from 'crypto-js/sha256';
 
 describe('auth controller test', () => {
@@ -35,7 +35,7 @@ describe('auth controller test', () => {
     });
 
     it('request verify', async () => {
-        const enc = await userEncFactory.makeEncObject({}, rsaPublicKey)
+        const enc = await encFactory.makeEncObject({}, rsaPublicKey)
         let token = await authService.getTokenByExp({}, "1d")
         let verifyResponse: Response = await request.post('/auth/verify')
             .set('Authorization', `Bearer ${token}`)

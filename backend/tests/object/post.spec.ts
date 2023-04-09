@@ -1,5 +1,5 @@
 import { getPostCreateObject, getPostDelObject, getPostUpdateObject,
-    getPostObject, getPostListObject, getPostSearchListObject } from '../../src/object/post'
+    getPostObject, getPostListObject, getPostSearchListObject, getPostCreateArrayObject, getPostDelArrayObject } from '../../src/object/post'
 import sha256 from 'crypto-js/sha256'
 import createMongo, { Mongo } from '../../src/utils/mongo'
 import Post, { IPost } from '../../src/models/post.model'
@@ -17,6 +17,7 @@ describe("post object", function(){
     let mongo: Mongo
     let user: IUser
     let post: IPost
+
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
@@ -408,6 +409,90 @@ describe("post object", function(){
         })
     })
 
+    it("Testing the validation of PostCreateArrayObject Successfully", async () => {
+        const postCreateArrayObject = await getPostCreateArrayObject("ko")
+        await expect(postCreateArrayObject.validateAsync([
+            {
+                author: user._id.toString(),
+                authorName: user.name,
+                summary:"success",
+                text: "go home"
+            }
+        ], validateOptions)).resolves
+        .toMatchObject([{
+            author: user._id.toString(),
+            authorName: user.name,
+            summary:"success",
+            text: "go home"
+        }])
+    })
+
+    it("Testing the validation of PostCreateArrayObject",async () => {
+        const postCreateArrayObject = await getPostCreateArrayObject("ko")
+        await expect(postCreateArrayObject.validateAsync({
+        }, validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 작성 리스트은 배열만 가능합니다',
+                },
+            ]
+        })
+    })
+
+    it("Testing the validation of PostCreateArrayObject items",async () => {
+        const postCreateObject = await getPostCreateArrayObject("ko")
+        await expect(postCreateObject.validateAsync([{
+            author: user._id.toString()+"1",
+            authorName: "###$$$",
+            summary:"success",
+            text: "go home"
+        }], validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '작성자은 올바른 형식이 아닙니다',
+                },
+                {
+                    message: '작성자 이름은 올바른 형식이 아닙니다',
+                }
+            ]
+        })
+    })
+
+    it("Testing the validation of PostCreateArrayObject items above Maximum",async () => {
+        const postCreateObject = await getPostCreateArrayObject("ko")
+        const arr = []
+        for(let i = 0; i < 1001; ++i){
+            arr.push({
+                author: user._id.toString(),
+                authorName: user.name,
+                summary:"success",
+                text: "go home"
+            })
+        }
+        await expect(postCreateObject.validateAsync(arr, validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 작성 리스트은 최대 1000개 이하만 가능합니다',
+                },
+            ]
+        })
+    })
+
+    it("Testing the validation of PostCreateArrayObject items above Minimum",async () => {
+        const postCreateObject = await getPostCreateArrayObject("ko")
+        await expect(postCreateObject.validateAsync([], validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 작성 리스트은 최소 1개 이상만 가능합니다',
+                },
+            ]
+        })
+    })
+
     it("Tests the successful validation of post update objects.", async () => {
         const postObject = await getPostUpdateObject("ko")
         await expect(postObject.validateAsync({
@@ -630,6 +715,75 @@ describe("post object", function(){
                 {
                     message: '게시물 아이디은 올바른 형식이 아닙니다',
                 }
+            ]
+        })
+    })
+
+    it("Testing the validation of PostDelArrayObject Successfully", async () => {
+        const postDelArrayObject = await getPostDelArrayObject("ko")
+        await expect(postDelArrayObject.validateAsync([
+            {
+                _id: post._id.toString() 
+            }
+        ], validateOptions)).resolves
+        .toMatchObject([{
+            _id: post._id.toString() 
+        }])
+    })
+
+    it("Testing the validation of PostDelArrayObject",async () => {
+        const postDelArrayObject = await getPostDelArrayObject("ko")
+        await expect(postDelArrayObject.validateAsync({
+        }, validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 삭제 리스트은 배열만 가능합니다',
+                },
+            ]
+        })
+    })
+
+    it("Testing the validation of PostDelArrayObject items",async () => {
+        const postDelArrayObject = await getPostDelArrayObject("ko")
+        await expect(postDelArrayObject.validateAsync([{
+            _id: post._id.toString() + "1"
+        }], validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 아이디은 올바른 형식이 아닙니다',
+                },
+            ]
+        })
+    })
+
+    it("Testing the validation of PostDelArrayObject items above Maximum",async () => {
+        const postDelArrayObject = await getPostDelArrayObject("ko")
+        const arr = []
+        for(let i = 0; i < 1001; ++i){
+            arr.push({
+                _id: post._id.toString()
+            })
+        }
+        await expect(postDelArrayObject.validateAsync(arr, validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 삭제 리스트은 최대 1000개 이하만 가능합니다',
+                },
+            ]
+        })
+    })
+
+    it("Testing the validation of PostDelArrayObject items above Minimum",async () => {
+        const postDelArrayObject = await getPostDelArrayObject("ko")
+        await expect(postDelArrayObject.validateAsync([], validateOptions)).rejects
+        .toMatchObject({
+            details: [
+                {
+                    message: '게시물 삭제 리스트은 최소 1개 이상만 가능합니다',
+                },
             ]
         })
     })
