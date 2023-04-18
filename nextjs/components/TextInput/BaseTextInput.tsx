@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler, KeyboardEventHandler } from 'react'
 
-interface BaseTextFieldProps{
+interface BaseInputProps{
+    ref?: React.RefObject<HTMLInputElement>
     value?: string
     placeholder?: string
     disabled?: boolean
@@ -8,13 +9,16 @@ interface BaseTextFieldProps{
     onChange?: ChangeEventHandler<HTMLInputElement>
     onKeyDown?: KeyboardEventHandler<HTMLInputElement>
     onKeyUp?: KeyboardEventHandler<HTMLInputElement>
+    onFocus?: React.FocusEventHandler<HTMLInputElement>
+    onBlur?: React.FocusEventHandler<HTMLInputElement>
 }
 
-export const BaseTextInput = (props: BaseTextFieldProps) => {
-    const {value, className, placeholder, disabled, onChange, onKeyDown, onKeyUp} = props
+export const BaseTextInput = (props: BaseInputProps) => {
+    const {ref, value, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur} = props
     return <>
         <input
-            type='text'
+            type="text"
+            ref={ref}
             className={className}
             placeholder={placeholder}
             value={value}
@@ -22,6 +26,8 @@ export const BaseTextInput = (props: BaseTextFieldProps) => {
             onChange={onChange}
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     </>
 }
