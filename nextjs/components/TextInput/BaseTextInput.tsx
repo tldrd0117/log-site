@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, KeyboardEventHandler } from 'react'
 
-interface BaseInputProps{
+export interface BaseInputProps{
     ref?: React.RefObject<HTMLInputElement>
     value?: string
     placeholder?: string
