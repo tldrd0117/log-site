@@ -4,7 +4,7 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { TextInput } from './TextInput';
-import searchIcon from '../../public/images/search_FILL0_wght400_GRAD0_opsz24.svg'
+import { SearchIcon } from '../Icon/SearchIcon';
 
 const meta: Meta<typeof TextInput> = {
     title: "TextInput/TextInput",
@@ -24,12 +24,13 @@ export const Normal: Story = {
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
-        userEvent.type(canvas.getByRole('textbox'), "test")
+        const element = canvas.getByPlaceholderText("NormalBaseInput")
+        userEvent.type(element, "test")
         expect(args.onChange).toBeCalledTimes(4)
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
-        expect(canvas.getByPlaceholderText("NormalBaseInput")).toBeInTheDocument()
-        userEvent.type(canvas.getByRole('textbox'), "{backspace}".repeat(4))
+        expect(element).toBeInTheDocument()
+        userEvent.type(element, "{backspace}".repeat(4))
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
 
@@ -44,11 +45,12 @@ export const Disabled: Story = {
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
-        userEvent.type(canvas.getByRole('textbox'), "test")
+        const element = canvas.getByPlaceholderText("DisabledBaseInput")
+        userEvent.type(element, "test")
         expect(args.onChange).toBeCalledTimes(0)
         expect(args.onKeyDown).toBeCalledTimes(0)
         expect(args.onKeyUp).toBeCalledTimes(0)
-        expect(canvas.getByPlaceholderText("DisabledBaseInput")).toBeInTheDocument()
+        expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(0)
     }
@@ -57,16 +59,17 @@ export const Disabled: Story = {
 export const WithIcon: Story = {
     args: {
         placeholder: "WithIconBaseInput",
-        icon: searchIcon,
+        icon: <SearchIcon/>,
         ref: React.createRef()
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
-        userEvent.type(canvas.getByRole('textbox'), "test")
+        const element = canvas.getByPlaceholderText("WithIconBaseInput")
+        userEvent.type(element, "test")
         expect(args.onChange).toBeCalledTimes(4)
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
-        expect(canvas.getByPlaceholderText("WithIconBaseInput")).toBeInTheDocument()
+        expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
     }
@@ -80,14 +83,15 @@ export const WithCancelButton: Story = {
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("WithCancelButtonBaseInput")
         userEvent.type(canvas.getByRole('textbox'), "test")
         expect(args.onChange).toBeCalledTimes(4)
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
-        expect(canvas.getByPlaceholderText("WithCancelButtonBaseInput")).toBeInTheDocument()
+        expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
-        canvas.getByAltText("closeIcon").click();
+        element.click();
         expect(args.onCancel).toBeCalledTimes(1);
     }
 }
@@ -96,20 +100,21 @@ export const WithCancelButtonAndIcon: Story = {
     args: {
         placeholder: "WithCancelButtonAndIconBaseInput",
         cancelButton: true,
-        icon: searchIcon,
+        icon: <SearchIcon/>,
         ref: React.createRef()
     },
     
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("WithCancelButtonAndIconBaseInput")
         userEvent.type(canvas.getByRole('textbox'), "test")
         expect(args.onChange).toBeCalledTimes(4)
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
-        expect(canvas.getByPlaceholderText("WithCancelButtonAndIconBaseInput")).toBeInTheDocument()
+        expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
-        canvas.getByAltText("closeIcon").click();
+        element.click();
         expect(args.onCancel).toBeCalledTimes(1);
     }
 }

@@ -1,14 +1,14 @@
 import React, { ChangeEventHandler, KeyboardEventHandler } from 'react'
 import { BaseInput, BaseInputProps } from '../Input/BaseInput'
 
-export interface BaseTextInputProps extends BaseInputProps{
+export interface BasePasswordInputProps extends BaseInputProps{
 }
 
-export const BaseTextInput = (props: BaseTextInputProps) => {
+export const BasePasswordInput = (props: BasePasswordInputProps) => {
     const {ref, value, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur} = props
     return <>
         <BaseInput
-            type="text"
+            type="password"
             ref={ref}
             className={className}
             placeholder={placeholder}
