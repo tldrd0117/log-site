@@ -3,11 +3,15 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { Button } from './Button';
+import { BorderBox } from '../Box/BorderBox';
 
 const meta: Meta<typeof Button> = {
     title: "Button/Primary",
     component: Button,
     parameters: { actions: { argTypesRegex: '^on.*' } },
+    render: (args) => <BorderBox>
+        <Button {...args}/>
+    </BorderBox>,
 };
 
 export default meta;

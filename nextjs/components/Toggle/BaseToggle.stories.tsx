@@ -4,10 +4,17 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { BaseToggle } from './BaseToggle';
+import { BorderBox } from '../Box/BorderBox';
 
 const meta: Meta<typeof BaseToggle> = {
     title: "Toggle/Base",
     component: BaseToggle,
+    render: (args) => <BorderBox>
+        <BaseToggle {...args}/>
+    </BorderBox>,
+    args: {
+        children: "BaseToggle"
+    }
 };
 
 export default meta;

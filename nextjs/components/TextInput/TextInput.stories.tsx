@@ -91,7 +91,7 @@ export const WithCancelButton: Story = {
         expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
-        element.click();
+        canvas.getByRole("button").click();
         expect(args.onCancel).toBeCalledTimes(1);
     }
 }
@@ -114,7 +114,7 @@ export const WithCancelButtonAndIcon: Story = {
         expect(element).toBeInTheDocument()
         args.ref?.current?.focus()
         expect(args.onFocus).toBeCalledTimes(1)
-        element.click();
+        canvas.getByRole("button").click();
         expect(args.onCancel).toBeCalledTimes(1);
     }
 }

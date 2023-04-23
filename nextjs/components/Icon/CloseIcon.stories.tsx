@@ -24,13 +24,7 @@ export const Normal: Story = {
     args: {
     },
     play: async ({args, canvasElement}) => {
-
-    }
-}
-
-export const Disabled: Story = {
-    args: {
-    },
-    play: async ({args, canvasElement}) => {
+        const canvas = within(canvasElement);
+        expect(canvas.getByTestId('close-icon')).toBeInTheDocument();
     }
 }

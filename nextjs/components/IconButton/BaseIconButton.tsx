@@ -4,15 +4,16 @@ import clsx from "clsx";
 
 export interface BaseIconButtonProps{
     icon: IconElement
-    className: string
+    className?: string
+    disabled?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
 export const BaseIconButton = (props: BaseIconButtonProps) => {
-    const {className, onClick, icon} = props
+    const {className, onClick, icon, disabled} = props
     return (
         <>
-            <button  className={clsx([className])}>
+            <button onClick={onClick} className={clsx(["disabled:opacity-50",className])} disabled={disabled}>
                 {icon}
             </button>
         </>

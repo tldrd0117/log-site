@@ -3,10 +3,14 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { BaseButton } from './BaseButton';
+import { BorderBox } from '../Box/BorderBox';
 
 const meta: Meta<typeof BaseButton> = {
     title: "Button/Base",
     component: BaseButton,
+    render: (args) => <BorderBox>
+        <BaseButton {...args}/>
+    </BorderBox>,
 };
 
 export default meta;

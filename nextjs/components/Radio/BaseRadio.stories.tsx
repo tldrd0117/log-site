@@ -4,10 +4,17 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { BaseRadio } from './BaseRadio';
+import { BorderBox } from '../Box/BorderBox';
 
 const meta: Meta<typeof BaseRadio> = {
     title: "Radio/Base",
     component: BaseRadio,
+    render: (args) => <BorderBox>
+        <BaseRadio {...args}/>
+    </BorderBox>,
+    args: {
+        children: "BaseRadio"
+    }
 };
 
 export default meta;

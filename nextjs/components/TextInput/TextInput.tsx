@@ -5,11 +5,12 @@ import closeIcon from '../../public/images/close_FILL0_wght400_GRAD0_opsz24.svg'
 import clsx from 'clsx'
 import { IconElement } from '../Icon/BaseIcon'
 import { CancelIcon } from '../Icon/CancelIcon'
+import { IconButton } from '../IconButton/IconButton'
 
 export interface TextInputProps extends BaseTextInputProps{
     icon?: IconElement
     cancelButton?: boolean
-    onCancel?: React.MouseEventHandler<HTMLImageElement>
+    onCancel?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export const TextInput = (props: TextInputProps) => {
@@ -33,7 +34,12 @@ export const TextInput = (props: TextInputProps) => {
                     onBlur={onBlur}
                     />
                 {
-                    cancelButton && <span onClick={onCancel} className='absolute right-0 m-2'><CancelIcon/></span>
+                    cancelButton && 
+                    <IconButton
+                        icon={<CancelIcon />}
+                        className='absolute right-0 m-2'
+                        onClick={onCancel}
+                    />
                 }
             </div>
         </div>

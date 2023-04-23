@@ -4,10 +4,17 @@ import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
 import { CheckBox } from './CheckBox';
+import { BorderBox } from '../Box/BorderBox';
 
 const meta: Meta<typeof CheckBox> = {
     title: "CheckBox/CheckBox",
     component: CheckBox,
+    render: (args) => <BorderBox>
+            <CheckBox {...args}/>
+        </BorderBox>,
+    args: {
+        children: "CheckBox"
+    }
 };
 
 export default meta;
