@@ -17,7 +17,7 @@ export const AppBar = (props: AppBarProps) => {
     return <>
         <BorderBox className={clsx(["p-4", "flex", "justify-between"])}>
             <div className="place-self-center">
-                <Text h5>{title}</Text>
+                <Text h5 className="italic font-bold">{title}</Text>
             </div>
             <div className="place-self-center">
                 <PrimaryButton className={"ml-2"} label="로그인"/>

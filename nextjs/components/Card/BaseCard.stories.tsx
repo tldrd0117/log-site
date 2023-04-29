@@ -3,13 +3,15 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
-import { BorderBox } from './BorderBox';
+import { BaseCard } from './BaseCard';
 import { Button } from '../Button/Button';
+import { BorderBox } from '../Box/BorderBox';
+import { CardBox } from '../Box/CardBox';
 
 
-const meta: Meta<typeof BorderBox> = {
-    title: "Box/Border",
-    component: BorderBox,
+const meta: Meta<typeof BaseCard> = {
+    title: "Card/Base",
+    component: BaseCard,
     args: {
         children: <Button label='inLayoutButton'/>
     }
@@ -17,7 +19,7 @@ const meta: Meta<typeof BorderBox> = {
 
 export default meta;
 
-type Story = StoryObj<typeof BorderBox>;
+type Story = StoryObj<typeof BaseCard>;
 
 export const Normal: Story = {
     args: {
@@ -28,12 +30,13 @@ export const Normal: Story = {
     }
 }
 
-export const Hide: Story = {
+export const Border: Story = {
     args: {
-        isHide: true
+        boxType: BorderBox
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
-        expect(canvas.queryAllByRole('button')).toHaveLength(0)
+        expect(canvas.queryByRole('button')).toBeInTheDocument()
     }
 }
+

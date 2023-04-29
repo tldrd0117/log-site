@@ -3,13 +3,17 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
-import { BorderBox } from './BorderBox';
+import { CardBox } from './CardBox';
 import { Button } from '../Button/Button';
+import { BorderBox } from './BorderBox';
 
 
-const meta: Meta<typeof BorderBox> = {
-    title: "Box/Border",
-    component: BorderBox,
+const meta: Meta<typeof CardBox> = {
+    title: "Box/Card",
+    component: CardBox,
+    render: (args) => <BorderBox>
+            <CardBox {...args}/>
+        </BorderBox>,
     args: {
         children: <Button label='inLayoutButton'/>
     }
@@ -17,7 +21,7 @@ const meta: Meta<typeof BorderBox> = {
 
 export default meta;
 
-type Story = StoryObj<typeof BorderBox>;
+type Story = StoryObj<typeof CardBox>;
 
 export const Normal: Story = {
     args: {
