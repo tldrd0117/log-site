@@ -11,7 +11,7 @@ import { BorderBox } from './BorderBox';
 const meta: Meta<typeof CardBox> = {
     title: "Box/Card",
     component: CardBox,
-    render: (args) => <BorderBox>
+    render: (args) => <BorderBox className='p-4'>
             <CardBox {...args}/>
         </BorderBox>,
     args: {
@@ -34,7 +34,7 @@ export const Normal: Story = {
 
 export const Hide: Story = {
     args: {
-        isHide: true
+        hide: true
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);

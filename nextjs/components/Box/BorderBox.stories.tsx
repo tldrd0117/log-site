@@ -30,7 +30,7 @@ export const Normal: Story = {
 
 export const Hide: Story = {
     args: {
-        isHide: true
+        hide: true
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);

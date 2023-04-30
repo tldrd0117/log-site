@@ -1,11 +1,13 @@
 import React from "react";
-import { BaseCard, BaseCardProps } from "./BaseCard";
 import { Text } from "../Text/Text";
 import clsx from "clsx";
 import { Image } from "../Image/Image";
 import { ImageProps } from "next/image";
+import { BaseContainer, BaseContainerProps } from "@/containers/container/BaseContainer";
+import { Container, ContainerProps } from "@/containers/container/Container";
+import { CardBox } from "../Box/CardBox";
 
-export interface CardProps extends BaseCardProps{
+export interface CardContentsProps{
     title?: string
     subTitle?: string
     summary?: string
@@ -13,13 +15,17 @@ export interface CardProps extends BaseCardProps{
     size?: 'sm' | 'md' | 'lg'
 }
 
+export interface CardProps extends Omit<ContainerProps, "children">, CardContentsProps{
+}
+
 export const Card = (props: CardProps) => {
-    const {boxType, children, className, title, subTitle, summary, image} = props
-    let {size} = props, contents, sizeClass;
+    const {className, title, subTitle, summary, image} = props
+    const containerProps: Omit<ContainerProps, "children"> = props
+    let {size} = props
     if(!size) size = "md"
     switch(size){
         case "sm":
-            return <BaseCard {...{boxType, children}}
+            return <Container {...containerProps} tagType={CardBox}
                     className={clsx(["w-64", "p-0", className])}
                     >
                     {
@@ -33,9 +39,9 @@ export const Card = (props: CardProps) => {
                         <Text p className="pb-2 truncate">{subTitle}</Text>
                         <Text span className="line-clamp-5">{summary}</Text>
                     </div>
-                </BaseCard>
+                </Container>
         case "md":
-            return <BaseCard {...{boxType, children}}
+            return <Container {...containerProps} tagType={CardBox}
                     className={clsx(["w-72", "p-0", className])}
                     >
                     {
@@ -49,9 +55,9 @@ export const Card = (props: CardProps) => {
                         <Text h6 className="pb-3 truncate">{subTitle}</Text>
                         <Text p className="line-clamp-5">{summary}</Text>
                     </div>
-                </BaseCard>
+                </Container>
         case "lg":
-            return <BaseCard {...{boxType, children}}
+            return <Container {...containerProps} tagType={CardBox}
                     className={clsx(["w-96", "p-0", className])}
                     >
                     {
@@ -65,6 +71,6 @@ export const Card = (props: CardProps) => {
                         <Text h6 className="pb-4 truncate">{subTitle}</Text>
                         <Text p className="line-clamp-5">{summary}</Text>
                     </div>
-                </BaseCard>
+                </Container>
     }
 };

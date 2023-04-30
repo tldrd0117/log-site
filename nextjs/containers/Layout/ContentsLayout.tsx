@@ -4,12 +4,13 @@ import React from 'react'
 
 export interface ContentsLayoutProps{
     children?: React.ReactNode
+    className?: string
 }
 
 export const ContentsLayout = (props: ContentsLayoutProps) => {
-    const {children} = props
+    const {children, className} = props
     return (
-        <BorderBox className={clsx(['p-8', 'mt-4'])}>
+        <BorderBox className={clsx(['p-8', className])}>
             {children}
         </BorderBox>
     )

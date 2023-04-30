@@ -12,7 +12,7 @@ export const Post = (props: PostProps) => {
     return (
         <>
             <AppBar title='blog' login account join/>
-            <ContentsLayout>
+            <ContentsLayout className='mt-4'>
                 
             </ContentsLayout>
         </>

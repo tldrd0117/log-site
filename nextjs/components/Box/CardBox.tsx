@@ -1,15 +1,14 @@
 import React from "react";
-import { BaseBox, BaseBoxProps } from "./BaseBox";
 import clsx from "clsx";
 import styles from './BorderBox.module.scss';
+import { BaseContainer, BaseContainerProps } from "@/containers/container/BaseContainer";
 
 
-interface CardBoxProps extends BaseBoxProps{
+interface CardBoxProps extends BaseContainerProps{
 }
 
 export const CardBox = (props: CardBoxProps) => {
-    const {children, isHide, className} = props
-    return <BaseBox isHide={isHide} className={clsx(["bg-slate-200","shadow-lg","rounded-lg","p-4",className])}>
-        {children}
-    </BaseBox>
+    const {className} = props
+    return <BaseContainer {...props} className={clsx(["bg-slate-200","shadow-lg","rounded-lg",className])}>
+    </BaseContainer>
 };

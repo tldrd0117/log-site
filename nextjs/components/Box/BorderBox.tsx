@@ -1,17 +1,16 @@
 import React from "react";
-import { BaseBox, BaseBoxProps } from "./BaseBox";
 import clsx from "clsx";
 import styles from './BorderBox.module.scss';
+import { BaseContainer, BaseContainerProps } from "@/containers/container/BaseContainer";
 
 
-interface BorderBoxProps extends BaseBoxProps{
+interface BorderBoxProps extends BaseContainerProps{
 }
 
 export const BorderBox = (props: BorderBoxProps) => {
-    const {children, isHide, className} = props
-    return <BaseBox isHide={isHide} className={clsx(["border-solid", "border-transparent",
+    const {className} = props
+    return <BaseContainer {...props} className={clsx(["border-solid", "border-transparent",
     "border-4","rounded", styles.bgClipGradientBorder, "bg-origin-border", "shadow-lg", "bg-gradient-border from-indigo-500 to-fuchsia-500"
-    , "p-4", className])}>
-        {children}
-    </BaseBox>
+    , className])}>
+    </BaseContainer>
 };

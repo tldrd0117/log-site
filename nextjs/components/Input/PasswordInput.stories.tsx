@@ -3,19 +3,20 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
-import { TextInput } from './TextInput';
+import { PasswordInput } from './PasswordInput';
 import { SearchIcon } from '../Icon/SearchIcon';
 
-const meta: Meta<typeof TextInput> = {
-    title: "TextInput/TextInput",
-    component: TextInput,
+const meta: Meta<typeof PasswordInput> = {
+    title: "Input/Password",
+    component: PasswordInput,
     args: {
+        className: "w-80",
     }
 };
 
 export default meta;
 
-type Story = StoryObj<typeof TextInput>;
+type Story = StoryObj<typeof PasswordInput>;
 
 export const Normal: Story = {
     args: {

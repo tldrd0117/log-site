@@ -3,13 +3,13 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 
-import { Box } from './Box';
-import { Button } from '../Button/Button';
+import { CompContainer } from './CompContainer';
+import { Button } from '@/components/Button/Button';
 
 
-const meta: Meta<typeof Box> = {
-    title: "Box/Box",
-    component: Box,
+const meta: Meta<typeof CompContainer> = {
+    title: "Container/Comp",
+    component: CompContainer,
     args: {
         children: <Button label='inLayoutButton'/>
     }
@@ -17,7 +17,7 @@ const meta: Meta<typeof Box> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Box>;
+type Story = StoryObj<typeof CompContainer>;
 
 export const Normal: Story = {
     args: {
@@ -30,7 +30,7 @@ export const Normal: Story = {
 
 export const Hide: Story = {
     args: {
-        isHide: true
+        hide: true
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
