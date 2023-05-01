@@ -2,13 +2,13 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
-import { ContentsLayout } from './ContentsLayout';
+import { PageLayout } from './PageLayout';
 import { PrimaryButton } from '@/components/Button/PrimaryButton';
 
 
-const meta: Meta<typeof ContentsLayout> = {
-    title: "Layout/ContentsLayout",
-    component: ContentsLayout,
+const meta: Meta<typeof PageLayout> = {
+    title: "Layout/PageLayout",
+    component: PageLayout,
     parameters:{
         layout: 'fullscreen'
     },
@@ -23,7 +23,7 @@ const meta: Meta<typeof ContentsLayout> = {
 
 export default meta;
 
-type Story = StoryObj<typeof ContentsLayout>;
+type Story = StoryObj<typeof PageLayout>;
 
 export const Normal: Story = {
     args: {

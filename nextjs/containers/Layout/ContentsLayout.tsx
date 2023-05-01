@@ -1,17 +1,14 @@
 import { BorderBox } from '@/components/Box/BorderBox'
 import clsx from 'clsx'
 import React from 'react'
+import { Container, ContainerProps } from '../container/Container'
 
-export interface ContentsLayoutProps{
-    children?: React.ReactNode
-    className?: string
+export interface ContentsLayoutProps extends ContainerProps{
 }
 
 export const ContentsLayout = (props: ContentsLayoutProps) => {
     const {children, className} = props
     return (
-        <BorderBox className={clsx(['p-8', className])}>
-            {children}
-        </BorderBox>
+        <Container {...props} className={clsx(['p-8', className])} />
     )
 }

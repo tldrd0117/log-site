@@ -32,6 +32,11 @@ const config: StorybookConfig = {
             ...config.resolve.alias,
             "@": path.resolve(__dirname, "../"),
         }
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            fs: false,
+            os: false
+        }
         return config
     },
 };

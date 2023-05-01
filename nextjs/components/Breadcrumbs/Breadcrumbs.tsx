@@ -16,10 +16,10 @@ export const Breadcrumbs = (props: BreadcumbsProps) => {
         <div className="flex gap-2">
             {
                 items ? items.map((item, index) => {
-                    return <>
-                        <Link href={item.href} key={index} >{item.label}</Link>
-                        {index < items.length - 1 ? <span className="text-gray-400">/</span> : null}
-                    </>
+                    return <span key={item.href+item.label} >
+                        <Link href={item.href} >{item.label}</Link>
+                        {index < items.length - 1 ? <span className="text-gray-400"> /</span> : null}
+                    </span>
                 }) : null
             }
         </div>

@@ -34,7 +34,7 @@ export const Card = (props: CardProps) => {
                             className={clsx(["rounded-lg h-36 overflow-hidden", image.className])}/>
                             : null
                     }
-                    <div className="flex flex-col p-4">
+                    <div className="flex flex-col w-64 p-4">
                         <Text h6 className={clsx(["pb-1", "line-clamp-2"])}>{title}</Text>
                         <Text p className="pb-2 truncate">{subTitle}</Text>
                         <Text span className="line-clamp-5">{summary}</Text>
@@ -42,7 +42,7 @@ export const Card = (props: CardProps) => {
                 </Container>
         case "md":
             return <Container {...containerProps} tagType={CardBox}
-                    className={clsx(["w-72", "p-0", className])}
+                    className={clsx(["w-72", "flex-initial", "p-0", className])}
                     >
                     {
                         image? <Image {...image}
@@ -50,7 +50,7 @@ export const Card = (props: CardProps) => {
                             className={clsx(["rounded-lg h-44 overflow-hidden", image.className])}/>
                             : null
                     }
-                    <div className="flex flex-col p-5">
+                    <div className="flex flex-col w-72 p-5">
                         <Text h5 className="pb-1.5 line-clamp-2">{title}</Text>
                         <Text h6 className="pb-3 truncate">{subTitle}</Text>
                         <Text p className="line-clamp-5">{summary}</Text>
@@ -58,7 +58,7 @@ export const Card = (props: CardProps) => {
                 </Container>
         case "lg":
             return <Container {...containerProps} tagType={CardBox}
-                    className={clsx(["w-96", "p-0", className])}
+                    className={clsx(["w-96", "p-0", "grow", className])}
                     >
                     {
                         image? <Image {...image}
@@ -66,7 +66,7 @@ export const Card = (props: CardProps) => {
                             className={clsx(["rounded-lg h-64 overflow-hidden", image.className])}/>
                             : null
                     }
-                    <div className="flex flex-col p-6">
+                    <div className="flex flex-col w-96 p-6">
                         <Text h4 className="pb-2 line-clamp-2">{title}</Text>
                         <Text h6 className="pb-4 truncate">{subTitle}</Text>
                         <Text p className="line-clamp-5">{summary}</Text>
