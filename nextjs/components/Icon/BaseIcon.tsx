@@ -2,22 +2,18 @@ import React, { FC, ReactElement } from 'react'
 import Image, {StaticImageData} from 'next/image'
 import clsx from 'clsx';
 
-export interface BaseIconProps {
-    children?: React.SVGProps<SVGSVGElement>;
-}
 
-export interface IconProps{
-    width?: number;
-    height?: number;
-    fillColor?: string;
-    className?: string
+export interface IconProps extends React.SVGProps<SVGSVGElement>{
 }
 
 export interface IconElement extends ReactElement<IconProps>{
 }
 
-export const BaseIcon = (props: BaseIconProps) => {
+export const BaseIcon = (props: IconProps) => {
+    const {className} = props
     return <>
-        {props.children}
+        <svg {...props}
+            className={clsx(["pointer-events-none", className])} 
+        />
     </>
 };

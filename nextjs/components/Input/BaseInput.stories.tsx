@@ -15,9 +15,9 @@ export default meta;
 type Story = StoryObj<typeof BaseInput>;
 
 export const Normal: Story = {
+    
     args: {
         placeholder: "NormalBaseInput",
-        ref: React.createRef(),
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -27,7 +27,7 @@ export const Normal: Story = {
         expect(args.onKeyUp).toBeCalledTimes(4)
         expect(canvas.getByPlaceholderText("NormalBaseInput")).toBeInTheDocument()
         userEvent.type(canvas.getByRole('textbox'), "{backspace}".repeat(4))
-        args.ref?.current?.focus()
+        canvas.getByRole('textbox').focus()
         expect(args.onFocus).toBeCalledTimes(1)
 
     }
@@ -37,7 +37,6 @@ export const Disabled: Story = {
     args: {
         placeholder: "DisabledBaseInput",
         disabled: true,
-        ref: React.createRef()
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -46,7 +45,7 @@ export const Disabled: Story = {
         expect(args.onKeyDown).toBeCalledTimes(0)
         expect(args.onKeyUp).toBeCalledTimes(0)
         expect(canvas.getByPlaceholderText("DisabledBaseInput")).toBeInTheDocument()
-        args.ref?.current?.focus()
+        canvas.getByRole('textbox').focus()
         expect(args.onFocus).toBeCalledTimes(0)
     }
 }

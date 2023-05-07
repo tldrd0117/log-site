@@ -7,14 +7,14 @@ import { IconElement } from '../Icon/BaseIcon'
 import { CancelIcon } from '../Icon/CancelIcon'
 import { IconButton } from '../IconButton/IconButton'
 
-export interface TextInputProps extends BaseInputProps{
+export interface PasswordInputProps extends BaseInputProps{
     icon?: IconElement
     cancelButton?: boolean
     onCancel?: React.MouseEventHandler<HTMLButtonElement>
 }
 
-export const PasswordInput = (props: TextInputProps) => {
-    const {icon, cancelButton, ref, value, className, placeholder, disabled, 
+export const PasswordInput = (props: PasswordInputProps) => {
+    const {icon, cancelButton, value, className, placeholder, disabled, 
         onChange, onKeyDown, onKeyUp, onFocus, onBlur, onCancel} = props
     return <>
         <div className={clsx(['relative h-10', className])}>
@@ -24,7 +24,6 @@ export const PasswordInput = (props: TextInputProps) => {
                     type="password"
                     className={clsx(['text-base', 'rounded-lg', 'bg-transparent', 'focus:outline-none', 'focus:ring', "w-full",
                         'focus:border-blue-500', 'h-10', {'pl-10': icon}, {'pl-4': !icon}, {'pr-8': cancelButton}, {'pr-4': !cancelButton}])}
-                    ref={ref}
                     placeholder={placeholder}
                     value={value}
                     disabled={disabled}

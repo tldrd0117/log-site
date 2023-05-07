@@ -12,7 +12,7 @@ const meta: Meta<typeof SearchIcon> = {
     args: {
         width: 24,
         height: 24,
-        fillColor: 'blue'
+        fill: 'blue'
     }
 };
 

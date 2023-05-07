@@ -21,7 +21,6 @@ type Story = StoryObj<typeof PasswordInput>;
 export const Normal: Story = {
     args: {
         placeholder: "NormalBaseInput",
-        ref: React.createRef(),
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -32,7 +31,7 @@ export const Normal: Story = {
         expect(args.onKeyUp).toBeCalledTimes(4)
         expect(element).toBeInTheDocument()
         userEvent.type(element, "{backspace}".repeat(4))
-        args.ref?.current?.focus()
+        element.focus()
         expect(args.onFocus).toBeCalledTimes(1)
 
     }
@@ -42,7 +41,6 @@ export const Disabled: Story = {
     args: {
         placeholder: "DisabledBaseInput",
         disabled: true,
-        ref: React.createRef()
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -52,7 +50,7 @@ export const Disabled: Story = {
         expect(args.onKeyDown).toBeCalledTimes(0)
         expect(args.onKeyUp).toBeCalledTimes(0)
         expect(element).toBeInTheDocument()
-        args.ref?.current?.focus()
+        element.focus()
         expect(args.onFocus).toBeCalledTimes(0)
     }
 }
@@ -61,7 +59,6 @@ export const WithIcon: Story = {
     args: {
         placeholder: "WithIconBaseInput",
         icon: <SearchIcon/>,
-        ref: React.createRef()
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -71,7 +68,7 @@ export const WithIcon: Story = {
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
         expect(element).toBeInTheDocument()
-        args.ref?.current?.focus()
+        element.focus()
         expect(args.onFocus).toBeCalledTimes(1)
     }
 }
@@ -80,7 +77,6 @@ export const WithCancelButton: Story = {
     args: {
         placeholder: "WithCancelButtonBaseInput",
         cancelButton: true,
-        ref: React.createRef()
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
@@ -90,7 +86,7 @@ export const WithCancelButton: Story = {
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
         expect(element).toBeInTheDocument()
-        args.ref?.current?.focus()
+        element.focus()
         expect(args.onFocus).toBeCalledTimes(1)
         canvas.getByRole("button").click();
         expect(args.onCancel).toBeCalledTimes(1);
@@ -102,7 +98,6 @@ export const WithCancelButtonAndIcon: Story = {
         placeholder: "WithCancelButtonAndIconBaseInput",
         cancelButton: true,
         icon: <SearchIcon/>,
-        ref: React.createRef()
     },
     
     play: async ({args, canvasElement}) => {
@@ -113,7 +108,7 @@ export const WithCancelButtonAndIcon: Story = {
         expect(args.onKeyDown).toBeCalledTimes(4)
         expect(args.onKeyUp).toBeCalledTimes(4)
         expect(element).toBeInTheDocument()
-        args.ref?.current?.focus()
+        element.focus()
         expect(args.onFocus).toBeCalledTimes(1)
         canvas.getByRole("button").click();
         expect(args.onCancel).toBeCalledTimes(1);

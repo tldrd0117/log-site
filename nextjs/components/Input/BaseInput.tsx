@@ -1,25 +1,27 @@
-import React, { ChangeEventHandler, KeyboardEventHandler } from 'react'
+import React, { ChangeEventHandler, KeyboardEventHandler, Ref } from 'react'
 
 export interface BaseInputProps{
     type?: string
-    ref?: React.RefObject<HTMLInputElement>
     value?: string
     placeholder?: string
     disabled?: boolean
+    readOnly?: boolean
     className?: string
     onChange?: ChangeEventHandler<HTMLInputElement>
     onKeyDown?: KeyboardEventHandler<HTMLInputElement>
     onKeyUp?: KeyboardEventHandler<HTMLInputElement>
     onFocus?: React.FocusEventHandler<HTMLInputElement>
     onBlur?: React.FocusEventHandler<HTMLInputElement>
+    onClick?: React.MouseEventHandler<HTMLInputElement>
 }
 
-export const BaseInput = (props: BaseInputProps) => {
-    const {type, ref, value, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur} = props
+export const BaseInput = React.forwardRef((props: BaseInputProps, ref: Ref<HTMLInputElement>) => {
+    const {type, value, readOnly, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur, onClick} = props
     return <>
         <input
             type={type}
             ref={ref}
+            readOnly={readOnly}
             className={className}
             placeholder={placeholder}
             value={value}
@@ -29,6 +31,7 @@ export const BaseInput = (props: BaseInputProps) => {
             onKeyUp={onKeyUp}
             onFocus={onFocus}
             onBlur={onBlur}
+            onClick={onClick}
         />
     </>
-}
+})

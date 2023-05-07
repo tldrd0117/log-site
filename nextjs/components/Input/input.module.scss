@@ -1,0 +1,9 @@
+.tagInput{
+    display: inline-grid;
+    grid-area: 1 / 1 / 2 / 3;
+    grid-template-columns: 0px min-content;
+}
+
+.input{
+    min-width: 2px;
+}

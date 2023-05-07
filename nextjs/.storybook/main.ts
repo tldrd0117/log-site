@@ -37,6 +37,10 @@ const config: StorybookConfig = {
             fs: false,
             os: false
         }
+        config.module.rules.unshift({
+            resourceQuery: /raw/,
+            type: 'asset/source',
+        });
         return config
     },
 };

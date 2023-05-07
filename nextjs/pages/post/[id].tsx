@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { AppBar } from '@/components/AppBar/AppBar'
 import { ContentsLayout } from '@/containers/Layout/ContentsLayout'
 import { PageLayout } from '@/containers/Layout/PageLayout'
@@ -10,14 +10,17 @@ import remarkGfm from 'remark-gfm'
 import { Text } from '@/components/Text/Text'
 
 export interface PostProps{
-    title: string
-    content: string
     code: MDXRemoteSerializeResult
+    source: string
 }
 
 export default function Post (props: PostProps){
-    const {title, content, code} = props
-    console.log("code", code.frontmatter)
+    const {code} = props
+    let {source} = props
+    source = source.slice(source.indexOf("---")+3)
+    source = source.slice(source.indexOf("---")+3)
+
+    const tags = (code.frontmatter.tags as string).split("(((").slice(1)
     return (
         <>
             <PageLayout>
@@ -36,11 +39,13 @@ export default function Post (props: PostProps){
                     <div className ={"prose mt-16 mx-auto"}>
                         <Text h3>{code.frontmatter.title as string}</Text>
                         <Text p>{code.frontmatter.category as string}</Text>
-                        <Text span>{code.frontmatter.tags as string}</Text>
+                        <TagInput className="mt-4 bg-transparent" placeholder="태그" tagValue={tags} readOnly/>
+                        
                         <MDXRemote {...code} 
                             components={{
                             }}
                             lazy/>
+                        
                     </div>
                 </ContentsLayout>
             </PageLayout>
@@ -49,6 +54,7 @@ export default function Post (props: PostProps){
 }
 
 import fs from 'fs'
+import { TagInput } from '@/components/Input/TagInput'
 
 export async function getServerSideProps() {
     const source = fs.readFileSync('./pages/post/example.mdx', 'utf8')
@@ -60,9 +66,10 @@ export async function getServerSideProps() {
         },
         parseFrontmatter: true
     })
+    console.log(code)
     return {
       props: {
-        code
+        code, source
       }
     }
 }

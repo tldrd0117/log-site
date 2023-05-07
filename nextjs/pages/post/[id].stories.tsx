@@ -3,13 +3,21 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
 import Post from './[id]';
-import mdx from './example.mdx'
+import { serialize } from 'next-mdx-remote/serialize';
+import remarkGfm from 'remark-gfm';
+import source from '!raw-loader!./example.mdx'
 
-const getProps = async () => {
-    return String(await compile(mdx, {
-        outputFormat: 'function-body',
-        development: false,
-    }))
+
+async function getServerSideProps() {
+    const code = await serialize(source.toString(), {
+        mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [],
+            development: process.env.NODE_ENV === 'development',
+        },
+        parseFrontmatter: true
+    })
+    return {code, source: source.toString()}
 }
 
 const meta: Meta<typeof Post> = {
@@ -18,9 +26,14 @@ const meta: Meta<typeof Post> = {
     parameters:{
         layout: 'fullscreen'
     },
+    render: (args, {loaded}) => {
+        return (
+            <Post code={loaded.code} source={loaded.source}/>
+        )
+    },
     loaders: [
         async () => ({
-            code: await getProps()
+            ...await getServerSideProps(),
         })
     ]
 };
@@ -35,9 +48,5 @@ export const Normal: Story = {
     play: async ({args, canvasElement}) => {
 
     }
-}
-
-function compile(mdx: (props: import("mdx/types").MDXProps) => JSX.Element, arg1: { outputFormat: string; development: boolean; }): any {
-    throw new Error('Function not implemented.');
 }
 
