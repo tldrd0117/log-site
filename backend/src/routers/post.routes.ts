@@ -10,26 +10,79 @@ const router = new Router({
     prefix: "/post"
 });
 
-router.get("/list", decMiddleware, validateMiddlewareFactory(getPostListObject), async (ctx) => {
-    const postGetList: PostGetList = ctx.request.body as PostGetList;
+router.get("/list", validateMiddlewareFactory(getPostListObject), async (ctx) => {
+    /*	
+        #swagger.parameters[$ref] = ["#/components/parameters/offset", "#/components/parameters/limit"]
+    */
+    const postGetList: PostGetList = ctx.request.query as unknown as PostGetList;
     const result = await postService.getList(postGetList.limit, postGetList.offset)
     ctx.body = response.makeSuccessBody(result);
 });
 
 
-router.get("/", decMiddleware, validateMiddlewareFactory(getPostObject), async (ctx) => {
-    const postGet: PostGet = ctx.request.body as PostGet;
+router.get("/", validateMiddlewareFactory(getPostObject), async (ctx) => {
+    /*	
+        #swagger.parameters[$ref] = ["#/components/parameters/_id"]
+    */
+    const postGet: PostGet = ctx.request.query as unknown as PostGet;
     const result = await postService.getPost(postGet._id)
     ctx.body = response.makeSuccessBody(result.toJSON());
 });
 
 router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateObject), async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getPostCreateObject"
+                    },
+                    "example": {
+                        "author": "...(authorId)",
+                        "authorName": "testUser",
+                        "summary": "example summary",
+                        "text": "example text",
+                        "parent": "",
+                        "relatedPosts": []
+                    }
+                }
+            }
+        }
+    */
     const postCreate: PostCreate = ctx.request.body as PostCreate;
     const result = await postService.post(postCreate)
     ctx.body = response.makeSuccessBody(result.toJSON());
 });
 
 router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateArrayObject), async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getPostCreateArrayObject"
+                    },
+                    "example": [{
+                        "author": "...(authorId)",
+                        "authorName": "testUser",
+                        "summary": "example summary",
+                        "text": "example text",
+                        "relatedPosts": []
+                    }, {
+                        "author": "...(authorId)",
+                        "authorName": "testUser",
+                        "summary": "example summary2",
+                        "text": "example text2",
+                        "relatedPosts": []
+                    }]
+                }
+            }
+        }
+    */
     const postCreates: Array<PostCreate> = ctx.request.body as Array<PostCreate>;
     const result = await postService.postMany(postCreates)
     ctx.body = response.makeSuccessBody({
@@ -37,25 +90,85 @@ router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareF
     });
 });
 
-router.get("/list/search", decMiddleware, validateMiddlewareFactory(getPostSearchListObject), async (ctx) => {
+router.get("/list/search", validateMiddlewareFactory(getPostSearchListObject), async (ctx) => {
+    /*	
+        #swagger.parameters[$ref] = [
+            "#/components/parameters/offset", 
+            "#/components/parameters/limit",
+            "#/components/parameters/word"
+        ]
+    */
     const postSearchList: PostSearchList = ctx.request.body as PostSearchList;
     const result = await postService.searchList(postSearchList.limit, postSearchList.offset, postSearchList.word)
     ctx.body = response.makeSuccessBody(result);
 });
 
 router.put("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostUpdateObject), async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getPostCreateArrayObject"
+                    },
+                    "example": {
+                        "_id": "...(postId)",
+                        "summary": "example summary",
+                        "text": "example text",
+                        "relatedPosts": []
+                    }
+                }
+            }
+        }
+    */
     const postUpdate: PostUpdate = ctx.request.body as PostUpdate;
     const result = await postService.putPost(postUpdate)
     ctx.body = response.makeSuccessBody(result);
 });
 
-router.del("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelObject), async (ctx) => {
+router.delete("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelObject), async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getPostCreateArrayObject"
+                    },
+                    "example": {
+                        _id: "...(postId)"
+                    }
+                }
+            }
+        }
+    */
     const postDelete: PostDelete = ctx.request.body as PostDelete;
     const result = await postService.delPost(postDelete._id)
     ctx.body = response.makeSuccessBody(result);
 });
 
-router.del("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelArrayObject), async (ctx) => {
+router.delete("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelArrayObject), async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getPostCreateArrayObject"
+                    },
+                    "example": [{
+                        _id: "...(postId)"
+                    }, {
+                        _id: "...(postId)"
+                    }]
+                }
+            }
+        }
+    */
     const postDeletes: Array<PostDelete> = ctx.request.body as Array<PostDelete>;
     const result = await postService.delPosts(postDeletes.map(v=>v._id))
     ctx.body = response.makeSuccessBody(result);

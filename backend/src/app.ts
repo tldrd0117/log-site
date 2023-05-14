@@ -5,6 +5,7 @@ import helloWorldRouter from './routers/helloworld.routes'
 import authRouter from './routers/auth.routes'
 import postRouter from './routers/post.routes'
 import userRouter from './routers/user.routes'
+import testRouter from './routers/test.routes'
 import { errorHandleMiddleware } from './middlewares/middlewares';
 
 import Cabin from 'cabin';
@@ -14,6 +15,11 @@ import requestId from 'koa-better-request-id'
 import { Signale } from 'signale'
 import Axe from 'axe'
 import { initI18n } from './utils/i18n';
+import { koaSwagger } from 'koa2-swagger-ui';
+import cors from '@koa/cors';
+import createMongo from './utils/mongo';
+import sha256 from 'crypto-js/sha256';
+
 
 const getApp = async () => {
     const app = new Koa();
@@ -32,6 +38,10 @@ const getApp = async () => {
     const port: number = 3000;
     await initI18n()
 
+
+    app.use(cors());
+    
+
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs
     app.use(requestReceived);
@@ -48,13 +58,41 @@ const getApp = async () => {
     app.use(bodyParser());
 
     app.use(errorHandleMiddleware)
-    
+
     app.use(helloWorldRouter.routes())
     app.use(authRouter.routes())
     app.use(postRouter.routes())
     app.use(userRouter.routes())
+    app.use(testRouter.routes())
 
     app.use(router.routes());
+
+    app.use(
+        koaSwagger({
+            routePrefix: '/swagger', // host at /swagger instead of default /docs
+            swaggerOptions: {
+                url: '/helloworld/swagger-output.json', // example path to json
+                // @ts-ignore
+                requestInterceptor: async (req: any) => {
+                    console.log(req)
+                    if(req.method && req.method !== "GET"){
+                        const encryptData = await fetch('/test/enc', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: req.body,
+                        });
+                        req.body = await encryptData.text()
+                    }
+                    return req
+                }
+            },
+        }),
+    );
+    console.log("buildApp")
+    const mongo = createMongo(undefined, "log-site-dev")
+    mongo.connect()
     
     return app
 }

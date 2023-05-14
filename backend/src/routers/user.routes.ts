@@ -14,6 +14,22 @@ const router = new Router({
 });
 
 router.post('/join', decMiddleware, validateMiddlewareFactory(getJoinUserObject), async (ctx) => {
+    /*
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getJoinUserObject"
+                    },
+                    "example": {
+                        "name": "testUser",
+                        "email": "testUser@example.com",
+                        "password": "testPassword"
+                    }
+                }
+            }
+        }
+    */
     const result = await userService.doJoin(ctx.request.body as UserJoin)
     const userInfo = await userService.getUserByEmail(result.email)
     const token = await authService.getToken(userInfo.toJSON())
@@ -23,15 +39,30 @@ router.post('/join', decMiddleware, validateMiddlewareFactory(getJoinUserObject)
 })
 
 router.post('/login', decMiddleware, validateMiddlewareFactory(getLoginUserObject), async (ctx) => {
+    /*
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getLoginUserObject"
+                    },
+                    "example": {
+                        "email": "testUser@example.com",
+                        "password": "testPassword"
+                    }
+                }
+            }
+        }
+    */
     const result = await userService.doLogin(ctx.request.body as UserLogin)
-    if(result){
+    if (result) {
         const userInfo = await userService.getUserByEmail(result.email)
         const token = await authService.getToken(userInfo.toJSON())
         ctx.body = response.makeSuccessBody({
             token
         })
     }
-    else{
+    else {
         const lang = ctx.acceptsLanguages()[0]
         const i18next = await getI18next(lang)
         ctx.body = response.makeErrorBody({

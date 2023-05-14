@@ -18,6 +18,7 @@ describe('auth service test', () => {
         const email = "admin@nnn.com"
         const password = sha256('1234').toString()
         const jwt = await encFactory.makeEncObject({email, password}, rsaPublicKey)
+        console.log("#jwt",jwt)
         expect(jwt).toBeDefined()
         const result = await authService.decryptJSON(jwt)
         expect(result.email).toEqual(email)

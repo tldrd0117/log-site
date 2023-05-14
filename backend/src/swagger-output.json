@@ -1,0 +1,1536 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BLOG API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3300/"
+    }
+  ],
+  "paths": {
+    "/auth/publicKey": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Empty"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/helloworld/": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/helloworld/swagger-output.json": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/post/list": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getPostCreateArrayObject"
+              },
+              "example": [
+                {
+                  "author": "...(authorId)",
+                  "authorName": "testUser",
+                  "summary": "example summary",
+                  "text": "example text",
+                  "relatedPosts": []
+                },
+                {
+                  "author": "...(authorId)",
+                  "authorName": "testUser",
+                  "summary": "example summary2",
+                  "text": "example text2",
+                  "relatedPosts": []
+                }
+              ]
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getPostCreateArrayObject"
+              },
+              "example": [
+                {
+                  "_id": "...(postId)"
+                },
+                {
+                  "_id": "...(postId)"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/post/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/_id"
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getPostCreateObject"
+              },
+              "example": {
+                "author": "...(authorId)",
+                "authorName": "testUser",
+                "summary": "example summary",
+                "text": "example text",
+                "parent": "",
+                "relatedPosts": []
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getPostCreateArrayObject"
+              },
+              "example": {
+                "_id": "...(postId)",
+                "author": "...(authorId)",
+                "authorName": "testUser",
+                "summary": "example summary",
+                "text": "example text",
+                "relatedPosts": []
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getPostCreateArrayObject"
+              },
+              "example": {
+                "_id": "...(postId)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/list/search": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/word"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/test/token": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/test/enc": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/test/userInfo": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/join": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getJoinUserObject"
+              },
+              "example": {
+                "name": "testUser",
+                "email": "testUser@example.com",
+                "password": "testPassword"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getLoginUserObject"
+              },
+              "example": {
+                "email": "testUser@example.com",
+                "password": "testPassword"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Enc": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "title": {
+            "type": "string",
+            "example": "Encrypted object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "enc": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Encrypted body"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "enc"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Empty": {
+        "type": "object",
+        "properties": {}
+      },
+      "getJoinUserObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^([a-zA-Z]|[가-힣]|[0-9])+$"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "이름"
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "이메일"
+                  }
+                }
+              },
+              "password": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "비밀번호"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "email",
+              "password"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "가입 유저"
+          }
+        }
+      },
+      "getLoginUserObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "이메일"
+                  }
+                }
+              },
+              "password": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "비밀번호"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "email",
+              "password"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "로그인 유저"
+          }
+        }
+      },
+      "getUserInfoObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "이메일"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "email"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "유저 정보"
+          }
+        }
+      },
+      "getPostListObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "가져올 리스트 갯수"
+                  }
+                }
+              },
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "리스트 스킵 갯수"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "limit",
+              "offset"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "포스트 리스트"
+          }
+        }
+      },
+      "getPostObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "게시물 아이디"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "_id"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물"
+          }
+        }
+      },
+      "getPostSearchListObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "가져올 리스트 갯수"
+                  }
+                }
+              },
+              "offset": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "리스트 스킵 갯수"
+                  }
+                }
+              },
+              "word": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "검색어"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "limit",
+              "offset"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 검색 리스트"
+          }
+        }
+      },
+      "getPostCreateObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "author": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "작성자"
+                  }
+                }
+              },
+              "authorName": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^([a-zA-Z]|[가-힣]|[0-9])+$"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "작성자 이름"
+                  }
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "요약"
+                  }
+                }
+              },
+              "text": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 10000
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "내용"
+                  }
+                }
+              },
+              "parent": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "부모 게시물"
+                  }
+                }
+              },
+              "relatedPosts": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "관련된 게시물"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "author",
+              "authorName",
+              "summary",
+              "text"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 작성"
+          }
+        }
+      },
+      "getPostCreateArrayObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "array"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object",
+                "properties": {
+                  "author": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "작성자"
+                      }
+                    }
+                  },
+                  "authorName": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^([a-zA-Z]|[가-힣]|[0-9])+$"
+                      },
+                      "minLength": {
+                        "type": "number",
+                        "example": 3
+                      },
+                      "maxLength": {
+                        "type": "number",
+                        "example": 20
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "작성자 이름"
+                      }
+                    }
+                  },
+                  "summary": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "minLength": {
+                        "type": "number",
+                        "example": 3
+                      },
+                      "maxLength": {
+                        "type": "number",
+                        "example": 100
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "요약"
+                      }
+                    }
+                  },
+                  "text": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "minLength": {
+                        "type": "number",
+                        "example": 3
+                      },
+                      "maxLength": {
+                        "type": "number",
+                        "example": 10000
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "내용"
+                      }
+                    }
+                  },
+                  "parent": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "부모 게시물"
+                      }
+                    }
+                  },
+                  "relatedPosts": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "array"
+                      },
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "example": "^[a-fA-F0-9]{24}$"
+                          }
+                        }
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "관련된 게시물"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": {
+                "type": "array",
+                "example": [
+                  "author",
+                  "authorName",
+                  "summary",
+                  "text"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "boolean",
+                "example": false
+              },
+              "title": {
+                "type": "string",
+                "example": "게시물 작성"
+              }
+            }
+          },
+          "minItems": {
+            "type": "number",
+            "example": 1
+          },
+          "maxItems": {
+            "type": "number",
+            "example": 1000
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 작성 리스트"
+          }
+        }
+      },
+      "getPostUpdateObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "게시물 아이디"
+                  }
+                }
+              },
+              "author": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "작성자"
+                  }
+                }
+              },
+              "authorName": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^([a-zA-Z]|[가-힣]|[0-9])+$"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "작성자 이름"
+                  }
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "요약"
+                  }
+                }
+              },
+              "text": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 10000
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "내용"
+                  }
+                }
+              },
+              "parent": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "부모 게시물"
+                  }
+                }
+              },
+              "relatedPosts": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "관련된 게시물"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "_id"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 갱신"
+          }
+        }
+      },
+      "getPostDelObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "게시물 아이디"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "_id"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 삭제"
+          }
+        }
+      },
+      "getPostDelArrayObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "array"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "게시물 아이디"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": {
+                "type": "array",
+                "example": [
+                  "_id"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "boolean",
+                "example": false
+              },
+              "title": {
+                "type": "string",
+                "example": "게시물 삭제"
+              }
+            }
+          },
+          "minItems": {
+            "type": "number",
+            "example": 1
+          },
+          "maxItems": {
+            "type": "number",
+            "example": 1000
+          },
+          "title": {
+            "type": "string",
+            "example": "게시물 삭제 리스트"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "name": {
+        "in": "query",
+        "name": "name",
+        "required": true,
+        "description": "이름",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "in": "query",
+        "name": "email",
+        "required": true,
+        "description": "이메일",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "password": {
+        "in": "query",
+        "name": "password",
+        "required": true,
+        "description": "비밀번호",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "limit": {
+        "in": "query",
+        "name": "limit",
+        "required": true,
+        "description": "가져올 리스트 갯수",
+        "schema": {
+          "type": "number"
+        }
+      },
+      "offset": {
+        "in": "query",
+        "name": "offset",
+        "required": true,
+        "description": "리스트 스킵 갯수",
+        "schema": {
+          "type": "number"
+        }
+      },
+      "_id": {
+        "in": "query",
+        "name": "_id",
+        "required": true,
+        "description": "게시물 아이디",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "word": {
+        "in": "query",
+        "name": "word",
+        "required": false,
+        "description": "검색어",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "author": {
+        "in": "query",
+        "name": "author",
+        "required": false,
+        "description": "작성자",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "authorName": {
+        "in": "query",
+        "name": "authorName",
+        "required": false,
+        "description": "작성자 이름",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "summary": {
+        "in": "query",
+        "name": "summary",
+        "required": false,
+        "description": "요약",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "text": {
+        "in": "query",
+        "name": "text",
+        "required": false,
+        "description": "내용",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "parent": {
+        "in": "query",
+        "name": "parent",
+        "required": false,
+        "description": "부모 게시물",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "relatedPosts": {
+        "in": "query",
+        "name": "relatedPosts",
+        "required": false,
+        "description": "관련된 게시물",
+        "schema": {
+          "type": "array"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -49,7 +49,7 @@ const searchUserByName = (name: string) => {
 }
 
 const getUserByEmail = (email: string) => {
-    return User.findOne({ email }, {_id: 0, "name": 1, "email": 1, "role": 1, "createAt": 1})
+    return User.findOne({ email }, {_id: 1, "name": 1, "email": 1, "role": 1, "createAt": 1})
 }
 
 

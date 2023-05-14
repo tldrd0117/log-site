@@ -9,7 +9,7 @@ describe.only('hello world! test', () => {
     })
 
     it('responds hello world', () => {
-        return request.get('/')
+        return request.get('/helloworld')
             .expect('content-type', "text/plain; charset=utf-8")
             .expect(200)
             .then((response: any)=>{

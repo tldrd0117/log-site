@@ -13,6 +13,19 @@ router.get('/publicKey', async (ctx) => {
 })
 
 router.post('/verify', decMiddleware, validateTokenMiddleware, async (ctx) => {
+    /*	#swagger.security = [{
+            bearerAuth:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/Empty"
+                    }
+                }
+            }
+        }
+    */
     ctx.body = response.makeSuccessBody({})
 })
 

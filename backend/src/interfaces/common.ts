@@ -1,7 +1,7 @@
-interface EncData{
+export interface EncData{
     enc: string
 }
 
-interface ErrorBody{
+export interface ErrorBody{
     error: object
 }

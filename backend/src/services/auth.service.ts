@@ -2,8 +2,7 @@ import fs from 'fs'
 import ms from 'ms'
 import jwt, { Secret } from 'jsonwebtoken';
 import jose, { JWK } from 'node-jose'
-import jwktopem from 'jwk-to-pem'
-import { PublicKey } from '../interfaces/auth';
+import { KeyLike, importJWK } from 'jose';
 
 const doLogin = async (payload: any) => {
     const data = decryptData(payload)
@@ -36,10 +35,25 @@ const getPublicJWK = async () => {
     return enryptKey.toJSON()
 }
 
+const getEncPublicKey = async () => {
+    const publicJWK : any = await getPublicJWK()
+    const targetPublicKey: any = publicJWK.keys.find((key: any)=>key.alg === "RSA-OAEP-256") || {}
+    const rsaPublicKey: KeyLike = (await importJWK(targetPublicKey)) as KeyLike
+    return rsaPublicKey
+}
+
 const getPrivateJWK = async () => {
     const ks = fs.readFileSync('secret/Keys.json')
     const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
     return enryptKey.toJSON(true)
+}
+
+const encryptData = async (data: string) => {
+    const ks = fs.readFileSync('secret/Keys.json')
+    const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
+    return await jose.JWE.createEncrypt({
+        format: 'compact'
+    }, enryptKey.all({use: "enc"})).update(data).final()
 }
 
 const decryptData = async (data: string) => {
@@ -60,15 +74,22 @@ const verifyToken = async (token: string) => {
     return jwt.verify(token, publicKey.toPEM())
 }
 
+const decryptToken = async (token: string) => {
+    return jwt.decode(token)
+}
+
 const authService = {
     doLogin,
     getToken,
     getTokenByExp,
     getPublicJWK,
+    getEncPublicKey,
     getPrivateJWK,
     verifyToken,
     decryptData,
-    decryptJSON
+    encryptData,
+    decryptJSON,
+    decryptToken
 }
 
 export default authService

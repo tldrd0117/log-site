@@ -5,6 +5,7 @@ import { MessageCodeStatusError, MessageError, MessageStatusError, UnknownError 
 import { getJoinUserObject, getLoginUserObject } from '../object/user'
 import { ErrorHandler } from '../utils/error'
 import { TokenExpiredError, NotBeforeError, JsonWebTokenError } from "jsonwebtoken";
+import { EncData } from "../interfaces/common";
 
 const errorHandler = new ErrorHandler()
 
@@ -22,7 +23,7 @@ export const decMiddleware = async (ctx: Context, next: Next) => {
         ctx.request.body = await authService.decryptJSON(body.enc)
         return next();
     } catch(e){
-        throw e
+        throw new MessageCodeStatusError('validate.decrypt', 400)
     }
 }
 
@@ -49,10 +50,17 @@ export const validateMiddlewareFactory = (getObjectFunction: (param: any) => Pro
         try{
             const lang = ctx.acceptsLanguages()[0]
             const objectFunction: joi.AnySchema<any> = await getObjectFunction(lang)
-            const result = await objectFunction.validateAsync(ctx.request.body, {
-                errors: { wrap: { label: '' } },
-                abortEarly: false,
-            })
+            if(ctx.request.method === "GET"){
+                const result = await objectFunction.validateAsync(ctx.request.query, {
+                    errors: { wrap: { label: '' } },
+                    abortEarly: false,
+                })
+            } else if(ctx.request.method === "POST"){
+                const result = await objectFunction.validateAsync(ctx.request.body, {
+                    errors: { wrap: { label: '' } },
+                    abortEarly: false,
+                })
+            }
             return next();
         }
         catch(error){

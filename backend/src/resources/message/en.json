@@ -42,7 +42,8 @@
     },
     "object": {
         "type": "{#label} must be an object"
-    }
+    },
+    "decrypt": "Decrypt error"
   },
   "name": "Name",
   "email": "Email",

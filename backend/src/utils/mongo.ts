@@ -54,7 +54,7 @@ const defaultDatabase = "log-site";
 
 export { Mongo }
 
-const createMongo = (address: string, database: string) => {
+const createMongo = (address?: string, database?: string) => {
     if(!address){
         address = defaultAddress
     }
