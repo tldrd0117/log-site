@@ -25,7 +25,7 @@ router.post('/enc', async (ctx) => {
 router.post("/userInfo", validateTokenMiddleware, async (ctx) => {
     /*
         #swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
     */
     const token: any = ctx.header.authorization

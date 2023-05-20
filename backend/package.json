@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.d.ts",
   "scripts": {
-    "test": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --config ./jest.config.ts --runInBand",
+    "test": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --config ./jest.config.ts --runInBand --detectOpenHandles",
     "test:clear": "jest --clearCache",
     "test:coverage": "jest ./tests/**/*.spec.ts ./tests/*.spec.ts --coverage --config ./jest.config.ts --runInBand",
     "tsc:init": "tsc --init",

@@ -31,7 +31,7 @@ router.get("/", validateMiddlewareFactory(getPostObject), async (ctx) => {
 
 router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateObject), async (ctx) => {
     /*	#swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
         #swagger.requestBody = {
             "content": {
@@ -58,7 +58,7 @@ router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFacto
 
 router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateArrayObject), async (ctx) => {
     /*	#swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
         #swagger.requestBody = {
             "content": {
@@ -98,14 +98,14 @@ router.get("/list/search", validateMiddlewareFactory(getPostSearchListObject), a
             "#/components/parameters/word"
         ]
     */
-    const postSearchList: PostSearchList = ctx.request.body as PostSearchList;
+    const postSearchList: PostSearchList = ctx.request.query as unknown as PostSearchList;
     const result = await postService.searchList(postSearchList.limit, postSearchList.offset, postSearchList.word)
     ctx.body = response.makeSuccessBody(result);
 });
 
 router.put("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostUpdateObject), async (ctx) => {
     /*	#swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
         #swagger.requestBody = {
             "content": {
@@ -130,7 +130,7 @@ router.put("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactor
 
 router.delete("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelObject), async (ctx) => {
     /*	#swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
         #swagger.requestBody = {
             "content": {
@@ -152,7 +152,7 @@ router.delete("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFac
 
 router.delete("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelArrayObject), async (ctx) => {
     /*	#swagger.security = [{
-            bearerAuth:[]
+            bearer:[]
         }]
         #swagger.requestBody = {
             "content": {

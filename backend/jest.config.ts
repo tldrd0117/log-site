@@ -2,5 +2,6 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  verbose: false,
+  verbose: true,
+  testTimeout: 20000,
 };

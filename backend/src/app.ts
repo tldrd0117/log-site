@@ -91,11 +91,14 @@ const getApp = async () => {
         }),
     );
     console.log("buildApp")
-    const mongo = createMongo(undefined, "log-site-dev")
-    mongo.connect()
     
     return app
 }
+
+export const connectMongo = () => {
+    const mongo = createMongo(undefined, "log-site-dev")
+    mongo.connect()
+} 
 
 
 export default getApp;

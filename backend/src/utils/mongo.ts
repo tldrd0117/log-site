@@ -2,6 +2,7 @@ import { connect, Mongoose, ConnectionStates, set } from 'mongoose';
 import dotenv from 'dotenv'
 
 set("strictQuery", false)
+set('debug', true);
 
 const envFound = dotenv.config();
 if (envFound.error) {

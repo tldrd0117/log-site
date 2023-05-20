@@ -56,16 +56,13 @@ const autoGen =async () => {
             parameters: {
                 ...await toSwaggerQueryParam(require("./object/user")),
                 ...await toSwaggerQueryParam(require("./object/post")),
+            },
+            securitySchemes: {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT"
             }
         },
-        
-        securityDefinitions: {
-            bearerAuth: {
-                type: 'http',
-                scheme: 'bearer',
-                bearerFormat: 'JWT'
-            }
-          },
       };
       
       const outputFile = "./swagger-output.json";

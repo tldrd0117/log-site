@@ -25,7 +25,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -72,7 +72,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -107,7 +107,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -145,7 +145,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -172,7 +172,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -183,8 +183,6 @@
               },
               "example": {
                 "_id": "...(postId)",
-                "author": "...(authorId)",
-                "authorName": "testUser",
                 "summary": "example summary",
                 "text": "example text",
                 "relatedPosts": []
@@ -199,7 +197,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ],
         "requestBody": {
@@ -254,7 +252,7 @@
         "responses": {},
         "security": [
           {
-            "bearerAuth": []
+            "bearer": []
           }
         ]
       }
@@ -1526,10 +1524,9 @@
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
+      "bearer": {
         "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "scheme": "bearer"
       }
     }
   }

@@ -146,12 +146,11 @@ describe("post test", () => {
     })
 
     it("request get post", async () => {
-        const enc = await encFactory.makeEncObject({
-            _id: post._id.toString()
-        }, rsaPublicKey)
         const response: Response = await request.get("/post")
+            .query({
+                _id: post._id.toString()
+            })
             .set('Accept-Language', 'en')
-            .send({ enc })
             .expect(200)
         
         expect(response.body).toMatchObject({
@@ -186,13 +185,12 @@ describe("post test", () => {
         
         expect(postResponse.body.result).toBe("success")
 
-        const getEnc = await encFactory.makeEncObject({
-            limit: 10,
-            offset: 1
-        }, rsaPublicKey)
         const response: Response = await request.get("/post/list")
             .set('Accept-Language', 'en')
-            .send({ enc: getEnc })
+            .query({
+                limit: 10,
+                offset: 1
+            })
             .expect(200)
         
         let expectArr: any = []
@@ -232,14 +230,13 @@ describe("post test", () => {
         
         expect(postResponse.body.result).toBe("success")
 
-        const getEnc = await encFactory.makeEncObject({
-            limit: 20,
-            offset: 0,
-            word: "text1"
-        }, rsaPublicKey)
         const response: Response = await request.get("/post/list/search")
             .set('Accept-Language', 'en')
-            .send({ enc: getEnc })
+            .query({
+                limit: 20,
+                offset: 0,
+                word: "text1"
+            })
             .expect(200)
         
         let expectArr: any = []
