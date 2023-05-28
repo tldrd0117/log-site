@@ -10,10 +10,18 @@ const router = new Router({
 });
 
 router.get('/token', async (ctx) => {
+    /*
+        #swagger.tags = ['Test']
+        #swagger.summary = 'Get token'
+    */
     ctx.body = await authService.getToken({})
 })
 
 router.post('/enc', async (ctx) => {
+    /*
+        #swagger.tags = ['Test']
+        #swagger.summary = 'Encrypt data'
+    */
     const body: any = ctx.request.body
     if(body && body.password){
         body.password = sha256("********").toString()
@@ -23,7 +31,8 @@ router.post('/enc', async (ctx) => {
 })
 
 router.post("/userInfo", validateTokenMiddleware, async (ctx) => {
-    /*
+    /*  #swagger.tags = ['Test']
+        #swagger.summary = 'Get user info'
         #swagger.security = [{
             bearer:[]
         }]

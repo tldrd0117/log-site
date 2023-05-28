@@ -13,6 +13,10 @@
   "paths": {
     "/auth/publicKey": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get public key",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -20,6 +24,10 @@
     },
     "/auth/verify": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "verify token",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -55,6 +63,10 @@
     },
     "/post/list": {
       "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Get post list",
         "description": "",
         "parameters": [
           {
@@ -67,6 +79,10 @@
         "responses": {}
       },
       "post": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Create post list",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -102,6 +118,10 @@
         }
       },
       "delete": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Delete post list",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -131,6 +151,10 @@
     },
     "/post/": {
       "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Get post",
         "description": "",
         "parameters": [
           {
@@ -140,6 +164,10 @@
         "responses": {}
       },
       "post": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Create post",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -167,6 +195,10 @@
         }
       },
       "put": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Update post",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -192,6 +224,10 @@
         }
       },
       "delete": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Delete post",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -216,6 +252,10 @@
     },
     "/post/list/search": {
       "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Search post list",
         "description": "",
         "parameters": [
           {
@@ -233,6 +273,10 @@
     },
     "/test/token": {
       "get": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "Get token",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -240,6 +284,10 @@
     },
     "/test/enc": {
       "post": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "Encrypt data",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -247,6 +295,10 @@
     },
     "/test/userInfo": {
       "post": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "Get user info",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -259,6 +311,10 @@
     },
     "/user/join": {
       "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Join",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -280,6 +336,10 @@
     },
     "/user/login": {
       "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login",
         "description": "",
         "parameters": [],
         "responses": {},
@@ -1526,7 +1586,8 @@
     "securitySchemes": {
       "bearer": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

@@ -9,11 +9,18 @@ const router = new Router({
 });
 
 router.get('/publicKey', async (ctx) => {
-    ctx.body = await authService.getPublicJWK()
+    /*
+        #swagger.tags = ['Auth']
+        #swagger.summary = 'Get public key'
+    */
+    ctx.body = response.makeSuccessBody(await authService.getPublicJWK())
 })
 
 router.post('/verify', decMiddleware, validateTokenMiddleware, async (ctx) => {
-    /*	#swagger.security = [{
+    /*	
+        #swagger.tags = ['Auth']
+        #swagger.summary = 'verify token'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {

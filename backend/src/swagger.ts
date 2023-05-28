@@ -58,9 +58,11 @@ const autoGen =async () => {
                 ...await toSwaggerQueryParam(require("./object/post")),
             },
             securitySchemes: {
-                type: "http",
-                scheme: "bearer",
-                bearerFormat: "JWT"
+                bearer: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
             }
         },
       };

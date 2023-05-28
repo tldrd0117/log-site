@@ -12,6 +12,8 @@ const router = new Router({
 
 router.get("/list", validateMiddlewareFactory(getPostListObject), async (ctx) => {
     /*	
+        #swagger.tags = ['Post']
+        #swagger.summary = 'Get post list'
         #swagger.parameters[$ref] = ["#/components/parameters/offset", "#/components/parameters/limit"]
     */
     const postGetList: PostGetList = ctx.request.query as unknown as PostGetList;
@@ -22,6 +24,8 @@ router.get("/list", validateMiddlewareFactory(getPostListObject), async (ctx) =>
 
 router.get("/", validateMiddlewareFactory(getPostObject), async (ctx) => {
     /*	
+        #swagger.tags = ['Post']
+        #swagger.summary = 'Get post'
         #swagger.parameters[$ref] = ["#/components/parameters/_id"]
     */
     const postGet: PostGet = ctx.request.query as unknown as PostGet;
@@ -30,7 +34,10 @@ router.get("/", validateMiddlewareFactory(getPostObject), async (ctx) => {
 });
 
 router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateObject), async (ctx) => {
-    /*	#swagger.security = [{
+    /*	
+        #swagger.tags = ['Post']
+        #swagger.summary = 'Create post'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {
@@ -57,7 +64,9 @@ router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFacto
 });
 
 router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateArrayObject), async (ctx) => {
-    /*	#swagger.security = [{
+    /*	#swagger.tags = ['Post']
+        #swagger.summary = 'Create post list'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {
@@ -92,6 +101,8 @@ router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareF
 
 router.get("/list/search", validateMiddlewareFactory(getPostSearchListObject), async (ctx) => {
     /*	
+        #swagger.tags = ['Post']
+        #swagger.summary = 'Search post list'
         #swagger.parameters[$ref] = [
             "#/components/parameters/offset", 
             "#/components/parameters/limit",
@@ -104,7 +115,9 @@ router.get("/list/search", validateMiddlewareFactory(getPostSearchListObject), a
 });
 
 router.put("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostUpdateObject), async (ctx) => {
-    /*	#swagger.security = [{
+    /*	#swagger.tags = ['Post']
+        #swagger.summary = 'Update post'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {
@@ -129,7 +142,10 @@ router.put("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactor
 });
 
 router.delete("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelObject), async (ctx) => {
-    /*	#swagger.security = [{
+    /*	
+        #swagger.tags = ['Post']
+        #swagger.summary = 'Delete post'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {
@@ -151,7 +167,9 @@ router.delete("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFac
 });
 
 router.delete("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostDelArrayObject), async (ctx) => {
-    /*	#swagger.security = [{
+    /*	#swagger.tags = ['Post']
+        #swagger.summary = 'Delete post list'
+        #swagger.security = [{
             bearer:[]
         }]
         #swagger.requestBody = {

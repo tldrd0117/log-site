@@ -15,6 +15,8 @@ const router = new Router({
 
 router.post('/join', decMiddleware, validateMiddlewareFactory(getJoinUserObject), async (ctx) => {
     /*
+        #swagger.tags = ['User']
+        #swagger.summary = 'Join'
         #swagger.requestBody = {
             "content": {
                 "application/json": {
@@ -40,6 +42,8 @@ router.post('/join', decMiddleware, validateMiddlewareFactory(getJoinUserObject)
 
 router.post('/login', decMiddleware, validateMiddlewareFactory(getLoginUserObject), async (ctx) => {
     /*
+        #swagger.tags = ['User']
+        #swagger.summary = 'Login'
         #swagger.requestBody = {
             "content": {
                 "application/json": {
