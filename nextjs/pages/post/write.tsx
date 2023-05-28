@@ -33,7 +33,7 @@ export default function Write (props: WriteProps){
     return <>
         <PageLayout>
             <AppBar title='blog' login account join/>
-            <ContentsLayout tagType={BorderBox} className="mt-4">
+            <ContentsLayout tagType={BorderBox} className="mt-4 pb-16">
                 <Breadcrumbs items={[{
                     href: "/",
                     label: "Home"
@@ -44,10 +44,15 @@ export default function Write (props: WriteProps){
                     href: "/post/write",
                     label: code.frontmatter.title as string
                 }]}/>
-                <TextInput className="mt-4" placeholder="제목" value={code.frontmatter.title as string}/>
+                <TextInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE}
+                    inputClassName = {"px-7 py-8 text-3xl font-bold "}
+                    className="mt-8"
+                    placeholder="제목" 
+                    value={code.frontmatter.title as string}/>
                 <Select inputProps={{
-                    className:"mt-4",
-                    placeholder: "카테고리"  
+                    bgClassName: "mt-4 w-40",
+                    placeholder: "카테고리",
+                    inputStyleType: INPUT_STYLE_TYPE.UNDERLINE,
                 }} contextMenuProps={{
                     className: "mt-2",
                     tagType: CardBox,
@@ -67,14 +72,28 @@ export default function Write (props: WriteProps){
                 }}
                 selected={{id:code.frontmatter.category as string, value: code.frontmatter.category as string}}
                 />
-                <TagInput className="mt-4" placeholder="태그" tagValue={tags}/>
+                <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
+                    tagValue={tags}/>
                 <CodeMirror
                     className="mt-4"
                     value={source}
                     onChange={handleCodeMirrorChange}
                     minHeight="400px"
-                    maxHeight='500px'
+                    maxHeight='5000px'
                     extensions={[langs.markdown()]}
+                    />
+                <FloatBottomLayout
+                    leftComponent={
+                        <>
+                        </>
+                    }
+                    rightComponent={
+                        <div className="flex gap-2 pr-8">
+                            <PrimaryButton label="미리보기"/>
+                            <PrimaryButton label="작성완료"/>
+
+                        </div>
+                    }
                     />
             </ContentsLayout>
         </PageLayout>
@@ -86,6 +105,9 @@ import fs from 'fs'
 import { TagInput } from "@/components/Input/TagInput";
 import { Select } from "@/components/Select/Select";
 import { CardBox } from "@/components/Box/CardBox";
+import { INPUT_STYLE_TYPE } from "@/components/Input/StylableInput";
+import { FloatBottomLayout } from "@/containers/Layout/FloatBottomLayout";
+import { PrimaryButton } from "@/components/Button/PrimaryButton";
 
 export async function getServerSideProps() {
     const source = fs.readFileSync('./pages/post/example.mdx', 'utf8')

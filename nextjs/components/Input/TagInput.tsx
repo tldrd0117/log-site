@@ -11,17 +11,18 @@ import { KeyboardEvent } from 'react'
 import { ChangeEvent } from 'react'
 import style from './input.module.scss'
 import { read } from 'fs'
+import { INPUT_STYLE_TYPE, StylableInput, StylableInputProps } from './StylableInput'
 
-export interface TextInputProps extends BaseInputProps{
+export interface TagInputProps extends StylableInputProps{
     icon?: IconElement
     cancelButton?: boolean
     onCancel?: React.MouseEventHandler<HTMLButtonElement>
     tagValue?: Array<string>
 }
 
-export const TagInput = (props: TextInputProps) => {
-    const {icon, cancelButton, value, className, placeholder, disabled, tagValue, readOnly,
-        onChange, onKeyDown, onKeyUp, onFocus, onBlur, onCancel} = props
+export const TagInput = (props: TagInputProps) => {
+    const {icon, cancelButton, value, className, tagValue,
+        onChange, onKeyDown, onCancel, ...rest} = props
     const [tags, setTags] = useState<Array<string>>(tagValue || [])
     const [inputValue, setInputValue] = useState<string>(value || "")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -46,14 +47,56 @@ export const TagInput = (props: TextInputProps) => {
         onChange && onChange(event)
     }
     return <>
-        <div className={clsx(['relative rounded-lg bg-slate-200 h-auto', className])} onClick={()=>inputRef.current?.focus()}>
-            <div className="flex flex-wrap flex-1">
-                {
-                    tags.map((tag, index) => {
-                        return <Tag className='mx-1 my-1 flex-none' key={index}>{tag}</Tag>
-                    })
-                }
-                <div className='w-auto flex items-center flex-auto pl-2'>
+            <StylableInput
+                    ref={inputRef}
+                    bgOnClick={()=>inputRef.current?.focus()}
+                    bgClassName={clsx(['relative cursor-text h-auto flex flex-wrap flex-1 px-2 py-1', className])}
+                    inputClassName={clsx(['whitespace-pre caret-black focus:outline-none w-full px-0 bg-transparent text-transparent h-10', 
+                    style.input])}
+                    renderInput={(props, inputStyle, input)=>{
+                        const {inputClassName} = props
+                        return <span className='inline-block whitespace-pre-line break-all'>{inputValue}
+                            <div className={clsx(["relative h-auto px-0", style.tagInput])}>
+                                {/* <BaseInput 
+                                    className={clsx([inputStyle, inputClassName])}
+                                /> */}
+                                {input}
+                            </div>
+                        </span>
+                        
+                    }}
+                    // leftContainerClassName={"items-center flex-wrap relative flex bottom-0 m-0"}
+                    leftComponent={
+                        <>
+                            {
+                                tags.map((tag, index) => {
+                                    return <Tag className='mx-1 my-1 whitespace-pre-line break-all' key={index}>{tag}</Tag>
+                                })
+                            }
+                            <span className='inline-block'>
+                                {icon}
+                            </span>
+                            {/* <span className='inline-block whitespace-pre-line break-all'>{inputValue}</span> */}
+                        </>
+                    }
+                    rightComponent={
+                        <>
+                            {
+                                cancelButton && 
+                                <IconButton
+                                    icon={<CancelIcon />}
+                                    className='pointer-events-auto'
+                                    onClick={onCancel}
+                                />
+                            }
+                        </>
+                    }
+                    onChange={handleOnChange}
+                    onKeyDown={(e)=>handleKeyDown(e)}
+                    value={inputValue}
+                    {...rest}
+                />
+                {/* <div className='w-auto flex items-center flex-auto pl-2'>
                     {
                         icon?<span className='relative inline-block bottom-0 m-2'>{ icon }</span>:null
                     }
@@ -80,14 +123,8 @@ export const TagInput = (props: TextInputProps) => {
                 </div>
                 
                 {
-                    cancelButton && 
-                    <IconButton
-                        icon={<CancelIcon />}
-                        className='relative bottom-0 right-0 m-2'
-                        onClick={onCancel}
-                    />
-                }
-            </div>
-        </div>
+                    
+                } */}
+        {/* </div> */}
     </>
 }

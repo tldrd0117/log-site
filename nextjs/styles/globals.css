@@ -22,3 +22,7 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+* {
+    z-index: inherit;
+}
+

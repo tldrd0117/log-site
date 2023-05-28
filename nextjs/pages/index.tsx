@@ -1,8 +1,4 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import utilStyles from '../styles/utils.module.css'
 
-import { GetServerSideProps } from 'next'
 import { PageLayout } from '@/containers/Layout/PageLayout'
 import { AppBar } from '@/components/AppBar/AppBar'
 import { ContentsLayout } from '@/containers/Layout/ContentsLayout'
@@ -12,7 +8,7 @@ import { FlexList } from '@/components/List/FlexList'
 import { CardListItem } from '@/components/ListItem/CardListItem'
 import { BorderBox } from '@/components/Box/BorderBox'
 import dynamic from "next/dynamic";
-import { serialize } from 'next-mdx-remote/serialize'
+import { FooterLayout } from '@/containers/Layout/FooterLayout'
 
 
 const DynamicCalendarCart = dynamic(() => import('@/components/Chart/CalendarChart').then((module) => module.CalendarChart), { 
@@ -33,18 +29,17 @@ export default function Home({calendar, siteMap}: any) {
             <Text className='mt-8' h5>Recent Post</Text>
             <FlexList className='flex-nowrap overflow-auto mt-4'>
             {
-                [...Array(10)].map((_, i) => {
-                    return <>
-                        <CardListItem size='sm' key={"HOME"+i} title="title" subTitle="subTitle" summary="summary"/>
-                    </>
+                [...Array(10).fill(0)].map((_, i) => {
+                    return <CardListItem size='sm' key={"HOME"+i} title="title" subTitle="subTitle" summary="summary"/>
                 })
             }
             </FlexList>
             <Text className='mt-8' h5>usage</Text>
             <DynamicCalendarCart data={calendar}/>
-            <Text className='mt-8' h5>Site Map</Text>
-            <SiteMap source={siteMap}/>
         </ContentsLayout>
+        <FooterLayout className='mt-4'>
+            <SiteMap source={siteMap}/>
+        </FooterLayout>
     </PageLayout>
   </>
 }
@@ -52,6 +47,8 @@ export default function Home({calendar, siteMap}: any) {
 
 import fs from 'fs'
 import { SiteMap } from '@/components/SiteMap/SiteMap'
+import remarkGfm from 'remark-gfm'
+import { serialize } from 'next-mdx-remote/serialize'
 
 export async function getServerSideProps() {
     const data =`
@@ -64,7 +61,19 @@ export async function getServerSideProps() {
             - [Login](/user/login)
             - [Join](/user/join)
     `
-    const mdxSource = await serialize(data)
+
+// | [Home](/)                | Post          | User           |
+// | -----------------------  | ------------ | ------------------ |
+// |                          | [Post List](/post/list)  | [Login](/user/login)       |
+// |                          | [Post Detail](/post/[:id])   | [Join](/user/join) |
+// |                          | [Post Write](/post/write) |       |
+    const mdxSource = await serialize(data, {
+        mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: []
+        },
+        parseFrontmatter: true
+    })
     
     const source = fs.readFileSync('./pages/calendarExample.json', 'utf8')
     // const source = 'Some **mdx** text, with a component '

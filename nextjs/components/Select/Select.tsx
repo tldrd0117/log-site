@@ -22,10 +22,14 @@ export const Select = (props: SelectProps) => {
     },[])
     const handleOnFocus = () => {
         setIsSelect(true)
+        console.log("focus")
     }
     const handleOnBlur = () => {
+        setIsSelect(false)
+        console.log("blur")
     }
     const handleOnItemClick = (itemData: ListItemData, e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+        console.log(itemData)
         onItemClick && onItemClick(itemData, e)
         setIsSelect(false)
         setSelected(itemData)
@@ -33,8 +37,8 @@ export const Select = (props: SelectProps) => {
     }
     return <>
         <TextInput rightIcon={<DropdownIcon/>} readOnly placeholder="select" {...inputProps} 
-            value={selected?.value}
-            onClick={handleOnFocus} onBlur={handleOnBlur}/>
+            onFocus={handleOnFocus} onBlur={handleOnBlur}
+            value={selected?.value}/>
         <ContextMenu selected={selected} {...contextMenuProps} hide={!isSelect} onItemClick={handleOnItemClick}/>
     </>
 };

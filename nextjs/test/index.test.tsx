@@ -1,15 +1,14 @@
 // __tests__/index.test.jsx
 
-import { render, screen } from '@testing-library/react'
-import Home from '../pages/index'
+import { act, render, screen, waitFor } from '@testing-library/react'
+import Home, {getServerSideProps} from '../pages/index'
 import '@testing-library/jest-dom'
 
 describe('Home', () => {
-  it('renders a heading', () => {
-    render(<Home />)
-
-    const paragraph = screen.getByText('Get started by editing')
-
-    expect(paragraph).toBeInTheDocument()
+  it('renders a heading', async () => {
+    const {props} = await getServerSideProps()
+    render(<Home {...props}/>)
+    const msg = screen.getByText('BLOG')
+    await waitFor(() => expect(msg).toBeInTheDocument())
   })
 })

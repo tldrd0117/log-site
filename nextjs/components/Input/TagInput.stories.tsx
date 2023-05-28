@@ -5,10 +5,15 @@ import { expect, jest } from '@storybook/jest';
 
 import { TagInput } from './TagInput';
 import { SearchIcon } from '../Icon/SearchIcon';
+import { BorderBox } from '../Box/BorderBox';
+import { INPUT_STYLE_TYPE } from './StylableInput';
 
 const meta: Meta<typeof TagInput> = {
     title: "Input/Tag",
     component: TagInput,
+    render: (args) => <BorderBox className='p-4'>
+        <TagInput {...args} />
+        </BorderBox>,
     args: {
         className: "w-80",
     }
@@ -20,7 +25,44 @@ type Story = StoryObj<typeof TagInput>;
 
 export const Normal: Story = {
     args: {
-        placeholder: "NormalBaseInput",
+    },
+    play: async ({args, canvasElement}) => {
+        const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("NormalBaseInput")
+        userEvent.type(element, "test")
+        expect(args.onChange).toBeCalledTimes(4)
+        expect(args.onKeyDown).toBeCalledTimes(4)
+        expect(args.onKeyUp).toBeCalledTimes(4)
+        expect(element).toBeInTheDocument()
+        userEvent.type(element, "{backspace}".repeat(4))
+        element.focus()
+        expect(args.onFocus).toBeCalledTimes(1)
+
+    }
+}
+
+export const UnderLine: Story = {
+    args: {
+        inputStyleType: INPUT_STYLE_TYPE.UNDERLINE
+    },
+    play: async ({args, canvasElement}) => {
+        const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("NormalBaseInput")
+        userEvent.type(element, "test")
+        expect(args.onChange).toBeCalledTimes(4)
+        expect(args.onKeyDown).toBeCalledTimes(4)
+        expect(args.onKeyUp).toBeCalledTimes(4)
+        expect(element).toBeInTheDocument()
+        userEvent.type(element, "{backspace}".repeat(4))
+        element.focus()
+        expect(args.onFocus).toBeCalledTimes(1)
+
+    }
+}
+
+export const OutLine: Story = {
+    args: {
+        inputStyleType: INPUT_STYLE_TYPE.OUTLINE
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);

@@ -8,6 +8,6 @@ export interface ListItemProps extends ContainerProps{
 export const ListItem = (props: ListItemProps) => {
     const {className} = props
     return <>
-        <Container {...props} className={clsx(["break-all", className])} tagType={"li"} />
+        <Container {...props} className={clsx(["break-all", className])} as={"li"} />
     </>
 }

@@ -44,9 +44,8 @@ export const ContextMenu = (props: ContextMenuProps) => {
                             itemProps = lastListItemProps
                             listItemClassName += ` ${lastListItemProps?.className||""}`
                         } 
-                        console.log(itemProps)
                         return <ListItem {...itemProps} 
-                            onClick={(e: React.MouseEvent<HTMLLIElement, MouseEvent>)=>handleOnItemClick(item, e)} 
+                            onMouseDown={(e: React.MouseEvent<HTMLLIElement, MouseEvent>)=>handleOnItemClick(item, e)} 
                             className={clsx(["w-full", "hover:bg-violet-300", "p-2", {"bg-slate-400":isSelected},
                             listItemClassName])} key={item.id}>{item.value}</ListItem>
                     })

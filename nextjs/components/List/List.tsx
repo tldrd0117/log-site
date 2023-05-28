@@ -1,9 +1,9 @@
 import React from "react";
-import { CompContainer, CompContainerProps } from "@/containers/container/CompContainer";
+import { Container, ContainerProps } from "@/containers/container/Container";
 
-export interface ListProps extends CompContainerProps{
+export interface ListProps extends ContainerProps{
 }
 
 export const List = (props: ListProps) => {
-    return <CompContainer {...props} as={"ul"} />
+    return <Container {...props} as={"ul"} />
 }

@@ -6,12 +6,17 @@ import { expect, jest } from '@storybook/jest';
 import { TextInput } from './TextInput';
 import { SearchIcon } from '../Icon/SearchIcon';
 import { DoneIcon } from '../Icon/DoneIcon';
+import { BorderBox } from '../Box/BorderBox';
+import { INPUT_STYLE_TYPE } from './StylableInput';
 
 const meta: Meta<typeof TextInput> = {
     title: "Input/Text",
     component: TextInput,
+    render: (args) => <BorderBox className={"p-4"}>
+            <TextInput {...args} />
+        </BorderBox>,
     args: {
-        className: "w-80",
+        bgClassName: "w-40",
     }
 };
 
@@ -22,6 +27,46 @@ type Story = StoryObj<typeof TextInput>;
 export const Normal: Story = {
     args: {
         placeholder: "NormalBaseInput",
+    },
+    play: async ({args, canvasElement}) => {
+        const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("NormalBaseInput")
+        userEvent.type(element, "test")
+        expect(args.onChange).toBeCalledTimes(4)
+        expect(args.onKeyDown).toBeCalledTimes(4)
+        expect(args.onKeyUp).toBeCalledTimes(4)
+        expect(element).toBeInTheDocument()
+        userEvent.type(element, "{backspace}".repeat(4))
+        element.focus()
+        expect(args.onFocus).toBeCalledTimes(1)
+
+    }
+}
+
+export const UnderLine: Story = {
+    args: {
+        placeholder: "NormalBaseInput",
+        inputStyleType: INPUT_STYLE_TYPE.UNDERLINE
+    },
+    play: async ({args, canvasElement}) => {
+        const canvas = within(canvasElement);
+        const element = canvas.getByPlaceholderText("NormalBaseInput")
+        userEvent.type(element, "test")
+        expect(args.onChange).toBeCalledTimes(4)
+        expect(args.onKeyDown).toBeCalledTimes(4)
+        expect(args.onKeyUp).toBeCalledTimes(4)
+        expect(element).toBeInTheDocument()
+        userEvent.type(element, "{backspace}".repeat(4))
+        element.focus()
+        expect(args.onFocus).toBeCalledTimes(1)
+
+    }
+}
+
+export const OutLine: Story = {
+    args: {
+        placeholder: "NormalBaseInput",
+        inputStyleType: INPUT_STYLE_TYPE.OUTLINE
     },
     play: async ({args, canvasElement}) => {
         const canvas = within(canvasElement);
