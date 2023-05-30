@@ -15,7 +15,7 @@ const getPost = async (postId: string) => {
 
 const getList = async (limit: number, offset: number) => {
     const total = await getPostTotalCount()
-    const list =  await Post.find().limit(limit).skip(offset).sort({order: 1}).populate({
+    const list =  await Post.find().limit(limit).skip(offset).sort({order: -1}).populate({
         path: 'author',
         select: '_id name'
     })
