@@ -1,5 +1,5 @@
 import { KeyLike } from "jose";
-import { encFactory } from "./encUtils";
+import { makeEncObject } from "./cryptoUtils";
 
 export const BASE_URL = "http://localhost:3300";
 
@@ -19,6 +19,6 @@ export const makeQueryString = <T> (obj: QueryObject<T>) => {
 
 export const encrypt = async (obj: any, rsaPublicKey: KeyLike) => {
     return JSON.stringify({
-        enc: await encFactory.makeEncObject(obj, rsaPublicKey)
+        enc: await makeEncObject(obj, rsaPublicKey)
     })
 }
