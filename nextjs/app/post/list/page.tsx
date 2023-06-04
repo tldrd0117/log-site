@@ -2,11 +2,11 @@ import React from "react";
 import { clsx } from "clsx";
 import { AppBar } from "@/components/AppBar/AppBar";
 import { List } from "@/components/List/List";
-import { ContentsLayout } from "@/containers/Layout/ContentsLayout";
+import { ContentsLayout } from "@/containers/layout/ContentsLayout";
 import { FlexList } from "@/components/List/FlexList";
 import { CardListItem } from "@/components/ListItem/CardListItem";
 import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
-import { PageLayout } from "@/containers/Layout/PageLayout";
+import { PageLayout } from "@/containers/layout/PageLayout";
 import { BorderBox } from "@/components/Box/BorderBox";
 
 export interface PostListProps{

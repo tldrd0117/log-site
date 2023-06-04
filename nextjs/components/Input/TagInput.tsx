@@ -1,4 +1,5 @@
-import React, { SyntheticEvent, useRef, useState } from 'react'
+'use client'
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { BaseInputProps, BaseInput } from './BaseInput'
 import Image from 'next/image'
 import closeIcon from '../../public/images/close_FILL0_wght400_GRAD0_opsz24.svg'
@@ -18,11 +19,12 @@ export interface TagInputProps extends StylableInputProps{
     cancelButton?: boolean
     onCancel?: React.MouseEventHandler<HTMLButtonElement>
     tagValue?: Array<string>
+    onTagChange?: (value: Array<string>) => void
 }
 
 export const TagInput = (props: TagInputProps) => {
     const {icon, cancelButton, value, className, tagValue,
-        onChange, onKeyDown, onCancel, ...rest} = props
+        onChange, onKeyDown, onCancel, onTagChange, ...rest} = props
     const [tags, setTags] = useState<Array<string>>(tagValue || [])
     const [inputValue, setInputValue] = useState<string>(value || "")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -40,6 +42,14 @@ export const TagInput = (props: TagInputProps) => {
             }
         }
         onKeyDown && onKeyDown(event)
+    }
+
+    useEffect(()=>{
+        handleOnTagChange()
+    }, [tags])
+
+    const handleOnTagChange = () => {
+        onTagChange && onTagChange(tags)
     }
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {

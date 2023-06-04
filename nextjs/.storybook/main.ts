@@ -3,7 +3,7 @@ import path from 'path'
 const config: StorybookConfig = {
     stories: ["../components/*.stories.@(js|jsx|ts|tsx)", "../components/**/*.stories.@(js|jsx|ts|tsx)",
         "../containers/*.stories.@(js|jsx|ts|tsx)", "../containers/**/*.stories.@(js|jsx|ts|tsx)",
-        "../pages/*.stories.@(js|jsx|ts|tsx)", "../pages/**/*.stories.@(js|jsx|ts|tsx)",
+        "../app/*.stories.@(js|jsx|ts|tsx)", "../app/**/*.stories.@(js|jsx|ts|tsx)",
     ],
     staticDirs: ['../public'],
     addons: [

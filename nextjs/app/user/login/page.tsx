@@ -1,10 +1,10 @@
 import { Text } from '@/components/Text/Text'
 import { TextInput } from '@/components/Input/TextInput'
-import { ContentsLayout } from '@/containers/Layout/ContentsLayout'
+import { ContentsLayout } from '@/containers/layout/ContentsLayout'
 import React from 'react'
 import { PasswordInput } from '@/components/Input/PasswordInput'
 import { PrimaryButton } from '@/components/Button/PrimaryButton'
-import { PageLayout } from '@/containers/Layout/PageLayout'
+import { PageLayout } from '@/containers/layout/PageLayout'
 import { BorderBox } from '@/components/Box/BorderBox'
 
 export interface LoginProps{

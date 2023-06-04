@@ -1,3 +1,4 @@
+'use client'
 import { Portal } from "@/components/Potal/Portal";
 import React from "react";
 

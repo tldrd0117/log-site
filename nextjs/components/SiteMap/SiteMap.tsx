@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { Text } from "../Text/Text";
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'

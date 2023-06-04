@@ -6,17 +6,21 @@ import PostWrite from './write';
 import { serialize } from 'next-mdx-remote/serialize';
 import remarkGfm from 'remark-gfm';
 import source from '!raw-loader!./example.mdx'
+import { compileMDX } from 'next-mdx-remote/rsc';
 
-async function getServerSideProps() {
-    const code = await serialize(source.toString(), {
-        mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [],
-            development: process.env.NODE_ENV === 'development',
-        },
-        parseFrontmatter: true
+async function getData() {
+    const {content, frontmatter} = await compileMDX({
+        source: source.toString(),
+        options:{
+            mdxOptions: {
+                remarkPlugins: [remarkGfm],
+                rehypePlugins: [],
+                development: process.env.NODE_ENV === 'development',
+            },
+            parseFrontmatter: true
+        }
     })
-    return {code, source: source.toString()}
+    return {source: source.toString(), frontmatter}
 }
 
 const meta: Meta<typeof PostWrite> = {
@@ -27,7 +31,7 @@ const meta: Meta<typeof PostWrite> = {
     },
     render: (args, {loaded}) => {
         return (
-            <PostWrite {...args} code={loaded.code} source={loaded.source}/>
+            <PostWrite {...loaded} {...args}/>
         )
     },
     args: {
@@ -35,7 +39,7 @@ const meta: Meta<typeof PostWrite> = {
     },
     loaders: [
         async () => ({
-            ...await getServerSideProps(),
+            ...await getData(),
         })
     ]
 };

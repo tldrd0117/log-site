@@ -1,27 +1,26 @@
 
-import { PageLayout } from '@/containers/Layout/PageLayout'
+import { PageLayout } from '@/containers/layout/PageLayout'
 import { AppBar } from '@/components/AppBar/AppBar'
-import { ContentsLayout } from '@/containers/Layout/ContentsLayout'
+import { ContentsLayout } from '@/containers/layout/ContentsLayout'
 import { Text } from '@/components/Text/Text'
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
 import { FlexList } from '@/components/List/FlexList'
 import { CardListItem } from '@/components/ListItem/CardListItem'
 import { BorderBox } from '@/components/Box/BorderBox'
-import dynamic from "next/dynamic";
-import { FooterLayout } from '@/containers/Layout/FooterLayout'
+import { FooterLayout } from '@/containers/layout/FooterLayout'
+import { SiteMap } from '@/components/SiteMap/SiteMap'
+import remarkGfm from 'remark-gfm'
+import { serialize } from 'next-mdx-remote/serialize'
+import fs from 'fs'
+import { DynamicCalendarCart } from './DynamicCalendarCart'
 
-
-const DynamicCalendarCart = dynamic(() => import('@/components/Chart/CalendarChart').then((module) => module.CalendarChart), { 
-    loading: () => <p>loading...</p>,
-    ssr: false
-});
-
-
-export default function Home({calendar, siteMap}: any) {
+export default async function Home() {
+    const { calendar, siteMap}: any = await getData()
   return <>
     <PageLayout>
         <AppBar title={"BLOG"} login account join/>
         <ContentsLayout className='mt-4' tagType={BorderBox}>
+            <p>app</p>
             <Breadcrumbs items={[{
                 href: "/",
                 label: "Home"
@@ -44,13 +43,7 @@ export default function Home({calendar, siteMap}: any) {
   </>
 }
 
-
-import fs from 'fs'
-import { SiteMap } from '@/components/SiteMap/SiteMap'
-import remarkGfm from 'remark-gfm'
-import { serialize } from 'next-mdx-remote/serialize'
-
-export async function getServerSideProps() {
+async function getData() {
     const data =`
         - [Home](/)
         - Post
@@ -79,10 +72,8 @@ export async function getServerSideProps() {
     // const source = 'Some **mdx** text, with a component '
     const calendar = JSON.parse(source)
     return {
-      props: {
         calendar,
         siteMap: mdxSource
-      }
     }
 }
 

@@ -1,6 +1,6 @@
+'use client'
 import { useRef, useEffect, useState, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import styles from "./Overlay.module.css"
 
 export interface PortalProps {
     children: ReactNode
