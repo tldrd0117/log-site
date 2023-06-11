@@ -1,13 +1,9 @@
 import React, { MouseEventHandler } from 'react'
-import { BaseButton } from './BaseButton'
+import { BaseButton, BaseButtonProps } from './BaseButton'
 import {clsx} from 'clsx'
 import styles from './button.module.scss'
 
-interface PrimaryButtonProps{
-    label: string
-    onClick?: MouseEventHandler<HTMLButtonElement>
-    disabled?: boolean
-    className?: string
+interface PrimaryButtonProps extends BaseButtonProps{
 }
 
 export const PrimaryButton = (props: PrimaryButtonProps) => {

@@ -14,13 +14,14 @@ export interface PasswordInputProps extends BaseInputProps{
 }
 
 export const PasswordInput = (props: PasswordInputProps) => {
-    const {icon, cancelButton, value, className, placeholder, disabled, 
+    const {icon, cancelButton, value, className, placeholder, disabled, name,
         onChange, onKeyDown, onKeyUp, onFocus, onBlur, onCancel} = props
     return <>
         <div className={clsx(['relative h-10', className])}>
             <div className="absolute rounded-lg bg-slate-200 w-full">
                 <span className='absolute left-0 m-2'>{ icon }</span>
                 <BaseInput
+                    name={name}
                     type="password"
                     className={clsx(['text-base', 'rounded-lg', 'bg-transparent', 'focus:outline-none', 'focus:ring', "w-full",
                         'focus:border-blue-500', 'h-10', {'pl-10': icon}, {'pl-4': !icon}, {'pr-8': cancelButton}, {'pr-4': !cancelButton}])}

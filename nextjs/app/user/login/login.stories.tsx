@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect, jest } from '@storybook/jest';
-import Login from './page';
+import Login from './login';
 
 
 const meta: Meta<typeof Login> = {

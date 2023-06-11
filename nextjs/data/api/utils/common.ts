@@ -22,3 +22,12 @@ export const encrypt = async (obj: any, rsaPublicKey: KeyLike) => {
         enc: await makeEncObject(obj, rsaPublicKey)
     })
 }
+
+export const makeStringErrorByResponse = (res: any) => {
+    if (typeof res.error === "string")
+        return res.error
+    else if (Array.isArray(res.error))
+        return res.error.join("<br/>")
+    else
+        return "unknown error"
+}

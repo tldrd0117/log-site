@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import source from '!raw-loader!./example.mdx'
+import source from '!raw-loader!../example/example.mdx'
 
 type Data = string
 

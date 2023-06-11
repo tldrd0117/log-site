@@ -5,13 +5,14 @@ export interface BaseContainerProps{
     hide?: boolean
     className?: string
     as?: React.ElementType
+    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
 export const BaseContainer = (props: BaseContainerProps) => {
-    const {children, hide, className, as} = props
+    const {children, hide, className, as, onClick} = props
     const Box = as || "div"
     return <>
-        {hide? null : <Box className={className}>
+        {hide? null : <Box className={className} onClick={onClick}>
             {children}
         </Box>}
     </>

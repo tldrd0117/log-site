@@ -20,7 +20,8 @@
     "@nivo/core": "^0.82.0",
     "@svgr/webpack": "^7.0.0",
     "@tailwindcss/container-queries": "^0.1.1",
-    "@tanstack/react-query": "^4.29.7",
+    "@tanstack/react-query": "^4.29.12",
+    "@tanstack/react-query-devtools": "^4.29.12",
     "@types/node": "18.15.11",
     "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
@@ -34,6 +35,7 @@
     "date-fns": "^2.29.3",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
+    "formik": "^2.4.1",
     "gray-matter": "^4.0.3",
     "jose": "^4.14.4",
     "next": "^13.4.4",
@@ -48,7 +50,8 @@
     "remark-gfm": "^3.0.1",
     "remark-html": "^15.0.2",
     "tailwindcss": "3.3.1",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

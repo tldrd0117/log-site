@@ -13,34 +13,15 @@ import remarkGfm from 'remark-gfm'
 import { serialize } from 'next-mdx-remote/serialize'
 import fs from 'fs'
 import { DynamicCalendarCart } from './DynamicCalendarCart'
+import { LOGIN_STATE, useLoginState } from '@/data/hooks/user'
+import { Home } from './home'
+import getQueryClient from './getQueryClient'
 
-export default async function Home() {
-    const { calendar, siteMap}: any = await getData()
-  return <>
-    <PageLayout>
-        <AppBar title={"BLOG"} login account join/>
-        <ContentsLayout className='mt-4' tagType={BorderBox}>
-            <p>app</p>
-            <Breadcrumbs items={[{
-                href: "/",
-                label: "Home"
-            }]}/>
-            <Text className='mt-8' h5>Recent Post</Text>
-            <FlexList className='flex-nowrap overflow-auto mt-4'>
-            {
-                [...Array(10).fill(0)].map((_, i) => {
-                    return <CardListItem size='sm' key={"HOME"+i} title="title" subTitle="subTitle" summary="summary"/>
-                })
-            }
-            </FlexList>
-            <Text className='mt-8' h5>usage</Text>
-            <DynamicCalendarCart data={calendar}/>
-        </ContentsLayout>
-        <FooterLayout className='mt-4'>
-            <SiteMap source={siteMap}/>
-        </FooterLayout>
-    </PageLayout>
-  </>
+export default async function HomePage() {
+    const data = await getData()
+    return <>
+        <Home data={data}/>
+    </>
 }
 
 async function getData() {
@@ -68,8 +49,9 @@ async function getData() {
         parseFrontmatter: true
     })
     
-    const source = fs.readFileSync('./pages/calendarExample.json', 'utf8')
+    const source = await fetch(`http://localhost:3000/calendarExample.json`).then(res => res.text())
     // const source = 'Some **mdx** text, with a component '
+    console.log(source)
     const calendar = JSON.parse(source)
     return {
         calendar,

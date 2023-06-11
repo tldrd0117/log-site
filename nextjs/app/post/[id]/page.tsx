@@ -52,7 +52,7 @@ export default async function Page(context: GetServerSidePropsContext<{id: strin
 }
 
 export async function getData(id: string) {
-    const source = await fetch(`http://localhost:3000/api/exampleMdx`).then(res => res.text())
+    const source = await fetch(`http://localhost:3000/example.mdx`).then(res => res.text())
     
     return {
         source

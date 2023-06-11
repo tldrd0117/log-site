@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler, KeyboardEventHandler, Ref } from 'react'
 
 export interface BaseInputProps{
+    name?: string
     type?: string
     value?: string
     placeholder?: string
@@ -16,9 +17,10 @@ export interface BaseInputProps{
 }
 
 export const BaseInput = React.forwardRef((props: BaseInputProps, ref: Ref<HTMLInputElement>) => {
-    const {type, value, readOnly, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur, onClick} = props
+    const {name, type, value, readOnly, className, placeholder, disabled, onChange, onKeyDown, onKeyUp, onFocus, onBlur, onClick} = props
     return <>
         <input
+            name={name}
             type={type}
             ref={ref}
             readOnly={readOnly}

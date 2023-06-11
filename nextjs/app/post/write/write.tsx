@@ -20,6 +20,8 @@ import { Modal } from "@/components/Modal/Modal";
 import { useQuery } from "@tanstack/react-query";
 import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
+import { Text } from "@/components/Text/Text";
+import { ListItemData } from "@/components/ContextMenu/ContextMenu";
 
 export interface WriteProps{
     source: string
@@ -48,11 +50,16 @@ export default function Write (props: any){
         setCode(value)
     }
 
+    const handleCategoryChange = (itemData: ListItemData, e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+        setCategoryValue(itemData.value)
+    }
+
     const handleOnTitleChange = (e: any) => {
         setTitleValue(e.target.value)
     }
 
     const handleOnTagsChange = (values: Array<string>) => {
+        console.log(values  )
         setTagValue(values)
     }
 
@@ -67,7 +74,6 @@ export default function Write (props: any){
         })
         const result = await response.text()
         const resultJSON = JSON.parse(result)
-        console.log(resultJSON.code)
         const mo = await run(resultJSON.code, runtime)
         setMdxModule(mo)
     }
@@ -112,6 +118,7 @@ export default function Write (props: any){
                     },
                     listItemsData: categories.map((item:any)=>({id: item, value: item})),
                 }}
+                onItemSelect={handleCategoryChange}
                 selected={isEdit?{id:frontmatter.category as string, value: frontmatter.category as string}: undefined}
                 />
                 <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
@@ -141,7 +148,10 @@ export default function Write (props: any){
             </ContentsLayout>
         </PageLayout>
         <Modal isShow={isPreview} onClose={() => setIsPreview(false)}>
-            <BorderBox className="p-16 prose max-h-screen overflow-auto">
+            <BorderBox className="p-16 prose max-h-screen overflow-auto min-w-[62ch]">
+                <Text h3>{titleValue}</Text>
+                <Text p>{categoryValue}</Text>
+                <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tagValue} readOnly/>
                 <MdxContent/>
             </BorderBox>
         </Modal>
