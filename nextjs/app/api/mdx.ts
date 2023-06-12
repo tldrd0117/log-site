@@ -13,6 +13,10 @@ export default async function handler(
 ) {
     console.log("req",req.body)
 
+    if(req.body.source === undefined) {
+        res.status(200).send("")
+    }
+
     const code = String(await compile(req.body.source, {
         remarkPlugins: [remarkGfm],
         rehypePlugins: [],

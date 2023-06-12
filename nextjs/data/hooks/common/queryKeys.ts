@@ -4,6 +4,7 @@ export const QUERY_KEYS = {
     },
     POST: {
         POST_LIST: 'postList',
+        POST: 'post'
     },
     USER: {
         TOKEN: "token",

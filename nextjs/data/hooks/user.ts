@@ -32,6 +32,7 @@ export const useLoginMutation = () => {
         },
         onSuccess: (data) => {
             queryClient.setQueryData([QUERY_KEYS.USER.TOKEN], data.token)
+            queryClient.invalidateQueries([QUERY_KEYS.USER.LOGIN_STATE])
             router.push("/")
         }
     })

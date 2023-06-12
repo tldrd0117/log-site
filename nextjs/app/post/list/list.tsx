@@ -12,6 +12,7 @@ import { BorderBox } from "@/components/Box/BorderBox";
 import { usePostListInfinity } from "@/data/hooks/post";
 import { PrimaryButton } from "@/components/Button/PrimaryButton";
 import { useRouter } from "next/navigation";
+import { Text } from "@/components/Text/Text";
 
 export interface PostListProps{
 }
@@ -19,6 +20,7 @@ export interface PostListProps{
 export function PostList (props: PostListProps) {
     const { data, fetchNextPage, hasNextPage} = usePostListInfinity()
     const { pages }: any = data
+    console.log(data, pages)
     const router = useRouter()
     const handleItemClick = (id: string) => {
         console.log(id)
@@ -38,12 +40,12 @@ export function PostList (props: PostListProps) {
                 <FlexList className="mt-4">
                     {
                         pages? pages.map((page: any) => {
-                            return page? page.list.map((item: any) => {
+                            return (page && page.list && page.list.length)? page.list.map((item: any) => {
                                 return <>
                                     <CardListItem onClick={() => handleItemClick(item._id)} key={item._id} title={item.summary} subTitle={item.createAt} summary={item.authorName}/>
                                 </>
-                            }): null
-                        }): null
+                            }): <Text p>없습니다</Text>
+                        }): <Text p>없습니다</Text>
                     }
                 </FlexList>
                 {

@@ -22,26 +22,37 @@ import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
+import { usePost } from "@/data/hooks/post";
+import { useLoginState } from "@/data/hooks/user";
+import { LOGIN_STATE } from "@/data/hooks/user";
+import { redirect } from "next/navigation";
 
 export interface WriteProps{
-    source: string
+    id: string
 }
 
-export default function Write (props: any){
-    let {source, frontmatter, categories}: any = props
-    let isEdit = source ? true : false
-    let tags, title, category
-    if(isEdit){
-        source = source.slice(source.indexOf("---")+3)
-        source = source.slice(source.indexOf("---")+3)
-        tags = (frontmatter.tags as string).split("(((").slice(1)
-    } else {
+export default function Write ({id}: WriteProps){
+    const loginState = useLoginState()
+    console.log(loginState.data)
+    if(loginState.data === LOGIN_STATE.LOGOUT){
+        redirect('/user/login')
     }
+
+    const {data} = usePost(id)
+    let {
+        source,
+        mdxContent,
+        tags,
+        title,
+        category,
+        categories
+    }: any = data
+    const isEdit = id !== undefined
 
     const [code, setCode] = useState(source)
     const [tagValue, setTagValue] = useState(tags)
-    const [titleValue, setTitleValue] = useState(frontmatter.title as string || "")
-    const [categoryValue, setCategoryValue] = useState(frontmatter.category as string)
+    const [titleValue, setTitleValue] = useState(title)
+    const [categoryValue, setCategoryValue] = useState(category)
     const [isPreview, setIsPreview] = useState(false)
     const [mdxModule, setMdxModule]:any = useState()
     const MdxContent = mdxModule ? mdxModule.default : Fragment
@@ -89,7 +100,7 @@ export default function Write (props: any){
                     label: "PostList"
                 }, {
                     href: "/post/write",
-                    label: isEdit? frontmatter.title as string : "PostWrite"
+                    label: isEdit? title : "PostWrite"
                 }]}/>
                 <TextInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE}
                     inputClassName = {"px-7 py-8 text-3xl font-bold "}
@@ -119,7 +130,7 @@ export default function Write (props: any){
                     listItemsData: categories.map((item:any)=>({id: item, value: item})),
                 }}
                 onItemSelect={handleCategoryChange}
-                selected={isEdit?{id:frontmatter.category as string, value: frontmatter.category as string}: undefined}
+                selected={isEdit?{id:category as string, value: category as string}: undefined}
                 />
                 <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
                     onTagChange={handleOnTagsChange}
@@ -141,7 +152,6 @@ export default function Write (props: any){
                         <div className="flex gap-2 pr-8">
                             <PrimaryButton onClick={() => handleOnClickPreview()} label="미리보기"/>
                             <PrimaryButton label="작성완료"/>
-
                         </div>
                     }
                     />
