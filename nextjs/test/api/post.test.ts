@@ -21,13 +21,14 @@ describe("post api", () => {
         rsaPublicKey = (await importJWK(encPublicKey)) as KeyLike
         
         const loginResponse = await loginUser({
-            email: `testUser@example.com`,
-            password: sha256("********").toString()
+            email: `tester01@naver.com`,
+            password: sha256("12345678").toString()
         }, rsaPublicKey)
         expect(loginResponse).toHaveProperty("result", "success")
         expect(loginResponse).toHaveProperty("token")
         token = loginResponse.token;
         user = await decryptToken(loginResponse.token);
+        console.log(token, user)
         
     });
 

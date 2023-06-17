@@ -1,21 +1,7 @@
 
-import { PageLayout } from '@/containers/layout/PageLayout'
-import { AppBar } from '@/components/AppBar/AppBar'
-import { ContentsLayout } from '@/containers/layout/ContentsLayout'
-import { Text } from '@/components/Text/Text'
-import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
-import { FlexList } from '@/components/List/FlexList'
-import { CardListItem } from '@/components/ListItem/CardListItem'
-import { BorderBox } from '@/components/Box/BorderBox'
-import { FooterLayout } from '@/containers/layout/FooterLayout'
-import { SiteMap } from '@/components/SiteMap/SiteMap'
-import remarkGfm from 'remark-gfm'
 import { serialize } from 'next-mdx-remote/serialize'
-import fs from 'fs'
-import { DynamicCalendarCart } from './DynamicCalendarCart'
-import { LOGIN_STATE, useLoginState } from '@/data/hooks/user'
 import { Home } from './home'
-import getQueryClient from './getQueryClient'
+import remarkGfm from 'remark-gfm'
 
 export default async function HomePage() {
     const data = await getData()
@@ -29,7 +15,7 @@ async function getData() {
         - [Home](/)
         - Post
             - [Post List](/post/list)
-            - [Post Detail](/post/[:id])
+            - [Post Detail](/post/example.mdx)
             - [Post Write](/post/write)
         - User
             - [Login](/user/login)

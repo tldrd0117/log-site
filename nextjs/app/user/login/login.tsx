@@ -1,22 +1,24 @@
 'use client'
+
 import { Text } from '@/components/Text/Text'
 import { TextInput } from '@/components/Input/TextInput'
 import { ContentsLayout } from '@/containers/layout/ContentsLayout'
-import React, { use } from 'react'
+import React, { use, useEffect } from 'react'
 import { PasswordInput } from '@/components/Input/PasswordInput'
 import { PrimaryButton } from '@/components/Button/PrimaryButton'
 import { PageLayout } from '@/containers/layout/PageLayout'
 import { BorderBox } from '@/components/Box/BorderBox'
 import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
-import { login, useLoginMutation } from '@/data/hooks/user'
+import { login, useLoginMutation, useLoginState } from '@/data/hooks/user'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 
 export interface LoginProps{
 }
 
 export default function Login (props: LoginProps) {
-    const { mutate, error, isError } = useLoginMutation()
+    const { mutate, error, isError, isIdle, isPaused } = useLoginMutation()
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -29,10 +31,9 @@ export default function Login (props: LoginProps) {
         }),
         onSubmit: values => {
             mutate(values)
-            console.log("submit",values)
+            console.log("submit",values, error, isError, isPaused)
         }
     })
-    console.log("login")
     return <>
         <PageLayout className='flex justify-center items-center'>
             <ContentsLayout tagType={BorderBox} className='w-80'>

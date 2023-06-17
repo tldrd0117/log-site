@@ -7,8 +7,6 @@ import { ContentsLayout } from "@/containers/layout/ContentsLayout";
 import { PageLayout } from "@/containers/layout/PageLayout";
 import CodeMirror, {useCodeMirror} from '@uiw/react-codemirror';
 import { langs } from '@uiw/codemirror-extensions-langs';
-import { serialize } from "next-mdx-remote/serialize";
-import remarkGfm from "remark-gfm";
 import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
 import { TagInput } from "@/components/Input/TagInput";
 import { Select } from "@/components/Select/Select";
@@ -17,15 +15,15 @@ import { INPUT_STYLE_TYPE } from "@/components/Input/StylableInput";
 import { FloatBottomLayout } from "@/containers/layout/FloatBottomLayout";
 import { PrimaryButton } from "@/components/Button/PrimaryButton";
 import { Modal } from "@/components/Modal/Modal";
-import { useQuery } from "@tanstack/react-query";
 import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
-import { usePost } from "@/data/hooks/post";
+import { usePost, usePostMutation } from "@/data/hooks/post";
 import { useLoginState } from "@/data/hooks/user";
 import { LOGIN_STATE } from "@/data/hooks/user";
-import { redirect } from "next/navigation";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { RedirectType } from "next/dist/client/components/redirect";
 
 export interface WriteProps{
     id: string
@@ -33,11 +31,13 @@ export interface WriteProps{
 
 export default function Write ({id}: WriteProps){
     const loginState = useLoginState()
-    console.log(loginState.data)
+    console.log("loginState", loginState.data)
+    const pathname = usePathname()
+    const params = useSearchParams()
     if(loginState.data === LOGIN_STATE.LOGOUT){
-        redirect('/user/login')
+        redirect(`/user/login?redirect=${pathname}?${params}`, RedirectType.push)
     }
-
+    console.log("id:", id==="")
     const {data} = usePost(id)
     let {
         source,
@@ -47,7 +47,8 @@ export default function Write ({id}: WriteProps){
         category,
         categories
     }: any = data
-    const isEdit = id !== undefined
+    const isEdit = id !== ""
+    const {mutate} = usePostMutation() 
 
     const [code, setCode] = useState(source)
     const [tagValue, setTagValue] = useState(tags)
@@ -88,9 +89,19 @@ export default function Write ({id}: WriteProps){
         const mo = await run(resultJSON.code, runtime)
         setMdxModule(mo)
     }
+
+    const handleOnClickComplete = async () => {
+        mutate({
+            text: code,
+            title: titleValue,
+            tags: tagValue,
+            category: categoryValue,
+        })
+    }
+
     return <>
         <PageLayout>
-            <AppBar title='blog' login account join/>
+            <AppBar title='blog' />
             <ContentsLayout tagType={BorderBox} className="mt-4 pb-16">
                 <Breadcrumbs items={[{
                     href: "/",
@@ -151,7 +162,7 @@ export default function Write ({id}: WriteProps){
                     rightComponent={
                         <div className="flex gap-2 pr-8">
                             <PrimaryButton onClick={() => handleOnClickPreview()} label="미리보기"/>
-                            <PrimaryButton label="작성완료"/>
+                            <PrimaryButton onClick={() => handleOnClickComplete()} label="작성완료"/>
                         </div>
                     }
                     />

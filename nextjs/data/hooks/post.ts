@@ -1,16 +1,41 @@
 import getQueryClient from "@/app/getQueryClient"
 import { getPublicKey } from "../api/auth"
 import { QUERY_KEYS } from "./common/queryKeys"
-import { getPost, getPostList } from "../api/post"
-import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query"
+import { getPost, getPostList, createPost } from "../api/post"
+import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import remarkGfm from "remark-gfm"
 import { compileMDX } from "next-mdx-remote/rsc"
+import { PostCreate, PostRawCreate } from "../api/interfaces/post"
+import { getEncPublicKey } from "../security/enc"
+import { KeyLike } from "jose"
+import { makeStringErrorByResponse } from "../api/utils/common"
+import { useRouter } from "next/navigation"
+import { UserLogin } from "../api/interfaces/user"
 
 const DEFAULT_LIMIT = 20;
+export const TAG_SEPARATOR = "(/*/)";
 
 const getMdxPost = async (id: string) => {
-    const post: any = await getPost({_id: id})
-    console.log("post", post)
+    console.log("getMdxPost", id)
+    if(id==="") return {
+        id: "",
+        source: "",
+        mdxContent: "",
+        tags: [],
+        title : "",
+        category : "",
+        categories : ["카테고리1", "카테고리2", "카테고리3"]
+    }
+    let post: any
+    if(id==="example.mdx"){
+        let text = await fetch(`http://localhost:3000/example.mdx`).then(res => res.text())
+        post = {
+            text,
+            result: "success"
+        }
+    } else {
+        post = await getPost({_id: id})
+    }
     if(!post || post.result === "fail") {
         console.log("fail")
         return {
@@ -28,8 +53,10 @@ const getMdxPost = async (id: string) => {
         mdxOptions: {
             remarkPlugins: [remarkGfm],
             rehypePlugins: [],
+            development: true,  
         },
-        parseFrontmatter: true
+        parseFrontmatter: true,
+        
     }})
     if(source.indexOf("---")>=0){
         source = source.slice(source.indexOf("---")+3)
@@ -37,8 +64,9 @@ const getMdxPost = async (id: string) => {
     }
     let tagStr = frontmatter.tags as string
     let tags: string[] = []
-    if(tagStr && tagStr.indexOf("(((")){
-        tags = (frontmatter.tags as string).split("(((").slice(1)
+    console.log(content, frontmatter, tags)
+    if(tagStr && tagStr.indexOf(TAG_SEPARATOR)>=0){
+        tags = tagStr.split(TAG_SEPARATOR).slice(1)
     }
     const title = frontmatter.title as string
     const category = frontmatter.category as string
@@ -57,6 +85,7 @@ const getMdxPost = async (id: string) => {
 export const prefetchPost = (id: string) => {
     return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST, id], async () => {
         const mdxPost =  await getMdxPost(id)
+        console.log(mdxPost)
         return mdxPost
     })
 }
@@ -66,6 +95,48 @@ export const usePost = (id: string) => {
         queryKey: [QUERY_KEYS.POST.POST, id],
         queryFn: async () => {
             return await getMdxPost(id)
+        }
+    })
+}
+
+const sendCreatePost = async (queryClient: QueryClient, postData: PostRawCreate) => {
+    const jwk = queryClient.getQueryData([QUERY_KEYS.AUTH.ENC_PUBLIC_KEY])
+    const token: string = queryClient.getQueryData([QUERY_KEYS.USER.TOKEN]) as string
+    const encPublicKey: KeyLike = await getEncPublicKey(jwk)
+    const userInfo: any = queryClient.getQueryData([QUERY_KEYS.USER.INFO])
+    const text = `---
+    title: ${postData.title}
+    category: ${postData.category}
+    tags: ${TAG_SEPARATOR}${postData.tags.join(TAG_SEPARATOR)}
+    ---
+    ${postData.text}`
+    const postInfo: PostCreate = {
+        author: userInfo._id,
+        authorName: userInfo.name,
+        summary: postData.title,
+        text,
+    }
+
+    const res = await createPost(postInfo, encPublicKey, token)
+    if(res.result === "fail"){
+        const errorStr = makeStringErrorByResponse(res)
+        throw new Error(errorStr)
+    }
+    return res
+}
+
+export const usePostMutation = () => {
+    const queryClient = useQueryClient()
+    const router = useRouter()
+    return useMutation({
+        mutationFn: (post: PostRawCreate) => {
+            return sendCreatePost(queryClient, post)
+        },
+        onError: (error) => {
+            console.log(error)
+        },
+        onSuccess: async () => {
+            router.push("/post/list")
         }
     })
 }

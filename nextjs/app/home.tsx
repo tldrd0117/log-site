@@ -9,23 +9,13 @@ import { CardListItem } from '@/components/ListItem/CardListItem'
 import { BorderBox } from '@/components/Box/BorderBox'
 import { FooterLayout } from '@/containers/layout/FooterLayout'
 import { SiteMap } from '@/components/SiteMap/SiteMap'
-import remarkGfm from 'remark-gfm'
-import { serialize } from 'next-mdx-remote/serialize'
-import fs from 'fs'
 import { DynamicCalendarCart } from './DynamicCalendarCart'
-import { LOGIN_STATE, useLoginState } from '@/data/hooks/user'
-import { log } from 'console'
 
 export function Home({ data }: any) {
-    const { data: loginState } = useLoginState()
     const { calendar, siteMap}: any = data
-    console.log(loginState)
     return <>
         <PageLayout>
-            <AppBar title={"BLOG"} 
-                login={loginState===LOGIN_STATE.LOGOUT} 
-                account={loginState===LOGIN_STATE.LOGIN} 
-                join={loginState===LOGIN_STATE.LOGOUT} />
+            <AppBar title={"BLOG"}  />
             <ContentsLayout className='mt-4' tagType={BorderBox}>
                 <p>app</p>
                 <Breadcrumbs items={[{

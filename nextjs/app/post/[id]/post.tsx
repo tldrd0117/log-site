@@ -5,25 +5,31 @@ import { ContentsLayout } from '@/containers/layout/ContentsLayout'
 import { PageLayout } from '@/containers/layout/PageLayout'
 import { BorderBox } from '@/components/Box/BorderBox'
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { Text } from '@/components/Text/Text'
-import { useQuery } from '@tanstack/react-query'
 import { TagInput } from '@/components/Input/TagInput'
 import { INPUT_STYLE_TYPE } from '@/components/Input/StylableInput'
-import { getData } from './page'
-import MdxRemoteWrapper from '@/components/MdxRemoteWrapper/MdxRemoteWrapper'
+import { usePost } from '@/data/hooks/post'
 
 
 export interface PostProps{
-    code: MDXRemoteSerializeResult
-    source: string
+    id: string
 }
 
-export default function Post ({mdxContents, title, category, tags}: any){
+export default function Post ({id}: PostProps){
+    const {data} = usePost(id)
+    let {
+        source,
+        mdxContent,
+        tags,
+        title,
+        category,
+        categories
+    }: any = data
+    console.log("mdxContent", mdxContent)
     return (
         <>
             <PageLayout>
-                <AppBar title='blog' login account join/>
+                <AppBar title='blog'/>
                 <ContentsLayout tagType={BorderBox} className='mt-4'>
                     <Breadcrumbs items={[{
                         href: "/",
@@ -40,7 +46,7 @@ export default function Post ({mdxContents, title, category, tags}: any){
                         <Text p>{category}</Text>
                         <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tags} readOnly/>
                         {
-                            mdxContents
+                            mdxContent
                         }
                     </div>
                 </ContentsLayout>

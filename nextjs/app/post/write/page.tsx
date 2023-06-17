@@ -13,7 +13,7 @@ export interface WriteProps{
 }
 
 export default async function WritePage (context: GetServerSidePropsContext<{id: string}>){
-    const id = context.params?.id as string
+    const id = context.params?.id as string || ""
     await prefetchPost(id)
     const state = dehydrate(getQueryClient())
     return <>

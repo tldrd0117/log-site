@@ -9,6 +9,16 @@ export interface PostCreate{
     order?: number
 }
 
+export interface PostRawCreate{
+    text: string;
+    title: string;
+    category: string;
+    tags: Array<string>;
+    parent?: string;
+    relatedPosts?: Array<string>;
+    order?: number
+}
+
 export interface PostUpdate{
     _id: string
     author?: string
