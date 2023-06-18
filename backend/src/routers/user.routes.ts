@@ -61,6 +61,7 @@ router.post('/login', decMiddleware, validateMiddlewareFactory(getLoginUserObjec
     const result = await userService.doLogin(ctx.request.body as UserLogin)
     if (result) {
         const userInfo = await userService.getUserByEmail(result.email)
+        console.log("login", userInfo.toJSON())
         const token = await authService.getToken(userInfo.toJSON())
         ctx.body = response.makeSuccessBody({
             token

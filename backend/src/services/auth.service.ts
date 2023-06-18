@@ -25,7 +25,7 @@ const getTokenByExp = async (payload: any, exp: string) => {
         ...payload
     })
     return (await jose.JWS.createSign(opt, key)
-        .update(payload)
+        .update(payload, "utf8")
         .final()) as any
 }
 
