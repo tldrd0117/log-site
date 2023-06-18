@@ -5,7 +5,6 @@ import { expect, jest } from '@storybook/jest';
 import { serialize } from 'next-mdx-remote/serialize';
 import remarkGfm from 'remark-gfm';
 import source from '!raw-loader!../../example/example.mdx'
-import { PostComponent } from './page';
 import { compileMDX } from 'next-mdx-remote/rsc'
 import Post from './post';
 

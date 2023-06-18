@@ -4,8 +4,11 @@ import { JWK, JWTPayload, KeyLike, importJWK } from "jose"
 import { encPassword, getEncPublicKey, getLoginInfo } from "../security/enc"
 import { UserJoin, UserLogin } from "../api/interfaces/user"
 import { makeStringErrorByResponse } from "../api/utils/common"
-import { useRouter, useSearchParams } from "next/navigation"
+import { redirect, usePathname, useRouter, useSearchParams } from "next/navigation"
 import { QUERY_KEYS } from "./common/queryKeys"
+import { RedirectType } from "next/dist/client/components/redirect"
+import { useEffect } from "react"
+import { useCookies } from "react-cookie"
 
 
 export const login = async (queryClient: QueryClient, data: UserLogin) => {
@@ -27,6 +30,7 @@ export const useLoginMutation = () => {
     const queryClient = useQueryClient()
     const router = useRouter()
     const params = useSearchParams()
+    const [cookies, setCookie, removeCookie] = useCookies()
     return useMutation<any, Error, UserLogin, any>({
         mutationFn: (data) => login(queryClient, data),
         onError: (error) => {
@@ -39,11 +43,13 @@ export const useLoginMutation = () => {
             console.log("onSuccess")
             const userInfo: JWTPayload = getLoginInfo(data.token);
             queryClient.setQueryData([QUERY_KEYS.USER.TOKEN], data.token)
+            setCookie(QUERY_KEYS.USER.TOKEN, data.token, {
+                path: "/",
+            })
+            console.log("setCookie", data.token)
             queryClient.setQueryData([QUERY_KEYS.USER.INFO], userInfo)
             queryClient.setQueryData([QUERY_KEYS.USER.LOGIN_STATE], LOGIN_STATE.LOGIN)
-            console.log("success",queryClient.getQueryData([QUERY_KEYS.USER.LOGIN_STATE]))
             const redirectUrl = params.get("redirect")
-            console.log("redirectUrl", redirectUrl)
             if(redirectUrl && redirectUrl.length){
                 router.push(redirectUrl)
             } else {
@@ -66,8 +72,13 @@ export const LOGIN_STATE = {
 
 export const useLoginState = () : UseQueryResult<string, unknown> => {
     const queryClient = useQueryClient()
+    const [cookies, setCookie, removeCookie] = useCookies()
     return useQuery([QUERY_KEYS.USER.LOGIN_STATE], () => {
-        console.log("running", "useLoginState")
+        //cookie check
+        if(cookies[QUERY_KEYS.USER.TOKEN]){
+            queryClient.setQueryData([QUERY_KEYS.USER.TOKEN], cookies[QUERY_KEYS.USER.TOKEN])
+            return LOGIN_STATE.LOGIN
+        }
         const token = queryClient.getQueryData([QUERY_KEYS.USER.TOKEN])
         if(token) return LOGIN_STATE.LOGIN
         return LOGIN_STATE.LOGOUT

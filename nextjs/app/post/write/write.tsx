@@ -20,24 +20,12 @@ import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
 import { usePost, usePostMutation } from "@/data/hooks/post";
-import { useLoginState } from "@/data/hooks/user";
-import { LOGIN_STATE } from "@/data/hooks/user";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
-import { RedirectType } from "next/dist/client/components/redirect";
 
 export interface WriteProps{
     id: string
 }
 
 export default function Write ({id}: WriteProps){
-    const loginState = useLoginState()
-    console.log("loginState", loginState.data)
-    const pathname = usePathname()
-    const params = useSearchParams()
-    if(loginState.data === LOGIN_STATE.LOGOUT){
-        redirect(`/user/login?redirect=${pathname}?${params}`, RedirectType.push)
-    }
-    console.log("id:", id==="")
     const {data} = usePost(id)
     let {
         source,

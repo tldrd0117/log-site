@@ -9,6 +9,7 @@ export const QUERY_KEYS = {
     USER: {
         TOKEN: "token",
         LOGIN_STATE: "loginState",
+        LOGIN_CHECK: "loginCheck",
         INFO: "loginInfo"
     }
 }

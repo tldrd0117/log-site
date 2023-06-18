@@ -20,6 +20,7 @@ async function getData() {
         - User
             - [Login](/user/login)
             - [Join](/user/join)
+            - [Setting](/user/setting)
     `
 
 // | [Home](/)                | Post          | User           |

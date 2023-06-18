@@ -49,6 +49,8 @@ const getMdxPost = async (id: string) => {
         }
     }
     let {text: source} = post
+    console.log(source)
+
     const {content, frontmatter} = await compileMDX({source, options: {
         mdxOptions: {
             remarkPlugins: [remarkGfm],
@@ -58,13 +60,16 @@ const getMdxPost = async (id: string) => {
         parseFrontmatter: true,
         
     }})
+
     if(source.indexOf("---")>=0){
         source = source.slice(source.indexOf("---")+3)
         source = source.slice(source.indexOf("---")+3)
     }
     let tagStr = frontmatter.tags as string
     let tags: string[] = []
-    console.log(content, frontmatter, tags)
+
+    console.log(content, frontmatter, source)
+    
     if(tagStr && tagStr.indexOf(TAG_SEPARATOR)>=0){
         tags = tagStr.split(TAG_SEPARATOR).slice(1)
     }
@@ -85,7 +90,6 @@ const getMdxPost = async (id: string) => {
 export const prefetchPost = (id: string) => {
     return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST, id], async () => {
         const mdxPost =  await getMdxPost(id)
-        console.log(mdxPost)
         return mdxPost
     })
 }
@@ -105,11 +109,11 @@ const sendCreatePost = async (queryClient: QueryClient, postData: PostRawCreate)
     const encPublicKey: KeyLike = await getEncPublicKey(jwk)
     const userInfo: any = queryClient.getQueryData([QUERY_KEYS.USER.INFO])
     const text = `---
-    title: ${postData.title}
-    category: ${postData.category}
-    tags: ${TAG_SEPARATOR}${postData.tags.join(TAG_SEPARATOR)}
-    ---
-    ${postData.text}`
+title: ${postData.title}
+category: ${postData.category}
+tags: ${TAG_SEPARATOR}${postData.tags.join(TAG_SEPARATOR)}
+---
+${postData.text}`
     const postInfo: PostCreate = {
         author: userInfo._id,
         authorName: userInfo.name,
