@@ -19,6 +19,7 @@
       "onlyChar": "Korean, English or Number only",
       "type": "{#label} is not in the correct format."
     },
+    "valid": "{#label} is allowed {#valids}",
     "password": "Incorrect email or password",
     "duplicate": "{#label} is duplicated",
     "email": "Email format is incorrect",
@@ -38,7 +39,8 @@
     "array": {
         "min": "{#label} must contain at least {#limit} items",
         "max": "{#label} must contain no more than {#limit} items",
-        "type": "{#label} must be an array"
+        "type": "{#label} must be an array",
+        "includes": "{#label} does not contain {#knownMisses}"
     },
     "object": {
         "type": "{#label} must be an object"
@@ -47,8 +49,10 @@
   },
   "name": "Name",
   "email": "Email",
+  "userId": "user ID",
   "password": "password",
   "postId": "post ID",
+  "settingId": "setting ID",
   "postList": "post list",
   "limit": "limit",
   "offset": "offset",
@@ -56,6 +60,7 @@
   "author": "\bauthor",
   "authorName": "author's name",
   "summary": "summary",
+  "settingType": "setting type",
   "text": "\bcontents",
   "parent": "parent post",
   "relatedPosts": "related posts",
@@ -69,5 +74,14 @@
   "postCreateArray": "post create array",
   "postUpdate": "post update",
   "postDel": "post delete",
-  "postDelList": "post del list"
+  "postDelList": "post del list",
+  "role": "role",
+  "settingName": "setting name",
+  "settingValue": "setting Value",
+  "settingCreate": "setting create",
+  "settingUpdate": "setting update",
+  "category": "category",
+  "categories": "categories",
+  "addCategory": "addCategory",
+  "addCategories": "addCategories"
 }

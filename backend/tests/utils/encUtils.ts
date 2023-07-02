@@ -1,4 +1,4 @@
-import jose, {EncryptJWT, KeyLike, CompactEncrypt} from 'jose'
+import jose, {EncryptJWT, KeyLike, CompactEncrypt, base64url} from 'jose'
 
 class EncFactory{
     constructor(){
@@ -6,8 +6,10 @@ class EncFactory{
     }
 
     async makeEncObject(object: object, rsaPublicKey: KeyLike){
+        const encodedText = base64url.encode(JSON.stringify(object))
+        const text = new Uint8Array(Buffer.from(encodedText));
         return await new CompactEncrypt(
-            new TextEncoder().encode(JSON.stringify(object)),
+            text
         )
         .setProtectedHeader({ alg: 'RSA-OAEP-256', enc: 'A256GCM' })
         .encrypt(rsaPublicKey)

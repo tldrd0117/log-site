@@ -19,6 +19,7 @@
       "onlyChar": "{#label}은 한글, 영어, 숫자만 가능합니다",
       "type": "{#label}은 올바른 형식이 아닙니다"
     },
+    "valid": "{#label}은 {#valids}만 가능합니다",
     "password": "이메일 또는 비밀번호가 잘못되었습니다",
     "duplicate": "{#label}이 중복되었습니다",
     "email": "이메일 형식이 올바르지 않습니다",
@@ -38,7 +39,8 @@
     "array": {
         "min": "{#label}은 최소 {#limit}개 이상만 가능합니다",
         "max": "{#label}은 최대 {#limit}개 이하만 가능합니다",
-        "type": "{#label}은 배열만 가능합니다"
+        "type": "{#label}은 배열만 가능합니다",
+        "includes": "{#label}는 {#knownMisses}만 가능합니다"
     },
     "object": {
         "type": "{#label}은 객체만 가능합니다"
@@ -47,8 +49,10 @@
   },
   "name": "이름",
   "email": "이메일",
+  "userId": "유저 아이디",
   "password": "비밀번호",
   "postId": "게시물 아이디",
+  "settingId": "설정 아이디",
   "postList": "포스트 리스트",
   "limit": "가져올 리스트 갯수",
   "offset": "리스트 스킵 갯수",
@@ -56,6 +60,7 @@
   "author": "작성자",
   "authorName": "작성자 이름",
   "summary": "요약",
+  "settingType": "설정 타입",
   "text": "내용",
   "parent": "부모 게시물",
   "relatedPosts": "관련된 게시물",
@@ -69,5 +74,14 @@
   "postCreateArray": "게시물 작성 리스트",
   "postUpdate": "게시물 갱신",
   "postDel": "게시물 삭제",
-  "postDelList": "게시물 삭제 리스트"
+  "postDelList": "게시물 삭제 리스트",
+  "role": "권한",
+  "settingName": "설정 이름",
+  "settingValue": "설정 값",
+  "settingCreate": "설정 추가",
+  "settingUpdate": "설정 갱신",
+  "category": "카테고리",
+  "categories": "카테고리 리스트",
+  "addCategory": "카테고리 추가",
+  "addCategories": "카테고리 리스트 추가"
 }

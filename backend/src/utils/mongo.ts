@@ -1,5 +1,8 @@
 import { connect, Mongoose, ConnectionStates, set } from 'mongoose';
 import dotenv from 'dotenv'
+import User from '../models/user.model';
+import Post from '../models/post.model';
+import Setting from '../models/setting.model';
 
 set("strictQuery", false)
 set('debug', true);
@@ -25,6 +28,9 @@ class Mongo{
             dbName: this.database
         });
         this.db.set('autoIndex', false);
+        await User.syncIndexes()
+        await Post.syncIndexes()
+        await Setting.syncIndexes()
     }
     async resetDatabase(){
         if(!this.isConnect()) throw new Error("not connected!")

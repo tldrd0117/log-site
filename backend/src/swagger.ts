@@ -52,10 +52,12 @@ const autoGen =async () => {
                 Empty: {},
                 ...await toSwagger(require("./object/user")),
                 ...await toSwagger(require("./object/post")),
+                ...await toSwagger(require("./object/setting")),
             },
             parameters: {
                 ...await toSwaggerQueryParam(require("./object/user")),
                 ...await toSwaggerQueryParam(require("./object/post")),
+                ...await toSwaggerQueryParam(require("./object/setting")),
             },
             securitySchemes: {
                 bearer: {

@@ -51,20 +51,22 @@ const getPrivateJWK = async () => {
 const encryptData = async (data: string) => {
     const ks = fs.readFileSync('secret/Keys.json')
     const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
+    const text = jose.util.base64url.encode(data, "utf8")
     return await jose.JWE.createEncrypt({
         format: 'compact'
-    }, enryptKey.all({use: "enc"})).update(data).final()
+    }, enryptKey.all({use: "enc"})).update(text).final()
 }
 
 const decryptData = async (data: string) => {
     const ks = fs.readFileSync('secret/Keys.json')
     const enryptKey: JWK.KeyStore = await jose.JWK.asKeyStore(ks.toString())
-    return await jose.JWE.createDecrypt(enryptKey).decrypt(data)
+    const decoded = await jose.JWE.createDecrypt(enryptKey).decrypt(data)
+    return jose.util.base64url.decode(decoded.plaintext.toString()).toString()
 }
 
 const decryptJSON =async (data: string) => {
-    const decData = await decryptData(data)
-    return JSON.parse(decData.plaintext.toString())
+    const decData: string = await decryptData(data)
+    return JSON.parse(decData)
 }
 
 const verifyToken = async (token: string) => {

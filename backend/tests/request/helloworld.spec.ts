@@ -1,7 +1,7 @@
 import getApp from '../../src/app'
 import supertest from 'supertest'
 
-describe.only('hello world! test', () => {
+describe('hello world! test', () => {
     let request: any;
     beforeEach(async ()=>{
         const app = await getApp()

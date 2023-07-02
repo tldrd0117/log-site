@@ -20,7 +20,6 @@ describe("user object", function(){
         await mongo.connect();
         await mongo.useDb();
         await mongo.resetDatabase();
-        await User.syncIndexes()
         await initI18n()
     })
 

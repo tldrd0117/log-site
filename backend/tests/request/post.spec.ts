@@ -23,8 +23,6 @@ describe("post test", () => {
         await mongo.connect();
         await mongo.useDb();
         await mongo.resetDatabase();
-        await User.syncIndexes();
-        await Post.syncIndexes();
     })
 
     beforeEach(async () => {

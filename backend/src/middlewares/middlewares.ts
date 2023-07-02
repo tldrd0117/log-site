@@ -28,6 +28,7 @@ export const decMiddleware = async (ctx: Context, next: Next) => {
 }
 
 export const validateTokenMiddleware = async (ctx: Context, next: Next) => {
+    console.log("validateTokenMiddleware", ctx.header)
     try{
         ctx.header.authorization = ctx.header.authorization.replace('Bearer ', '')
         const result = await authService.verifyToken(ctx.header.authorization)

@@ -23,10 +23,12 @@ router.post('/enc', async (ctx) => {
         #swagger.summary = 'Encrypt data'
     */
     const body: any = ctx.request.body
+    console.log("enc", body)
     if(body && body.password){
         body.password = sha256("********").toString()
     }
     const encryptData = await authService.encryptData(JSON.stringify(ctx.request.body))
+    console.log("dec", (await authService.decryptJSON(encryptData)))
     ctx.response.body = {enc: encryptData}
 })
 

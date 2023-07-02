@@ -1,9 +1,8 @@
 {
     "jest.jestCommandLine": "npm test --",
-    "jest.rootPath": ".",
+    "jest.rootPath": "./tests",
     "jest.autoRun": {
+        "onStartup": ["test-file"],
         "watch": false,
-        // "onSave": "test-file"
     },
-    "jest.autoEnable": false,
 }
