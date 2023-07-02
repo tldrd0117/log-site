@@ -5,6 +5,9 @@ import { ContentsLayout } from '@/containers/layout/ContentsLayout'
 import { PageLayout } from '@/containers/layout/PageLayout'
 import { BorderBox } from '@/components/Box/BorderBox'
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
+import LoginRequired from '@/app/LoginRequired'
+import { Table } from '@/components/Table/Table'
+import { useSetting } from '@/data/query/setting/setting'
 
 
 export interface SettingProps{
@@ -12,21 +15,21 @@ export interface SettingProps{
 }
 
 export default function Setting (){
+    const {data: settingData, isSuccess} = useSetting()
+    console.log(settingData)
     return (
         <>
-            <PageLayout>
-                <AppBar title='blog'/>
-                <ContentsLayout tagType={BorderBox} className='mt-4'>
-                    <Breadcrumbs items={[{
-                        href: "/",
-                        label: "Home"
-                    }, {
-                        href: "/setting",
-                        label: "Setting"
-                    }]}/>
-                    설정
-                </ContentsLayout>
-            </PageLayout>
+            <Breadcrumbs items={[{
+                href: "/",
+                label: "Home"
+            }, {
+                href: "/setting",
+                label: "Setting"
+            }]}/>
+            <LoginRequired>
+                설정
+                {isSuccess?<Table items={settingData.list}/>:null}
+            </LoginRequired>
         </>
     )
 }

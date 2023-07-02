@@ -3,8 +3,8 @@ import '@/styles/tailwind.css'
 import '@/styles/globals.css'
 import getQueryClient from './getQueryClient'
 import { Hydrate, QueryClientProvider, dehydrate } from '@tanstack/react-query'
-import { prefetchEncPublicKey } from '@/data/hooks/auth'
 import Providers from './Provider'
+import { PageLayout } from '@/containers/layout/PageLayout'
 
 export const metadata = {
     title: 'Next.js',
@@ -20,7 +20,9 @@ export default async function RootLayout({
         <html lang="en">
             <body>
                 <Providers>
-                    {children}
+                    <PageLayout>
+                        {children}
+                    </PageLayout>
                     <div id="portal" />
                 </Providers>
             </body>

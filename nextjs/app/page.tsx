@@ -2,11 +2,16 @@
 import { serialize } from 'next-mdx-remote/serialize'
 import { Home } from './home'
 import remarkGfm from 'remark-gfm'
+import { AppBarContentsTemplate } from '@/templates/AppBarContentsTemplate'
+import { prefetchRecentPostList } from '@/data/query/post/prefetch'
 
 export default async function HomePage() {
+    await prefetchRecentPostList()
     const data = await getData()
     return <>
-        <Home data={data}/>
+        <AppBarContentsTemplate>
+            <Home data={data}/>
+        </AppBarContentsTemplate>
     </>
 }
 

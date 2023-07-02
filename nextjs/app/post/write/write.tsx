@@ -19,14 +19,15 @@ import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
-import { usePost, usePostMutation } from "@/data/hooks/post";
+import { usePost, usePostMutation } from "@/data/query/post/post";
+import LoginRequired from "@/app/LoginRequired";
 
 export interface WriteProps{
     id: string
 }
 
 export default function Write ({id}: WriteProps){
-    const {data} = usePost(id)
+    let {data}: any = usePost(id)
     let {
         source,
         mdxContent,
@@ -38,10 +39,10 @@ export default function Write ({id}: WriteProps){
     const isEdit = id !== ""
     const {mutate} = usePostMutation() 
 
-    const [code, setCode] = useState(source)
-    const [tagValue, setTagValue] = useState(tags)
-    const [titleValue, setTitleValue] = useState(title)
-    const [categoryValue, setCategoryValue] = useState(category)
+    const [code, setCode] = useState(source || "")
+    const [tagValue, setTagValue] = useState(tags || [])
+    const [titleValue, setTitleValue] = useState(title || "")
+    const [categoryValue, setCategoryValue] = useState(category || "")
     const [isPreview, setIsPreview] = useState(false)
     const [mdxModule, setMdxModule]:any = useState()
     const MdxContent = mdxModule ? mdxModule.default : Fragment
@@ -88,74 +89,71 @@ export default function Write ({id}: WriteProps){
     }
 
     return <>
-        <PageLayout>
-            <AppBar title='blog' />
-            <ContentsLayout tagType={BorderBox} className="mt-4 pb-16">
-                <Breadcrumbs items={[{
-                    href: "/",
-                    label: "Home"
-                }, {
-                    href: "/post/list",
-                    label: "PostList"
-                }, {
-                    href: "/post/write",
-                    label: isEdit? title : "PostWrite"
-                }]}/>
-                <TextInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE}
-                    inputClassName = {"px-7 py-8 text-3xl font-bold "}
-                    className="mt-8"
-                    placeholder="제목" 
-                    onChange={handleOnTitleChange}
-                    value={ titleValue }/>
-                <Select inputProps={{
-                    bgClassName: "mt-4 w-40",
-                    placeholder: "카테고리",
-                    inputStyleType: INPUT_STYLE_TYPE.UNDERLINE,
-                }} contextMenuProps={{
-                    className: "mt-2",
-                    tagType: CardBox,
-                    firstListItemProps: {
-                        className: "rounded-t-lg",
-                    },
-                    lastListItemProps: {
-                        className: "rounded-b-lg",
-                    },
-                    listProps: {
-                        className: "w-40",
-                    },
-                    listItemProps: {
-                        className: "w-40",
-                    },
-                    listItemsData: categories.map((item:any)=>({id: item, value: item})),
-                }}
-                onItemSelect={handleCategoryChange}
-                selected={isEdit?{id:category as string, value: category as string}: undefined}
+        <Breadcrumbs items={[{
+            href: "/",
+            label: "Home"
+        }, {
+            href: "/post/list",
+            label: "PostList"
+        }, {
+            href: "/post/write",
+            label: isEdit? title : "PostWrite"
+        }]}/>
+        <LoginRequired>
+            <TextInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE}
+                inputClassName = {"px-7 py-8 text-3xl font-bold "}
+                className="mt-8"
+                placeholder="제목" 
+                onChange={handleOnTitleChange}
+                value={ titleValue }/>
+            <Select inputProps={{
+                bgClassName: "mt-4 w-40",
+                placeholder: "카테고리",
+                inputStyleType: INPUT_STYLE_TYPE.UNDERLINE,
+            }} contextMenuProps={{
+                className: "mt-2",
+                tagType: CardBox,
+                firstListItemProps: {
+                    className: "rounded-t-lg",
+                },
+                lastListItemProps: {
+                    className: "rounded-b-lg",
+                },
+                listProps: {
+                    className: "w-40",
+                },
+                listItemProps: {
+                    className: "w-40",
+                },
+                listItemsData: categories.map((item:any)=>({id: item, value: item})),
+            }}
+            onItemSelect={handleCategoryChange}
+            selected={isEdit?{id:category as string, value: category as string}: undefined}
+            />
+            <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
+                onTagChange={handleOnTagsChange}
+                tagValue={tags}/>
+            <CodeMirror
+                className="mt-4"
+                value={code}
+                onChange={handleCodeMirrorChange}
+                minHeight="400px"
+                maxHeight='5000px'
+                extensions={[langs.markdown()]}
                 />
-                <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
-                    onTagChange={handleOnTagsChange}
-                    tagValue={tags}/>
-                <CodeMirror
-                    className="mt-4"
-                    value={code}
-                    onChange={handleCodeMirrorChange}
-                    minHeight="400px"
-                    maxHeight='5000px'
-                    extensions={[langs.markdown()]}
-                    />
-                <FloatBottomLayout
-                    leftComponent={
-                        <>
-                        </>
-                    }
-                    rightComponent={
-                        <div className="flex gap-2 pr-8">
-                            <PrimaryButton onClick={() => handleOnClickPreview()} label="미리보기"/>
-                            <PrimaryButton onClick={() => handleOnClickComplete()} label="작성완료"/>
-                        </div>
-                    }
-                    />
-            </ContentsLayout>
-        </PageLayout>
+            <FloatBottomLayout
+                leftComponent={
+                    <>
+                    </>
+                }
+                rightComponent={
+                    <div className="flex gap-2 pr-8">
+                        <PrimaryButton onClick={() => handleOnClickPreview()} label="미리보기"/>
+                        <PrimaryButton onClick={() => handleOnClickComplete()} label="작성완료"/>
+                    </div>
+                }
+                />
+        </LoginRequired>
         <Modal isShow={isPreview} onClose={() => setIsPreview(false)}>
             <BorderBox className="p-16 prose max-h-screen overflow-auto min-w-[62ch]">
                 <Text h3>{titleValue}</Text>

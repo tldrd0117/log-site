@@ -1,13 +1,13 @@
-import React, { use } from "react";
+import React from "react";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import Write from "./write";
 import { GetServerSidePropsContext } from "next";
-import { prefetchPost } from "@/data/hooks/post";
 import { Hydrate, dehydrate } from "@tanstack/react-query";
 import getQueryClient from "@/app/getQueryClient";
-import { cookies } from 'next/headers'
-import { redirect, useRouter } from "next/navigation";
-import { RedirectType } from "next/dist/client/components/redirect";
+import { prefetchPublicKey } from "@/data/query/auth";
+import { prefetchPost } from "@/data/query/post/prefetch";
+import { AppBarContentsTemplate } from "@/templates/AppBarContentsTemplate";
+
 export interface WriteProps{
     code: MDXRemoteSerializeResult
     source: string
@@ -15,12 +15,8 @@ export interface WriteProps{
 }
 
 export default async function WritePage (context: GetServerSidePropsContext<{id: string}>){
-    // const token = cookies().get("token")
-    // console.log("token",token)
-    // if(token === undefined){
-    //     redirect(`/user/login?redirect=/post/write`, RedirectType.push)
-    // }
     const id = context.params?.id as string || ""
+    await prefetchPublicKey()
     await prefetchPost(id)
     const state = dehydrate(getQueryClient())
     return <>

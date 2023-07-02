@@ -1,4 +1,10 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "jest.jestCommandLine": "npm test --",
+    "jest.rootPath": "./tests",
+    "jest.autoRun": {
+        "onStartup": ["test-file"],
+        "watch": false,
+    },
 }

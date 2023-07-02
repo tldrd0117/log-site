@@ -1,7 +1,8 @@
-import jose, {EncryptJWT, KeyLike, CompactEncrypt, decodeJwt} from 'jose'
+import jose, {EncryptJWT, KeyLike, CompactEncrypt, decodeJwt, base64url} from 'jose'
 
 const makeEncObject = async function(object: object, rsaPublicKey: KeyLike){
-    const text = new Uint8Array(Buffer.from(JSON.stringify(object)));
+    const encodedText = base64url.encode(JSON.stringify(object))
+    const text = new Uint8Array(Buffer.from(encodedText));
     return await new CompactEncrypt(
         text
     )

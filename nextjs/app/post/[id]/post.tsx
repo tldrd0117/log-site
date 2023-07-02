@@ -8,7 +8,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
 import { Text } from '@/components/Text/Text'
 import { TagInput } from '@/components/Input/TagInput'
 import { INPUT_STYLE_TYPE } from '@/components/Input/StylableInput'
-import { usePost } from '@/data/hooks/post'
+import { usePost } from '@/data/query/post/post'
 
 
 export interface PostProps{
@@ -28,29 +28,24 @@ export default function Post ({id}: PostProps){
     console.log("mdxContent", mdxContent)
     return (
         <>
-            <PageLayout>
-                <AppBar title='blog'/>
-                <ContentsLayout tagType={BorderBox} className='mt-4'>
-                    <Breadcrumbs items={[{
-                        href: "/",
-                        label: "Home"
-                    }, {
-                        href: "/post/list",
-                        label: "PostList"
-                    }, {
-                        href: "/post/list",
-                        label: "title"
-                    }]}/>
-                    <div className ={"prose mt-16 mx-auto"}>
-                        <Text h3>{title}</Text>
-                        <Text p>{category}</Text>
-                        <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tags} readOnly/>
-                        {
-                            mdxContent
-                        }
-                    </div>
-                </ContentsLayout>
-            </PageLayout>
+            <Breadcrumbs items={[{
+                href: "/",
+                label: "Home"
+            }, {
+                href: "/post/list",
+                label: "PostList"
+            }, {
+                href: "/post/list",
+                label: "title"
+            }]}/>
+            <div className ={"prose mt-16 mx-auto"}>
+                <Text h3>{title}</Text>
+                <Text p>{category}</Text>
+                <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tags} readOnly/>
+                {
+                    mdxContent
+                }
+            </div>
         </>
     )
 }

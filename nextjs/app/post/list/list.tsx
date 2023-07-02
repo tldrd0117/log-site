@@ -9,7 +9,7 @@ import { CardListItem } from "@/components/ListItem/CardListItem";
 import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
 import { PageLayout } from "@/containers/layout/PageLayout";
 import { BorderBox } from "@/components/Box/BorderBox";
-import { usePostListInfinity } from "@/data/hooks/post";
+import { usePostListInfinity } from "@/data/query/post/post";
 import { PrimaryButton } from "@/components/Button/PrimaryButton";
 import { useRouter } from "next/navigation";
 import { Text } from "@/components/Text/Text";
@@ -27,32 +27,26 @@ export function PostList (props: PostListProps) {
         router.push(`/post/${id}`)
     }
     return <>
-        <PageLayout>
-            <AppBar title='blog' login account join/>
-            <ContentsLayout tagType={BorderBox} className="mt-4">
-                <Breadcrumbs items={[{
-                    href: "/",
-                    label: "Home"
-                }, {
-                    href: "/post/list",
-                    label: "PostList"
-                }]}/>
-                <FlexList className="mt-4">
-                    {
-                        pages? pages.map((page: any) => {
-                            return (page && page.list && page.list.length)? page.list.map((item: any) => {
-                                return <>
-                                    <CardListItem onClick={() => handleItemClick(item._id)} key={item._id} title={item.summary} subTitle={item.createAt} summary={item.authorName}/>
-                                </>
-                            }): <Text p>없습니다</Text>
-                        }): <Text p>없습니다</Text>
-                    }
-                </FlexList>
-                {
-                    hasNextPage? <PrimaryButton onClick={() => fetchNextPage()} label="next"/>: null
-                }
-            </ContentsLayout>
-        </PageLayout>
-        
+        <Breadcrumbs items={[{
+            href: "/",
+            label: "Home"
+        }, {
+            href: "/post/list",
+            label: "PostList"
+        }]}/>
+        <FlexList className="mt-4">
+            {
+                pages? pages.map((page: any) => {
+                    return (page && page.list && page.list.length)? page.list.map((item: any) => {
+                        return <>
+                            <CardListItem onClick={() => handleItemClick(item._id)} key={item._id} title={item.summary} subTitle={item.createAt} summary={item.authorName}/>
+                        </>
+                    }): <Text p>없습니다</Text>
+                }): <Text p>없습니다</Text>
+            }
+        </FlexList>
+        {
+            hasNextPage? <PrimaryButton onClick={() => fetchNextPage()} label="next"/>: null
+        }
     </>
 }

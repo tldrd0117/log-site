@@ -1,16 +1,20 @@
 import getQueryClient from "@/app/getQueryClient"
-import { getPublicKey } from "../api/auth"
-import { QUERY_KEYS } from "./common/queryKeys"
-import { getPost, getPostList, createPost } from "../api/post"
+import { getPublicKey } from "../../api/auth"
+import { QUERY_KEYS } from "../common/queryKeys"
+import { getPost, getPostList, createPost } from "../../api/post"
 import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import remarkGfm from "remark-gfm"
 import { compileMDX } from "next-mdx-remote/rsc"
-import { PostCreate, PostRawCreate } from "../api/interfaces/post"
-import { getEncPublicKey } from "../security/enc"
+import { PostCreate, PostRawCreate } from "../../api/interfaces/post"
+import { getEncPublicKey } from "../../security/enc"
 import { KeyLike } from "jose"
-import { makeStringErrorByResponse } from "../api/utils/common"
+import { makeStringErrorByResponse } from "../../api/utils/common"
 import { useRouter } from "next/navigation"
-import { UserLogin } from "../api/interfaces/user"
+import { UserLogin } from "../../api/interfaces/user"
+import { useEncPubicKey } from "../auth"
+import { useRecoilState } from "recoil"
+import { tokenState, userInfoState } from "../../recoil/user"
+import { ReactFragment } from "react"
 
 const DEFAULT_LIMIT = 20;
 export const TAG_SEPARATOR = "(/*/)";
@@ -87,27 +91,26 @@ const getMdxPost = async (id: string) => {
     }
 }
 
-export const prefetchPost = (id: string) => {
-    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST, id], async () => {
-        const mdxPost =  await getMdxPost(id)
-        return mdxPost
-    })
-}
-
 export const usePost = (id: string) => {
-    return useQuery({
+    return useQuery<any, any, any, any>({
         queryKey: [QUERY_KEYS.POST.POST, id],
         queryFn: async () => {
             return await getMdxPost(id)
+        },
+        initialData: () => {
+            return {
+                source: "",
+                mdxContent: "",
+                tags: [],
+                title: "",
+                category: "",
+                categories: []
+            }
         }
     })
 }
 
-const sendCreatePost = async (queryClient: QueryClient, postData: PostRawCreate) => {
-    const jwk = queryClient.getQueryData([QUERY_KEYS.AUTH.ENC_PUBLIC_KEY])
-    const token: string = queryClient.getQueryData([QUERY_KEYS.USER.TOKEN]) as string
-    const encPublicKey: KeyLike = await getEncPublicKey(jwk)
-    const userInfo: any = queryClient.getQueryData([QUERY_KEYS.USER.INFO])
+const sendCreatePost = async (encPublicKey: KeyLike, token: string, userInfo: any, postData: PostRawCreate) => {
     const text = `---
 title: ${postData.title}
 category: ${postData.category}
@@ -130,11 +133,13 @@ ${postData.text}`
 }
 
 export const usePostMutation = () => {
-    const queryClient = useQueryClient()
     const router = useRouter()
+    const {data: encPublicKey} = useEncPubicKey()
+    const [token, setToken] = useRecoilState(tokenState)
+    const [userInfo, setUserInfo] = useRecoilState(userInfoState)
     return useMutation({
         mutationFn: (post: PostRawCreate) => {
-            return sendCreatePost(queryClient, post)
+            return sendCreatePost(encPublicKey!!, token, userInfo, post)
         },
         onError: (error) => {
             console.log(error)
@@ -145,15 +150,6 @@ export const usePostMutation = () => {
     })
 }
 
-export const prefetchPostList = () => {
-    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST_LIST], async () => {
-        const list = await getPostList({ limit: DEFAULT_LIMIT, offset: 0})
-        return {
-            pages: [list],
-            pageParams: [0]
-        }
-    })
-}
 
 export const usePostListInfinity = () => {
     return useInfiniteQuery({

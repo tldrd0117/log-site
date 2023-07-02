@@ -1,15 +1,14 @@
 'use client'
 import clsx from "clsx";
 import { BorderBox } from "@/components/Box/BorderBox";
-import React from "react";
+import React, { useEffect } from "react";
 import { Text } from "@/components/Text/Text";
 import { PrimaryButton } from "../Button/PrimaryButton";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { LOGIN_STATE, useLoginInfo, useLoginState } from "@/data/hooks/user";
-import { useCookies } from "react-cookie";
-import QUERY_KEYS from "@/data/hooks/auth";
-import { log } from "console";
+import { LOGIN_STATE, useLoginState } from "@/data/query/user";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { tokenState, userInfoState } from "@/data/recoil/user";
 
 export interface AppBarProps{
     title: string
@@ -18,22 +17,33 @@ export interface AppBarProps{
 
 export const AppBar = (props: AppBarProps) => {
     const {title} = props
-    const {data: loginState} = useLoginState()
-    const [cookies, setCookie, removeCookie] = useCookies()
+    // const {data: loginState} = useLoginState()
     const router = useRouter()
     const pathname = usePathname()
     const queryClient = useQueryClient()
+    const token = useRecoilValue(tokenState)
+    const resetToken = useResetRecoilState(tokenState)
+    const resetUserInfo = useResetRecoilState(userInfoState)
     const handleLogout = () => {
-        queryClient.clear()
-        removeCookie(QUERY_KEYS.USER.TOKEN, {path: "/"})
-        router.replace("/")
+        console.log("logout")
+        resetToken()
+        resetUserInfo()
+        setTimeout(() => {
+            console.log("appbar replace")
+            queryClient.clear()
+            router.replace("/")
+        }, 0);
     }
 
-    const isLogin = loginState === LOGIN_STATE.LOGIN
+    const handleClickTitle = () => {
+        router.push("/")
+    }
+
+    const isLogin = token !== ""
 
     return <>
         <BorderBox className={clsx(["p-4", "flex", "justify-between"])}>
-            <div className="place-self-center">
+            <div className="place-self-center cursor-pointer" onClick={handleClickTitle}>
                 <Text h5 className="italic font-bold">{title}</Text>
             </div>
             <div className="place-self-center">
