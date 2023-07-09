@@ -5,3 +5,9 @@ export interface EncData{
 export interface ErrorBody{
     error: object
 }
+
+export interface BasicTypes{
+    _id: string
+    name: string
+    uid: string
+}

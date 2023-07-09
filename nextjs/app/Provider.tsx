@@ -13,11 +13,11 @@ export default function Providers({ children }: any) {
             defaultOptions: {
                 queries: {
                     cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-                    networkMode: 'online',
+                    networkMode: 'always',
                 },
                 mutations: {
                     cacheTime: 1000, // 24 hours
-                    networkMode: 'online',  
+                    networkMode: 'always',  
                 }
             }
         })

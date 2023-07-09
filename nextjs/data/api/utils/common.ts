@@ -27,7 +27,7 @@ export const makeStringErrorByResponse = (res: any) => {
     if (typeof res.error === "string")
         return res.error
     else if (Array.isArray(res.error))
-        return res.error.join("<br/>")
+        return res.error.map((e:any) => e.message).join("<br/>")
     else
         return "unknown error"
 }

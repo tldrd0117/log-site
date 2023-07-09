@@ -30,7 +30,7 @@ export const ContextMenu = (props: ContextMenuProps) => {
         onItemClick && onItemClick(itemData, e)
     }
     return <>
-        <Container {...props} className={clsx(["absolute", "z-10", className])}>
+        <Container {...props} className={clsx(["absolute", "z-30", className])}>
             <FlexList className={clsx(['gap-0', listClassName])}>
                 {
                     listItemsData?.map((item, index) => {
@@ -40,7 +40,8 @@ export const ContextMenu = (props: ContextMenuProps) => {
                         if(index === 0){
                             itemProps = firstListItemProps
                             listItemClassName += ` ${firstListItemProps?.className||""}`
-                        } else if(index === listItemsData.length - 1){
+                        }
+                        if(index === listItemsData.length - 1){
                             itemProps = lastListItemProps
                             listItemClassName += ` ${lastListItemProps?.className||""}`
                         } 

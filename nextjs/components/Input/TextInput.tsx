@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Ref, forwardRef, useState } from 'react'
 import { BaseInputProps, BaseInput } from './BaseInput'
 import Image from 'next/image'
 import closeIcon from '../../public/images/close_FILL0_wght400_GRAD0_opsz24.svg'
@@ -16,10 +16,11 @@ export interface TextInputProps extends StylableInputProps{
 }
 
 
-export const TextInput = (props: TextInputProps) => {
+export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputElement>) => {
     const {icon, rightIcon, cancelButton, onCancel, ...rest} = props
     return <>
         <StylableInput
+            ref={ref}
             type='text'
             inputClassName={clsx([{ 'pl-10': icon }, { 'pl-4': !icon }, { 'pr-8': cancelButton }, { 'pr-4': !cancelButton }])}
             leftComponent={<div className='absolute m-2'>{icon}</div>}
@@ -41,4 +42,4 @@ export const TextInput = (props: TextInputProps) => {
             {...rest}
         />
     </>
-}
+})

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { CardBox } from '../Box/CardBox';
-import { Table } from './Table';
+import { Table } from './SettingTable';
 
 
 const meta: Meta<typeof Table> = {

@@ -15,5 +15,8 @@ export const QUERY_KEYS = {
     },
     SETTING: {
         DATA: "settingData",
+    },
+    INFO: {
+        TYPE: "infoType",
     }
 }

@@ -10,7 +10,8 @@ import { RedirectType } from "next/dist/client/components/redirect"
 import { useEffect } from "react"
 import { useEncPubicKey } from "./auth"
 import { useRecoilSnapshot, useRecoilState } from "recoil"
-import { tokenState, userInfoState } from "../recoil/user"
+import { tokenState, userInfoState } from "../recoil/states/user"
+import _ from "lodash"
 
 export const useLoginMutation = () => {
     const router = useRouter()
@@ -62,10 +63,12 @@ export const useJoinMutation = () => {
     const [token, setToken] = useRecoilState(tokenState)
     const router = useRouter()
     const {data: encPublicKey} = useEncPubicKey()
-    return useMutation<any, Error, UserJoin, any>({
+    return useMutation<any, Error, any, any>({
         mutationFn: async (data) => {
-            data.password = encPassword(data.password)
-            return await registerUser(data, encPublicKey as KeyLike)
+            const newData = _.cloneDeep(data);
+            delete newData.passwordConfirm;
+            newData.password = encPassword(newData.password)
+            return await registerUser(newData, encPublicKey as KeyLike)
         },
         onError: (error) => {
             console.log("error", error)

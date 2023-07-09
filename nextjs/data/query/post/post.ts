@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation"
 import { UserLogin } from "../../api/interfaces/user"
 import { useEncPubicKey } from "../auth"
 import { useRecoilState } from "recoil"
-import { tokenState, userInfoState } from "../../recoil/user"
+import { tokenState, userInfoState } from "../../recoil/states/user"
 import { ReactFragment } from "react"
 
 const DEFAULT_LIMIT = 20;

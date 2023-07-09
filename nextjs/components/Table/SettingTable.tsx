@@ -13,6 +13,15 @@ import {
   RowData,
   ColumnSizing,
 } from '@tanstack/react-table'
+import { Select } from '../Select/Select'
+import { INPUT_STYLE_TYPE } from '../Input/StylableInput'
+import { CardBox } from '../Box/CardBox'
+import { SelectCalendar } from '../Select/SelectCalendar'
+import { format } from 'date-fns'
+import { useRecoilValue } from 'recoil'
+import { roleTypeMapState, settingTypeMapState } from '@/data/recoil/states/user'
+import { useTypes } from '@/data/query/info/info'
+import { BasicTypes } from '@/data/api/interfaces/common'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -25,7 +34,8 @@ export const defaultColumn: Partial<ColumnDef<Setting>> = {
   cell: function Cell({ getValue, row: { index }, column: { id, getSize }, table }){
     const initialValue = getValue()
     // We need to keep and update the state of the cell normally
-    const [value, setValue] = useState(initialValue)
+    const [value, setValue]: any = useState(initialValue)
+    const {data: typeData} = useTypes()
 
     // When the input is blurred, we'll call our table meta's updateData function
     const onBlur = () => {
@@ -36,9 +46,60 @@ export const defaultColumn: Partial<ColumnDef<Setting>> = {
     useEffect(() => {
       setValue(initialValue)
     }, [initialValue])
-
+    const selecTypeId = ["type", "role"]
+    const calendarTypeId = ["createAt", "updateAt"]
+    if(id==="userId"){
+        return <p>{value.name}</p>
+    }
+    if(selecTypeId.includes(id)){
+        let selectList = [], selectedValue = {id: value as string, value: value as string}
+        console.log(typeData)
+        if(id === "type"){
+            selectList = typeData?.settingTypes.map((type: BasicTypes) => ({
+                id: type._id,
+                value: type.name
+            }))
+            selectedValue = {id: value._id, value: value.name}
+        }
+        if(id === "role"){
+            selectList = typeData?.roleTypes.map((type: BasicTypes) => ({
+                id: type._id,
+                value: type.name
+            }))
+            selectedValue = {id: value._id, value: value.name}
+        }
+        return <Select 
+            inputProps={{
+            bgClassName: "mt-4 w-20 ring-slate-200",
+            placeholder: "카테고리",
+            inputStyleType: INPUT_STYLE_TYPE.OUTLINE,
+            inputClassName: "w-20 pl-2",
+        }} contextMenuProps={{
+            className: "mt-2",
+            tagType: CardBox,
+            firstListItemProps: {
+                className: "rounded-t-lg",
+            },
+            lastListItemProps: {
+                className: "rounded-b-lg",
+            },
+            listProps: {
+                className: "w-20",
+            },
+            listItemProps: {
+                className: "w-20",
+            },
+            listItemsData: selectList
+        }}
+        selected={selectedValue}
+        />
+    }
+    if(calendarTypeId.includes(id)){
+        return <p>{format(new Date(value as string), "yyyy-MM-dd")}</p>
+    }
     return (
       <input
+        className='pl-2'
         style={{width: "100%"}}
         value={value as string}
         onChange={e => setValue(e.target.value)}
@@ -66,9 +127,9 @@ function useSkipper() {
 
 export type Setting = {
     _id: string
-    type: "site"|"user"
-    role: "admin"|"user"|"guest"
-    userId: string
+    type: any
+    role: any
+    userId: any
     name: string
     value: string
     createAt: string
@@ -79,63 +140,87 @@ export interface TableProps{
     items: Array<Setting>
 }
 
-export function Table({ items }: TableProps) {
+const columnHeader = (text: string) => {
+    return <p className='text-left ml-2 text-slate-400 font-normal'>{text}</p>
+}
+
+export function SettingTable({ items }: TableProps) {
   const rerender = React.useReducer(() => ({}), {})[1]
 
   const columns = React.useMemo<ColumnDef<Setting>[]>(
     () => [
-      {
-        header: 'Setting',
-        footer: props => props.column.id,
-        columns: [
           {
             accessorKey: 'type',
-            header: () => <span>type</span>,
+            header: () => columnHeader('type'),
             size: 80,
             footer: props => props.column.id,
           },
           {
             accessorKey: 'role',
             size: 80,
-            header: () => <span>role</span>,
+            header: () => columnHeader('role'),
             footer: props => props.column.id,
           },
           {
             accessorKey: 'userId',
             size: 100,
-            header: () => <span>userId</span>,
+            header: () =>  columnHeader('userId'),
             footer: props => props.column.id,
           },
           {
             accessorKey: 'name',
-            header: () => <span>name</span>,
+            header: () => columnHeader('name'),
             footer: props => props.column.id,
           },
           {
             accessorKey: 'value',
-            header: () => <span>value</span>,
+            header: () => columnHeader('value'),
             footer: props => props.column.id,
           },
           {
             accessorKey: 'createAt',
             size: 100,
-            header: () => <span>createAt</span>,
+            header: () => columnHeader('createAt'),
             footer: props => props.column.id,
           },
           {
             accessorKey: 'updateAt',
             size: 100,
-            header: () => <span>updateAt</span>,
+            header: () => columnHeader('updateAt'),
             footer: props => props.column.id,
           },
-        ],
-      },
     ],
     []
   )
+  const settingTypeMap = useRecoilValue(settingTypeMapState)
+  const roleTypeMap = useRecoilValue(roleTypeMapState)
 
-  const [data, setData] = React.useState(() => items)
-  const refreshData = () => setData(() => items)
+  const displayData = (items: Array<Setting>) => {
+    return items.map((item) => {
+        // if(item.type){
+        //     item.type = {
+        //         id: item.type._id,
+        //         value: item.type.name
+        //     }
+        // }
+        // if(item.role){
+        //     item.role = {
+        //         id: item.role._id,
+        //         value: item.role.name
+        //     }
+        // }
+        // if(item.userId)
+        //     item.userId = item.userId.name
+        return item
+    })
+  }
+
+  const [data, setData] = React.useState(() => displayData(items))
+  const refreshData = () => setData(() => displayData(items))
+
+  useEffect(() => {
+    refreshData()
+  },[items.length])
 
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
 
@@ -169,21 +254,19 @@ export function Table({ items }: TableProps) {
     },
     debugTable: true,
   })
-  console.log(table.getHeaderGroups())
-  console.log(table.getRowModel())
-  console.log(table.getCenterTotalSize())
 
   return (
     <div className="p-2 block max-w-full overflow-x-auto overflow-y-hidden">
         <div className="h-2" />
-      <table className='w-full'>
-        <thead>
+      <table className='w-full border-x-0'>
+        <thead className='bg-slate-100'>
           {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className='border-x-0'>
               {headerGroup.headers.map(header => {
                 return (
                   <th key={header.id} 
                     colSpan={header.colSpan}
+                    className='border-x-0 h-12'
                     style={{ position: 'relative', width: header.getSize() }}
                     >
                     {header.isPlaceholder ? null : (
@@ -192,11 +275,11 @@ export function Table({ items }: TableProps) {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {header.column.getCanFilter() ? (
+                        {/* {header.column.getCanFilter() ? (
                           <div>
                             <Filter column={header.column} table={table} />
                           </div>
-                        ) : null}
+                        ) : null} */}
                       </div>
                     )}
                   </th>
@@ -211,7 +294,7 @@ export function Table({ items }: TableProps) {
               <tr key={row.id}>
                 {row.getVisibleCells().map(cell => {
                   return (
-                    <td key={cell.id} style={{ width: cell.column.getSize() }}>
+                    <td key={cell.id} style={{ width: cell.column.getSize() }} className='h-12'>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -287,10 +370,10 @@ export function Table({ items }: TableProps) {
         </select>
       </div>
       <div>{table.getRowModel().rows.length} Rows</div>
-      <div>
+      <div className='hidden'>
         <button onClick={() => rerender()}>Force Rerender</button>
       </div>
-      <div>
+      <div className=''>
         <button onClick={() => refreshData()}>Refresh Data</button>
       </div>
     </div>

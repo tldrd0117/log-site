@@ -12,3 +12,9 @@ export interface SettingUpdate{
     createAt?: Date;
     updateAt?: Date;
 }
+
+export interface SettingCreate{
+    type: string
+    name: string;
+    value: string;
+}

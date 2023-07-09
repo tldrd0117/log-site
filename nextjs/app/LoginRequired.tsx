@@ -1,6 +1,6 @@
 'use client'
 import { LOGIN_STATE, useLoginState } from "@/data/query/user";
-import { tokenState } from "@/data/recoil/user";
+import { tokenState } from "@/data/recoil/states/user";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import React, { use, useEffect } from "react";
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
