@@ -8,6 +8,8 @@ import userService from '../services/user.service';
 import { UserJoin, UserLogin } from '../interfaces/user'
 import { decMiddleware, validateMiddlewareFactory, validateTokenMiddleware } from "../middlewares/middlewares"
 import { getI18next } from '../utils/i18n';
+import { types } from 'joi';
+import { use } from 'chai';
 
 const router = new Router({
     prefix: "/user"
@@ -32,7 +34,11 @@ router.post('/join', decMiddleware, validateMiddlewareFactory(getJoinUserObject)
             }
         }
     */
-    const result = await userService.doJoin(ctx.request.body as UserJoin)
+    const user = ctx.request.body as UserJoin
+    const types = await userService.getRoleTypes()
+    const userType = types.find((type) => type.name === 'user')
+    user.role = userType?._id.toString()
+    const result = await userService.doJoin(user as UserJoin)
     const userInfo = await userService.getUserByEmail(result.email)
     const token = await authService.getToken(userInfo.toJSON())
     ctx.body = response.makeSuccessBody({

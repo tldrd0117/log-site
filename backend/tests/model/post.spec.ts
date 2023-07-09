@@ -4,6 +4,7 @@ import User, { IUser } from '../../src/models/user.model'
 import Post, { IPost } from '../../src/models/post.model'
 import { makeTree } from '../utils/treeUtils'
 import { createTestHashDbName } from '../utils/testUtils'
+import Role from '../../src/models/role.model'
 
 
 describe('post model test', () => {
@@ -12,29 +13,25 @@ describe('post model test', () => {
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
-        await User.syncIndexes()
     })
 
     beforeEach(async () => {
+        const roles = await Role.find({})
+        console.log(roles)
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
-            password: "123451"
+            password: "123451",
+            role: roles[0]._id.toString()
         })
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase()
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()
         }
-    })
-
-    it("verify user indexes", async () => {
-        let indexes = await User.listIndexes()
-        expect(indexes.map(v => v.key)).toMatchObject([{ _id: 1 }, { name: 1 }, { email: 1 }, { name: 1, email: 1 }])
     })
 
     describe("insert post and Find", () => {

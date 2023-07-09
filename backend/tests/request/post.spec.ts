@@ -10,6 +10,8 @@ import Post, { IPost } from '../../src/models/post.model';
 import { PostCreate } from '../../src/interfaces/post';
 import postService from '../../src/services/post.service';
 import { Types } from 'mongoose';
+import { MD5 } from 'crypto-js';
+import Role from '../../src/models/role.model';
 
 describe("post test", () => {
     let request: SuperTest<Test>, rsaPublicKey: KeyLike, signRsaPublicKey: KeyLike
@@ -21,16 +23,15 @@ describe("post test", () => {
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
     })
 
     beforeEach(async () => {
+        const roleTypes = await Role.find()
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roleTypes[0]._id.toString(),
         })
     })
 
@@ -71,6 +72,7 @@ describe("post test", () => {
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase();
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()
@@ -191,20 +193,26 @@ describe("post test", () => {
             })
             .expect(200)
         
-        let expectArr: any = []
-        arr.forEach(v=>{
-            expectArr.push(expect.objectContaining({
-                ...v,
-                author:{
-                    _id: v.author.toString(),
-                    name: v.authorName
-                }
-            }))
-        })
+        let expectArr: any = expect.arrayContaining([
+            expect.objectContaining({
+                _id: expect.any(String),
+                author: expect.objectContaining({
+                    _id: expect.any(String),
+                    name: expect.any(String)
+                }),
+                summary: expect.any(String),
+                text: expect.any(String),
+                order: expect.any(Number),
+                relatedPosts: expect.any(Array),
+                createAt: expect.any(String),
+                updateAt: expect.any(String),
+            })
+        ])
         
-        expect(response.body).toMatchObject({
-            list: expect.arrayContaining(expectArr),
-            result: "success"
+        expect(response.body).toEqual({
+            list: expectArr,
+            result: "success",
+            total: 11
         })
     })
 

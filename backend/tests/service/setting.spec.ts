@@ -9,41 +9,48 @@ import userService from "../../src/services/user.service";
 import mongoose, { Document } from "mongoose";
 import { SettingUpdate } from "../../src/interfaces/setting";
 import { settingValue } from "../../src/object/common";
+import { MD5 } from "crypto-js";
+import Role from "../../src/models/role.model";
+import SettingType from "../../src/models/settingType.model";
+import _ from "lodash";
 
 describe("Setting Service Test", function () {
     let mongo: Mongo
     let user: IUser
     let token: string
     let decodedToken: DecodedUserInfo
+    let roleTypes: any
+    let settingTypes: any
 
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
     })
 
     beforeEach(async () => {
+        roleTypes = await Role.find()
+        settingTypes = await SettingType.find()
         user = (await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roleTypes[0]._id.toString(),
         })).toJSON() as IUser
         token = await authService.getToken(user)
         decodedToken = await authService.decryptToken(token) as DecodedUserInfo
+        console.log(decodedToken)
     })
 
     beforeEach(async () => {
         await settingService.addSettings([{
-            type: "user",
-            role: "admin",
+            type: settingTypes[1]._id.toString(),
+            role: roleTypes[0]._id.toString(),
             userId: user._id.toString(),
             name: "test",
             value: "testValue"
         },{
-            type: "user",
-            role: "admin",
+            type: settingTypes[1]._id.toString(),
+            role: roleTypes[0]._id.toString(),
             userId: user._id.toString(),
             name: "test2",
             value: "testValue2"
@@ -58,16 +65,25 @@ describe("Setting Service Test", function () {
     })
 
     it("getSetting test", async () => {
-        console.log("decodedToken", decodedToken)
         const setting: any = await settingService.getSetting(decodedToken)
+        console.log(setting)
         expect(setting.length).toBe(2)
         expect(setting).toStrictEqual(
             expect.arrayContaining([
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test2',
                     value: 'testValue2',
                     createAt: expect.any(Date),
@@ -75,9 +91,18 @@ describe("Setting Service Test", function () {
                 }),
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test',
                     value: 'testValue',
                     createAt: expect.any(Date),
@@ -89,14 +114,14 @@ describe("Setting Service Test", function () {
 
     it("addSettings test", async function () {
         await settingService.addSettings([{
-            type: "user",
-            role: "admin",
+            type: settingTypes[1]._id.toString(),
+            role: roleTypes[0]._id.toString(),
             userId: user._id.toString(),
             name: "test3",
             value: "testValue3"
         },{
-            type: "user",
-            role: "admin",
+            type: settingTypes[1]._id.toString(),
+            role: roleTypes[0]._id.toString(),
             userId: user._id.toString(),
             name: "test4",
             value: "testValue4"
@@ -107,9 +132,18 @@ describe("Setting Service Test", function () {
             expect.arrayContaining([
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test4',
                     value: 'testValue4',
                     createAt: expect.any(Date),
@@ -117,9 +151,18 @@ describe("Setting Service Test", function () {
                 }),
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test3',
                     value: 'testValue3',
                     createAt: expect.any(Date),
@@ -127,9 +170,18 @@ describe("Setting Service Test", function () {
                 }),
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test2',
                     value: 'testValue2',
                     createAt: expect.any(Date),
@@ -137,9 +189,18 @@ describe("Setting Service Test", function () {
                 }),
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'test',
                     value: 'testValue',
                     createAt: expect.any(Date),
@@ -151,7 +212,11 @@ describe("Setting Service Test", function () {
 
     it("putSetting test", async function () {
         const setting = await settingService.getSetting(decodedToken)
-        const settingEdited = setting.map(item=> objectValueToString(item))
+        const settingEdited: any = _.cloneDeep(setting)
+        settingEdited[0]._id = settingEdited[0]._id.toString()
+        settingEdited[0].type = settingTypes[1]._id.toString()
+        settingEdited[0].role = roleTypes[0]._id.toString()
+        settingEdited[0].userId = user._id.toString()
         settingEdited[0].name = 'testEdited'
         settingEdited[0].value = 'testValueEdited'
         await settingService.putSetting(settingEdited[0] as SettingUpdate)
@@ -160,9 +225,18 @@ describe("Setting Service Test", function () {
             expect.arrayContaining([
                 expect.objectContaining({
                     _id: expect.any(mongoose.Types.ObjectId),
-                    type: 'user',
-                    role: 'admin',
-                    userId: expect.any(mongoose.Types.ObjectId),
+                    type: expect.objectContaining({
+                        _id: settingTypes[1]._id,
+                        name: settingTypes[1].name,
+                    }),
+                    role: expect.objectContaining({
+                        _id: roleTypes[0]._id,
+                        name: roleTypes[0].name,
+                    }),
+                    userId: expect.objectContaining({
+                        _id: user._id,
+                        name: user.name,
+                    }),
                     name: 'testEdited',
                     value: 'testValueEdited',
                     createAt: expect.any(Date),

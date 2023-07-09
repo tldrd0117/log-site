@@ -13,8 +13,8 @@ export interface SettingUpdate{
 
 export interface SettingCreate{
     type: string
-    role: string;
-    userId: string;
+    role?: string;
+    userId?: string;
     name: string;
     value: string;
 }

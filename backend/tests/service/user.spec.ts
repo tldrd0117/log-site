@@ -1,26 +1,29 @@
+import { MD5 } from 'crypto-js'
 import User, { IUser } from '../../src/models/user.model'
 import userService from '../../src/services/user.service'
 import createMongo, { Mongo } from '../../src/utils/mongo'
 import { createTestHashDbName } from '../utils/testUtils'
 import sha256 from 'crypto-js/sha256'
+import Role from '../../src/models/role.model'
+import { BasicType } from 'joi'
+import { Types } from 'mongoose'
 
 describe("user service test", function(){
     let mongo: Mongo
     let user: IUser
+    let roleTypes: Array<any>
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
-        await User.syncIndexes()
     })
 
     beforeEach(async () => {
+        roleTypes = await Role.find({})
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roleTypes[0]._id.toString(),
         })
     })
 
@@ -33,10 +36,12 @@ describe("user service test", function(){
 
     it("get user", async () => {
         const user = await userService.getUserByEmail("root@naver.com")
+        console.log(user)
         expect(user).toMatchObject({
+            _id: expect.any(Types.ObjectId),
             name: "lsj",
             email: "root@naver.com",
-            role: "admin",
+            role: expect.any(Types.ObjectId),
             createAt: expect.any(Date),
         })
     })
@@ -66,6 +71,7 @@ describe("user service test", function(){
             name: "lsj2",
             email: "123@comm.com",
             password: sha256("1234").toString(),
+            role: roleTypes[0]._id.toString(),
         })
 
         expect(result.name).toBe("lsj2")
@@ -120,18 +126,21 @@ describe("user service test", function(){
             name: "lsj3",
             email: "12323@comm.com",
             password: sha256("1234").toString(),
+            role: roleTypes[0]._id.toString(),
         })
 
         await userService.doJoin({
             name: "lsj2",
             email: "1234444@comm.com",
             password: sha256("1234").toString(),
+            role: roleTypes[0]._id.toString(),
         })
 
         await userService.doJoin({
             name: "jjy",
             email: "12344446@comm.com",
             password: sha256("1234").toString(),
+            role: roleTypes[0]._id.toString(),
         })
 
         const result = await userService.searchUserByName("lsj")

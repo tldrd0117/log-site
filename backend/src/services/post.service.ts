@@ -18,7 +18,7 @@ const getList = async (limit: number, offset: number) => {
     const list =  await Post.find().limit(limit).skip(offset).sort({order: -1}).populate({
         path: 'author',
         select: '_id name'
-    })
+    }).lean()
     return {
         total, list
     }

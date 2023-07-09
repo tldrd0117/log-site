@@ -7,6 +7,7 @@ import User, { IUser } from '../../src/models/user.model'
 import { createTestHashDbName } from '../utils/testUtils'
 import joi from 'joi'
 import { initI18n } from '../../src/utils/i18n'
+import Role from '../../src/models/role.model'
 
 const validateOptions = {
     errors: { wrap: { label: '' } },
@@ -17,21 +18,22 @@ describe("post object", function(){
     let mongo: Mongo
     let user: IUser
     let post: IPost
+    let role: string
 
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
         await initI18n()
     })
 
     beforeEach(async () => {
+        const roles = await Role.find()
+        role = roles[0]._id.toString()
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role,
         })
     })
 

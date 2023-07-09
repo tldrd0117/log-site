@@ -6,29 +6,30 @@ import sha256 from 'crypto-js/sha256';
 import createMongo, { Mongo } from '../../src/utils/mongo';
 import User, { IUser } from '../../src/models/user.model';
 import { createTestHashDbName } from '../utils/testUtils';
+import Role from '../../src/models/role.model';
 
 describe('user test', () => {
     let request: any, rsaPublicKey: KeyLike, signRsaPublicKey: KeyLike
     let mongo: Mongo
     let user: IUser
+    let roles: Array<any>
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
-        await User.syncIndexes()
     })
 
     beforeEach(async () => {
+        roles = await Role.find({})
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roles[0]._id.toString()
         })
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase();
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()
@@ -60,7 +61,7 @@ describe('user test', () => {
         expect(claims).toMatchObject({
             name: "nnnna",
             email: "admin@email.com",
-            role: "guest",
+            role: expect.any(String),
             createAt: expect.any(String),
             exp: expect.any(Number),
             iat: expect.any(Number),
@@ -268,7 +269,7 @@ describe('user test', () => {
         expect(claims).toMatchObject({
             name: "lsj",
             email: "root@naver.com",
-            role: "admin",
+            role: roles[0]._id.toString(),
             createAt: expect.any(String),
             exp: expect.any(Number),
             iat: expect.any(Number),

@@ -1,17 +1,33 @@
+import { MD5 } from "crypto-js"
 import { DecodedUserInfo } from "../interfaces/auth"
 import { SettingCreate, SettingUpdate } from "../interfaces/setting"
 import Setting, { ISetting } from "../models/setting.model"
+import SettingType from "../models/settingType.model"
 import { MessageError } from "../utils/error"
 import userService from "./user.service"
+import Role from "../models/role.model"
 
 const getSetting = async (userInfo: DecodedUserInfo) => {
-    if(userInfo.role === "admin"){
-        return await Setting.find().lean().exec()
-    } else if(userInfo.role === "user") {
-        return await Setting.find({userId: userInfo._id}).lean().exec()
-    } else {
-        return []
+    const roleTypes = await Role.find()
+    const role = roleTypes.find((type) => type._id.toString() === userInfo.role)
+    try{
+        if(role.name === "admin"){
+            return await Setting.find().populate("type").populate("role").populate({
+                path:"userId",
+                select: "name"
+            }).lean().exec()
+        } else if(role.name === "user") {
+            return await Setting.find({userId: userInfo._id}).populate("type").populate("role").populate({
+                path:"userId",
+                select: "name"
+            }).lean().exec()
+        } else {
+            return []
+        }
+    } catch(e) {
+        throw new MessageError("setting.notFound")
     }
+    
 }
 
 const addSettings = async (settings: Array<SettingCreate>) => {
@@ -40,14 +56,18 @@ const putSetting = async (setting: SettingUpdate) => {
 
 const deleteSetting = async (_id: string) => {
     return await Setting.deleteOne({_id: _id})
+}
 
+const getSettingTypes = async () => {
+    return await SettingType.find()
 }
 
 const settingService = {
     getSetting,
     addSettings,
     putSetting,
-    deleteSetting
+    deleteSetting,
+    getSettingTypes
 }
 
 export default settingService

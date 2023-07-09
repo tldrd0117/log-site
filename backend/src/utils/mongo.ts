@@ -3,6 +3,9 @@ import dotenv from 'dotenv'
 import User from '../models/user.model';
 import Post from '../models/post.model';
 import Setting from '../models/setting.model';
+import SettingType from '../models/settingType.model';
+import Role from '../models/role.model';
+import { MD5, SHA256 } from 'crypto-js';
 
 set("strictQuery", false)
 set('debug', true);
@@ -31,7 +34,44 @@ class Mongo{
         await User.syncIndexes()
         await Post.syncIndexes()
         await Setting.syncIndexes()
+        await SettingType.syncIndexes()
+        await Role.syncIndexes()
+        await this.initializeRows()
     }
+
+    async initializeRows(){
+        const types = [{
+            name: "site",
+            uid: MD5("site").toString()
+        },{
+            name: "user",
+            uid: MD5("user").toString()
+        }]
+        for(let type of types){
+            await SettingType.findOneAndUpdate(type, type, {
+                new: true,
+                upsert: true
+            });
+        }
+        const roles = [{
+            name: "admin",
+            uid: MD5("admin").toString()
+        },{
+            name: "user",
+            uid: MD5("user").toString()
+        },{
+            name: "guest",
+            uid: MD5("guest").toString()
+        }]
+
+        for(let role of roles){
+            await Role.findOneAndUpdate(role, role, {
+                new: true,
+                upsert: true
+            });
+        }
+    }
+
     async resetDatabase(){
         if(!this.isConnect()) throw new Error("not connected!")
         await this.db.connection.dropDatabase();

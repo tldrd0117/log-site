@@ -5,6 +5,8 @@ import User, { IUser } from '../../src/models/user.model'
 import { createTestHashDbName } from '../utils/testUtils'
 import joi from 'joi'
 import { initI18n } from '../../src/utils/i18n'
+import { MD5 } from 'crypto-js'
+import Role from '../../src/models/role.model'
 
 const validateOptions = {
     errors: { wrap: { label: '' } },
@@ -18,21 +20,21 @@ describe("user object", function(){
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
         await initI18n()
     })
 
     beforeEach(async () => {
+        const roleTypes = await Role.find({})
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roleTypes[0]._id.toString(),
         })
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase();
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()

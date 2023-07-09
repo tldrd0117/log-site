@@ -61,6 +61,17 @@
         "responses": {}
       }
     },
+    "/info/types": {
+      "get": {
+        "tags": [
+          "Info"
+        ],
+        "summary": "Get types",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/post/list": {
       "get": {
         "tags": [
@@ -304,6 +315,34 @@
       }
     },
     "/setting/": {
+      "post": {
+        "tags": [
+          "Setting"
+        ],
+        "summary": "Add Setting",
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getSettingCreateObject"
+              },
+              "example": {
+                "type": "(...typeId)",
+                "name": "category",
+                "value": "new Category"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "Setting"
@@ -331,7 +370,23 @@
             "bearer": []
           }
         ],
-        "requestBody": {}
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getSettingUpdateObject"
+              },
+              "example": {
+                "_id": "(...settingId)",
+                "type": "user",
+                "role": "user",
+                "userId": "userId",
+                "name": "category",
+                "value": "new Category"
+              }
+            }
+          }
+        }
       }
     },
     "/test/token": {
@@ -1560,15 +1615,9 @@
                     "type": "string",
                     "example": "string"
                   },
-                  "enum": {
-                    "type": "array",
-                    "example": [
-                      "user",
-                      "site"
-                    ],
-                    "items": {
-                      "type": "string"
-                    }
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
                   },
                   "title": {
                     "type": "string",
@@ -1583,16 +1632,9 @@
                     "type": "string",
                     "example": "string"
                   },
-                  "enum": {
-                    "type": "array",
-                    "example": [
-                      "admin",
-                      "user",
-                      "guest"
-                    ],
-                    "items": {
-                      "type": "string"
-                    }
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
                   },
                   "title": {
                     "type": "string",
@@ -1613,7 +1655,7 @@
                   },
                   "title": {
                     "type": "string",
-                    "example": "id"
+                    "example": "유저 아이디"
                   }
                 }
               },
@@ -1624,13 +1666,13 @@
                     "type": "string",
                     "example": "string"
                   },
-                  "minLength": {
-                    "type": "number",
-                    "example": 64
-                  },
                   "maxLength": {
                     "type": "number",
                     "example": 64
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
                   },
                   "title": {
                     "type": "string",
@@ -1645,13 +1687,13 @@
                     "type": "string",
                     "example": "string"
                   },
-                  "minLength": {
-                    "type": "number",
-                    "example": 64
-                  },
                   "maxLength": {
                     "type": "number",
                     "example": 64
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
                   },
                   "title": {
                     "type": "string",
@@ -1664,7 +1706,9 @@
           "required": {
             "type": "array",
             "example": [
-              "_id"
+              "_id",
+              "name",
+              "value"
             ],
             "items": {
               "type": "string"
@@ -1680,55 +1724,24 @@
           }
         }
       },
-      "getAddCategoryObject": {
+      "getAddCategoryString": {
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
-            "example": "object"
+            "example": "string"
           },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "category": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "minLength": {
-                    "type": "number",
-                    "example": 1
-                  },
-                  "maxLength": {
-                    "type": "number",
-                    "example": 40
-                  },
-                  "title": {
-                    "type": "string",
-                    "example": "category"
-                  }
-                }
-              }
-            }
+          "minLength": {
+            "type": "number",
+            "example": 1
           },
-          "required": {
-            "type": "array",
-            "example": [
-              "category"
-            ],
-            "items": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": {
-            "type": "boolean",
-            "example": false
+          "maxLength": {
+            "type": "number",
+            "example": 40
           },
           "title": {
             "type": "string",
-            "example": "카테고리 추가"
+            "example": "카테고리"
           }
         }
       },
@@ -1754,50 +1767,19 @@
                     "properties": {
                       "type": {
                         "type": "string",
-                        "example": "object"
+                        "example": "string"
                       },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "category": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "minLength": {
-                                "type": "number",
-                                "example": 1
-                              },
-                              "maxLength": {
-                                "type": "number",
-                                "example": 40
-                              },
-                              "title": {
-                                "type": "string",
-                                "example": "category"
-                              }
-                            }
-                          }
-                        }
+                      "minLength": {
+                        "type": "number",
+                        "example": 1
                       },
-                      "required": {
-                        "type": "array",
-                        "example": [
-                          "category"
-                        ],
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "additionalProperties": {
-                        "type": "boolean",
-                        "example": false
+                      "maxLength": {
+                        "type": "number",
+                        "example": 40
                       },
                       "title": {
                         "type": "string",
-                        "example": "카테고리 추가"
+                        "example": "카테고리"
                       }
                     }
                   },
@@ -1835,13 +1817,139 @@
             "example": "카테고리 리스트 추가"
           }
         }
+      },
+      "getSettingCreateObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "설정 타입"
+                  }
+                }
+              },
+              "role": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "권한"
+                  }
+                }
+              },
+              "userId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^[a-fA-F0-9]{24}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "유저 아이디"
+                  }
+                }
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "설정 이름"
+                  }
+                }
+              },
+              "value": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 64
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "설정 값"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "type",
+              "name",
+              "value"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "설정 추가"
+          }
+        }
       }
     },
     "parameters": {
       "name": {
         "in": "query",
         "name": "name",
-        "required": false,
+        "required": true,
         "description": "설정 이름",
         "schema": {
           "type": "string"
@@ -1958,7 +2066,7 @@
       "type": {
         "in": "query",
         "name": "type",
-        "required": false,
+        "required": true,
         "description": "설정 타입",
         "schema": {
           "type": "string"
@@ -1977,7 +2085,7 @@
         "in": "query",
         "name": "userId",
         "required": false,
-        "description": "id",
+        "description": "유저 아이디",
         "schema": {
           "type": "string"
         }
@@ -1985,17 +2093,8 @@
       "value": {
         "in": "query",
         "name": "value",
-        "required": false,
-        "description": "설정 값",
-        "schema": {
-          "type": "string"
-        }
-      },
-      "category": {
-        "in": "query",
-        "name": "category",
         "required": true,
-        "description": "category",
+        "description": "설정 값",
         "schema": {
           "type": "string"
         }

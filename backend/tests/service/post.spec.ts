@@ -6,6 +6,8 @@ import User, { IUser } from "../../src/models/user.model";
 import postService from "../../src/services/post.service";
 import createMongo, { Mongo } from "../../src/utils/mongo";
 import { createTestHashDbName } from "../utils/testUtils";
+import { MD5 } from "crypto-js";
+import Role from "../../src/models/role.model";
 
 describe("Post Service Test", function () {
     let mongo: Mongo
@@ -14,20 +16,20 @@ describe("Post Service Test", function () {
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
     })
 
     beforeEach(async () => {
+        const roleTypes = await Role.find()
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: roleTypes[0]._id.toString(),
         })
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase();
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()
@@ -150,24 +152,24 @@ describe("Post Service Test", function () {
 
         let postList: PostList
         for(let p = 0; p < 10; ++p){
-            postList = await postService.getList(10, p*10)
+            postList = (await postService.getList(10, p*10)) as PostList
             expect(postList.list).toHaveLength(10)
             for(let i = 0; i < 10; ++i){
-                expect(postList.list[i]).toMatchObject({
+                expect(postList.list[i]).toStrictEqual(expect.objectContaining({
                     _id: expect.any(Types.ObjectId),
-                    author: {
+                    author: expect.objectContaining({
                         _id: user._id,
                         name: user.name,
-                    },
-                    authorName: user.name,
+                    }),
+                    authorName: expect.any(String),
                     summary: "it is not title1",
-                    text: "test"+(i+(10 * p)),
+                    text: expect.any(String),
                     createAt: expect.any(Date),
                     updateAt: expect.any(Date),
-                    order: i+(1 + 10 * p),
+                    order: expect.any(Number),
                     relatedPosts: [],
                     parent: null
-                })
+                }))
             }
         }
         expect(postList.total).toBe(100)

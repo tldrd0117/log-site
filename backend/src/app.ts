@@ -6,6 +6,7 @@ import authRouter from './routers/auth.routes'
 import postRouter from './routers/post.routes'
 import userRouter from './routers/user.routes'
 import testRouter from './routers/test.routes'
+import infoRouter from './routers/info.routes'
 import settingRouter from './routers/setting.routes'
 import { errorHandleMiddleware } from './middlewares/middlewares';
 
@@ -66,6 +67,7 @@ const getApp = async () => {
     app.use(userRouter.routes())
     app.use(testRouter.routes())
     app.use(settingRouter.routes())
+    app.use(infoRouter.routes())
 
     app.use(router.routes());
 

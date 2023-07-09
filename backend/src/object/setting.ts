@@ -62,3 +62,27 @@ export const getAddCategoriesObject = async (lng: string) => {
         "object.base": i18next.t("validate.object.type"),
     })
 }
+
+export const getSettingCreateObject =async (lng: string) => {
+    const i18next = await getI18next(lng)
+    const messages = {
+        "any.required": i18next.t("validate.required"),
+        "string.base": i18next.t("validate.string"),
+        "string.min": i18next.t("validate.min"),
+        "string.max": i18next.t("validate.max"),
+        "string.pattern.name": i18next.t("validate.pattern.type"),
+        "string.empty": i18next.t("validate.required"),
+        "any.only": i18next.t("validate.valid")
+    }
+    return Joi.object({
+        type: _.cloneDeep(settingType).label(i18next.t("settingType")).required().messages(messages),
+        role: _.cloneDeep(role).label(i18next.t("role")).messages(messages),
+        userId: _.cloneDeep(optionId).label(i18next.t("userId")).messages(messages),
+        name: _.cloneDeep(settingName).label(i18next.t("settingName")).required().messages(messages),
+        value: _.cloneDeep(settingValue).label(i18next.t("settingValue")).required().messages(messages),
+    })
+    .label(i18next.t("settingCreate"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
+}

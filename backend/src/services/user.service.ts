@@ -1,6 +1,7 @@
 import User from '../models/user.model'
 import { MessageStatusError, MessageErrors, MessageCodeStatusError } from '../utils/error'
 import { UserJoin, UserLogin } from '../interfaces/user'
+import Role from '../models/role.model'
 
 /**
  * 
@@ -22,6 +23,7 @@ const doJoin = async (userJoin: UserJoin)=>{
         errors.push(new MessageCodeStatusError('user.email.duplicated', 400))
     }
     if(errors.length > 0) throw new MessageErrors(errors)
+    
     return await createUser(userJoin)
 }
 
@@ -52,6 +54,10 @@ const getUserByEmail = (email: string) => {
     return User.findOne({ email }, {_id: 1, "name": 1, "email": 1, "role": 1, "createAt": 1})
 }
 
+const getRoleTypes = async () => {
+    return await Role.find()
+}
+
 
 const userService = {
     doLogin,
@@ -60,7 +66,8 @@ const userService = {
     checkEmailDuplicate,
     checkNameDuplicate,
     checkExistUserById,
-    searchUserByName
+    searchUserByName,
+    getRoleTypes
 }
 
 export default userService

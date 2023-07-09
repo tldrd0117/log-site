@@ -7,6 +7,8 @@ import User, { IUser } from '../../src/models/user.model';
 import Post, { IPost } from '../../src/models/post.model';
 import sha256 from 'crypto-js/sha256';
 import { encFactory } from '../utils/encUtils';
+import { MD5 } from 'crypto-js';
+import Role from '../../src/models/role.model';
 
 describe('setting request test', () => {
     let request: SuperTest<Test>, rsaPublicKey: KeyLike, signRsaPublicKey: KeyLike
@@ -18,16 +20,15 @@ describe('setting request test', () => {
     beforeEach(async () => {
         mongo = createMongo(process.env.DB_ADDRESS || "", createTestHashDbName());
         await mongo.connect();
-        await mongo.useDb();
-        await mongo.resetDatabase();
     })
 
     beforeEach(async () => {
+        const role = await Role.find()
         user = await User.create({
             name: "lsj",
             email: "root@naver.com",
             password: sha256("123451").toString(),
-            role: "admin",
+            role: role[0]._id,
         })
     })
 
@@ -79,6 +80,7 @@ describe('setting request test', () => {
     })
 
     afterEach(async () => {
+        await mongo.resetDatabase()
         if(mongo.isConnect()){
             await mongo.db.connection.dropDatabase()
             return mongo.disconnect()

@@ -2,8 +2,8 @@ import mongoose, { Schema, model, connect, Date, Types } from "mongoose";
 
 interface ISetting{
     _id: Types.ObjectId
-    type: string
-    role: string;
+    type: Types.ObjectId
+    role: Types.ObjectId;
     userId: Types.ObjectId;
     name: string;
     value: string;
@@ -14,8 +14,8 @@ interface ISetting{
 export {ISetting}
 
 const settingSchema = new Schema<ISetting>({
-    type: {type: String, required: true},
-    role: {type: String, required: true},
+    type: {type: Schema.Types.ObjectId, required: true, ref: "SettingType"},
+    role: {type: Schema.Types.ObjectId, required: true, ref: "Role"},
     userId: {type: Schema.Types.ObjectId, required: true, ref:"User"},
     name: {type: String, required: true},
     value: {type: String, required: true},

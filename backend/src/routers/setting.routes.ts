@@ -5,7 +5,8 @@ import { decMiddleware, validateMiddlewareFactory, validateTokenMiddleware } fro
 import { DecodedUserInfo } from '../interfaces/auth';
 import { SettingCreate, SettingUpdate } from '../interfaces/setting';
 import response from '../utils/response';
-import { getAddCategoriesObject, getSettingUpdateObject } from '../object/setting';
+import { getAddCategoriesObject, getSettingCreateObject, getSettingUpdateObject } from '../object/setting';
+import { MD5 } from 'crypto-js';
 
 const router = new Router({
     prefix: "/setting"
@@ -36,16 +37,50 @@ router.post("/addCategories", decMiddleware, validateTokenMiddleware,
     const userInfo: any = await authService.decryptToken(token)
     const body: any = ctx.request.body
     const categories = body.categories
-    console.log(categories)
+    const settingTypes = await settingService.getSettingTypes()
+    const siteType = settingTypes.find((type) => type.name === 'site')
     const settings: Array<SettingCreate> = categories.map((category: string) => ({
-        type: 'site',
+        type: siteType._id,
         role: userInfo.role,
         userId: userInfo._id,
         name: 'category',
         value: category,
     }));
     const result = await settingService.addSettings(settings)
-    ctx.body = response.makeSuccessBody({ list: result});
+    ctx.body = response.makeSuccessBody({ list: result });
+})
+
+router.post("/", decMiddleware, validateTokenMiddleware, 
+    validateMiddlewareFactory(getSettingCreateObject), async (ctx) => {
+    /*	
+        #swagger.tags = ['Setting']
+        #swagger.summary = 'Add Setting'
+        #swagger.security = [{
+            bearer:[]
+        }]
+
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getSettingCreateObject"
+                    },
+                    "example": {
+                        "type": "(...typeId)",
+                        "name": "category",
+                        "value": "new Category"
+                    }
+                }
+            }
+        }
+    */
+    const token = ctx.header.authorization
+    const userInfo: any = await authService.decryptToken(token)
+    const body: SettingCreate = ctx.request.body as SettingCreate
+    body.role = userInfo.role
+    body.userId = userInfo._id
+    const result = await settingService.addSettings([body])
+    ctx.body = response.makeSuccessBody({ list: result });
 })
 
 router.get('/', validateTokenMiddleware, async (ctx) => {
@@ -61,9 +96,11 @@ router.get('/', validateTokenMiddleware, async (ctx) => {
     const token = ctx.header.authorization
     const userInfo: any = await authService.decryptToken(token)
     const setting = await settingService.getSetting(userInfo as DecodedUserInfo)
-    console.log(setting)
     ctx.body = response.makeSuccessBody({ list: setting});
+    console.log("/", ctx.body)
 })
+
+
 
 router.put('/', decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getSettingUpdateObject), async (ctx) => {
     /*
@@ -76,15 +113,15 @@ router.put('/', decMiddleware, validateTokenMiddleware, validateMiddlewareFactor
             "content": {
                 "application/json": {
                     "schema": {
-                        "$ref": "#/definitions/getPostCreateArrayObject"
+                        "$ref": "#/definitions/getSettingUpdateObject"
                     },
                     "example": {
-                        "_id": (...settingId);
+                        "_id": "(...settingId)",
                         "type": "user",
-                        "role": "user";
-                        "userId": "userId";
-                        "name": "category";
-                        "value": "new Category";
+                        "role": "user",
+                        "userId": "userId",
+                        "name": "category",
+                        "value": "new Category"
                     }
                 }
             }
@@ -95,5 +132,6 @@ router.put('/', decMiddleware, validateTokenMiddleware, validateMiddlewareFactor
     ctx.body = response.makeSuccessBody({ list: result});
 
 })
+
 
 export default router
