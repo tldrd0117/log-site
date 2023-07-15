@@ -387,6 +387,45 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Setting"
+        ],
+        "summary": "delete Setting",
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getSettingsDeleteObject"
+              },
+              "example": {
+                "ids": [
+                  "(...settingId)"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/setting/categories": {
+      "get": {
+        "tags": [
+          "Setting"
+        ],
+        "summary": "Get Categories",
+        "description": "",
+        "parameters": [],
+        "responses": {}
       }
     },
     "/test/token": {
@@ -1818,6 +1857,58 @@
           }
         }
       },
+      "getSettingsDeleteObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "pattern": {
+                        "type": "string",
+                        "example": "^[a-fA-F0-9]{24}$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "설정 아이디"
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "설정 아이디 배열"
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "설정 삭제"
+          }
+        }
+      },
       "getSettingCreateObject": {
         "type": "object",
         "properties": {
@@ -2104,6 +2195,15 @@
         "name": "categories",
         "required": true,
         "description": "카테고리 리스트",
+        "schema": {
+          "type": "array"
+        }
+      },
+      "ids": {
+        "in": "query",
+        "name": "ids",
+        "required": false,
+        "description": "설정 아이디 배열",
         "schema": {
           "type": "array"
         }

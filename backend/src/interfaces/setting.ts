@@ -18,3 +18,12 @@ export interface SettingCreate{
     name: string;
     value: string;
 }
+
+export interface SettingsDelete{
+    ids: Array<string>
+}
+
+export interface SettingGetList{
+    limit: number;
+    offset: number;
+}

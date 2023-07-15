@@ -5,6 +5,30 @@ import { id, limit, offset, searchWord,
     userName, summary, text, order, idArray, settingType, role, settingName, settingValue, categories, category, optionId } from './common'
 import i18next from 'i18next';
 
+export const getSettingListObject = async (lng: string) => {
+    const i18next = await getI18next(lng)
+    const messages = {
+        "any.required": i18next.t("validate.required"),
+        "number.base": i18next.t("validate.number.type"),
+        "number.integer": i18next.t("validate.number.integer"),
+        "number.min": i18next.t("validate.number.min"),
+        "number.max": i18next.t("validate.number.max"),
+    }
+    return Joi.object({
+        limit: _.cloneDeep(limit).required()
+            .label(i18next.t("limit"))
+            .messages(messages),
+            
+        offset: _.cloneDeep(offset).required()
+            .label(i18next.t("offset"))
+            .messages(messages),
+    })
+    .label(i18next.t("settingList"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
+}
+
 export const getSettingUpdateObject = async (lng: string) => {
     const i18next = await getI18next(lng)
     const messages = {
@@ -61,6 +85,36 @@ export const getAddCategoriesObject = async (lng: string) => {
     .messages({
         "object.base": i18next.t("validate.object.type"),
     })
+}
+
+export const getSettingsDeleteObject =async (lng: string) => {
+    const i18next = await getI18next(lng)
+    const messages = {
+        "any.required": i18next.t("validate.required"),
+        "string.base": i18next.t("validate.string"),
+        "string.min": i18next.t("validate.min"),
+        "string.max": i18next.t("validate.max"),
+        "string.pattern.name": i18next.t("validate.pattern.type"),
+        "string.empty": i18next.t("validate.required"),
+    }
+    return Joi.object({
+            ids: Joi.array().items(_.cloneDeep(id).label(i18next.t("settingId")).required().messages(messages))
+            .label(i18next.t("settingIds"))
+            .messages({
+                "object.base": i18next.t("validate.object.type"),
+                "array.base": i18next.t("validate.array.type"),
+                "array.max": i18next.t("validate.array.max"),
+                "array.min": i18next.t("validate.array.min"),
+                "array.includesRequiredKnowns": i18next.t("validate.array.includes")
+            })
+        })
+        .label(i18next.t("settingDelete"))
+        .messages({
+            "object.base": i18next.t("validate.object.type"),
+        })
+
+    
+    
 }
 
 export const getSettingCreateObject =async (lng: string) => {

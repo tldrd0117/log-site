@@ -7,27 +7,37 @@ import { MessageError } from "../utils/error"
 import userService from "./user.service"
 import Role from "../models/role.model"
 
-const getSetting = async (userInfo: DecodedUserInfo) => {
+const getSettingList = async (userInfo: DecodedUserInfo, limit: number, offset: number) => {
     const roleTypes = await Role.find()
     const role = roleTypes.find((type) => type._id.toString() === userInfo.role)
+    let list: Array<any>, total;
     try{
         if(role.name === "admin"){
-            return await Setting.find().populate("type").populate("role").populate({
+            total = await Setting.countDocuments()
+            list = await Setting.find().limit(limit).skip(offset).sort({order: -1}).populate("type").populate("role").populate({
                 path:"userId",
                 select: "name"
             }).lean().exec()
+            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
         } else if(role.name === "user") {
-            return await Setting.find({userId: userInfo._id}).populate("type").populate("role").populate({
+            total = await Setting.countDocuments({userId: userInfo._id})
+            list = await Setting.find({userId: userInfo._id}).limit(limit).skip(offset).sort({order: -1}).populate("type").populate("role").populate({
                 path:"userId",
                 select: "name"
             }).lean().exec()
+            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
         } else {
-            return []
+            total = 0
+            list = []
+            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
         }
     } catch(e) {
         throw new MessageError("setting.notFound")
     }
-    
+}
+
+const getCategories = async () => {
+    return await Setting.find({name: "category"}, "_id name value").lean().exec()
 }
 
 const addSettings = async (settings: Array<SettingCreate>) => {
@@ -54,8 +64,8 @@ const putSetting = async (setting: SettingUpdate) => {
     }
 }
 
-const deleteSetting = async (_id: string) => {
-    return await Setting.deleteOne({_id: _id})
+const deleteSetting = async (ids: Array<string>) => {
+    return await Setting.deleteMany({_id: { $in: ids}})
 }
 
 const getSettingTypes = async () => {
@@ -63,7 +73,8 @@ const getSettingTypes = async () => {
 }
 
 const settingService = {
-    getSetting,
+    getSettingList,
+    getCategories,
     addSettings,
     putSetting,
     deleteSetting,
