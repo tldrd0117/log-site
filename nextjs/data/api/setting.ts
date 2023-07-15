@@ -1,10 +1,11 @@
 import { KeyLike } from "jose";
 import { UserJoin, UserLogin } from "./interfaces/user";
-import { BASE_URL, encrypt, makeStringErrorByResponse } from "./utils/common";
-import { CategoriesCreate, SettingCreate, SettingUpdate } from "./interfaces/setting";
+import { BASE_URL, encrypt, makeQueryString, makeStringErrorByResponse } from "./utils/common";
+import { CategoriesCreate, SettingCreate, SettingGetList, SettingUpdate, SettingsDelete } from "./interfaces/setting";
 
-export const getSetting = async (key: KeyLike, token: string) => {
-    const response = await fetch(`${BASE_URL}/setting`, {
+export const getSettingList = async (queryStringObj: SettingGetList, key: KeyLike, token: string) => {
+    const queryString = makeQueryString<SettingGetList>(queryStringObj);
+    const response = await fetch(`${BASE_URL}/setting/list?${queryString}`,{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -12,13 +13,28 @@ export const getSetting = async (key: KeyLike, token: string) => {
         }
     });
     const res = await response.json();
-    console.log("getSetting", res)
     if(res.result === "fail"){
         const errorStr = makeStringErrorByResponse(res)
         throw new Error(errorStr)
     }
     return res
 };
+
+export const getCategories = async () => {
+    const response = await fetch(`${BASE_URL}/setting/categories`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    });
+    const res = await response.json();
+    if(res.result === "fail"){
+        const errorStr = makeStringErrorByResponse(res)
+        throw new Error(errorStr)
+    }
+    return res
+}
+
 
 export const putSetting = async (obj: SettingUpdate, key: KeyLike, token: string) => {
     const response = await fetch(`${BASE_URL}/setting`, {
@@ -70,4 +86,21 @@ export const addSetting = async (obj: SettingCreate, key: KeyLike, token: string
     }
     return res
 };
+
+export const deleteSettings = async (obj: SettingsDelete, key: KeyLike, token: string) => {
+    const response = await fetch(`${BASE_URL}/setting/`, {
+        method: "DELETE",
+        body: await encrypt(obj, key),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const res = await response.json();
+    if(res.result === "fail"){
+        const errorStr = makeStringErrorByResponse(res)
+        throw new Error(errorStr)
+    }
+    return res
+}
 

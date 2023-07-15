@@ -33,6 +33,20 @@ export const deletePost = async (obj: PostDelete, key: KeyLike, token: string) =
     return await response.json();
 };
 
+export const deletePostList = async (arr: Array<PostDelete>, key: KeyLike, token: string) => {
+    const response = await fetch(`${BASE_URL}/post/`, {
+        method: "DELETE",
+        body: await encrypt(arr, key),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+
+    });
+    return await response.json();
+};
+
+
 export const getPost = async (obj: PostGet) => {
     const queryString = makeQueryString<PostGet>(obj);
     const response = await fetch(`${BASE_URL}/post?${queryString}`);

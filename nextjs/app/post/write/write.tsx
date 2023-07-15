@@ -20,7 +20,7 @@ import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
 import { usePost, usePostMutation } from "@/data/query/post/post";
-import LoginRequired from "@/app/LoginRequired";
+import { DynamicLoginRequired } from "@/app/common/DynamicLoginRequired";
 
 export interface WriteProps{
     id: string
@@ -99,7 +99,7 @@ export default function Write ({id}: WriteProps){
             href: "/post/write",
             label: isEdit? title : "PostWrite"
         }]}/>
-        <LoginRequired>
+        <DynamicLoginRequired>
             <TextInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE}
                 inputClassName = {"px-7 py-8 text-3xl font-bold "}
                 className="mt-8"
@@ -153,7 +153,7 @@ export default function Write ({id}: WriteProps){
                     </div>
                 }
                 />
-        </LoginRequired>
+        </DynamicLoginRequired>
         <Modal isShow={isPreview} onClose={() => setIsPreview(false)}>
             <BorderBox className="p-16 prose max-h-screen overflow-auto min-w-[62ch]">
                 <Text h3>{titleValue}</Text>

@@ -88,21 +88,27 @@ export const prefetchPost = (id: string) => {
 }
 
 export const prefetchRecentPostList = () => {
-    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST_LIST], async () => {
+    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST_LIST, RECENT_LIST_LIMIT], async () => {
         const list = await getPostList({ limit: RECENT_LIST_LIMIT, offset: 0})
         return {
             pages: [list],
             pageParams: [0]
         }
+    }, {
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 10,
     })
 }
 
 export const prefetchPostList = () => {
-    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST_LIST], async () => {
+    return getQueryClient().prefetchQuery([QUERY_KEYS.POST.POST_LIST, DEFAULT_LIMIT], async () => {
         const list = await getPostList({ limit: DEFAULT_LIMIT, offset: 0})
         return {
             pages: [list],
             pageParams: [0]
         }
+    }, {
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 10,
     })
 }

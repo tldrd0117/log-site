@@ -25,14 +25,14 @@ export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputEl
             inputClassName={clsx([{ 'pl-10': icon }, { 'pl-4': !icon }, { 'pr-8': cancelButton }, { 'pr-4': !cancelButton }])}
             leftComponent={<div className='absolute m-2'>{icon}</div>}
             rightComponent={<>
-                <div className='flex absolute m-2 right-0 bottom-0'>
+                <div className='flex absolute m-2 right-0 bottom-0 pointer-events-none'>
                     {
                         rightIcon
                     }
                     {
                         cancelButton && 
                         <IconButton
-                            className='pointer-events-auto'
+                            className='pointer-events-none'
                             icon={<CancelIcon />}
                             onClick={onCancel}
                         />

@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import { LOGIN_STATE, useLoginState } from "@/data/query/user";
 import { tokenState } from "@/data/recoil/states/user";
 import { redirect, usePathname, useRouter } from "next/navigation";
@@ -13,7 +14,6 @@ export default function LoginRequired ({ children }: { children: React.ReactNode
     const isLogin = token !== ""
     if(!isLogin){
         redirect(`/user/login?redirect=${pathname}`)
-        // router.replace()
     }
     return <>
         {isLogin? children: null}

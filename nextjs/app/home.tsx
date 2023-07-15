@@ -10,9 +10,18 @@ import { BorderBox } from '@/components/Box/BorderBox'
 import { FooterLayout } from '@/containers/layout/FooterLayout'
 import { SiteMap } from '@/components/SiteMap/SiteMap'
 import { DynamicCalendarCart } from './DynamicCalendarCart'
+import { useRecentPostList } from '@/data/query/post/post'
+import { useRouter } from 'next/navigation'
 
 export function Home({ data }: any) {
     const { calendar, siteMap}: any = data
+    const { data: recentPostList} = useRecentPostList()
+    const router = useRouter()
+
+    const handleItemClick = (id: string) => {
+        console.log(id)
+        router.push(`/post/${id}`)
+    }
     return <>
         <Breadcrumbs items={[{
             href: "/",
@@ -21,8 +30,10 @@ export function Home({ data }: any) {
         <Text className='mt-8' h5>Recent Post</Text>
         <FlexList className='flex-nowrap overflow-auto mt-4'>
         {
-            [...Array(10).fill(0)].map((_, i) => {
-                return <CardListItem size='sm' key={"HOME"+i} title="title" subTitle="subTitle" summary="summary"/>
+            recentPostList?.list.map((item: any) => {
+                return <>
+                    <CardListItem onClick={() => handleItemClick(item._id)} key={item._id} title={item.summary} subTitle={item.createAt} summary={item.authorName}/>
+                </>
             })
         }
         </FlexList>

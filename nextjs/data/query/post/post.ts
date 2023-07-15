@@ -1,11 +1,11 @@
 import getQueryClient from "@/app/getQueryClient"
 import { getPublicKey } from "../../api/auth"
 import { QUERY_KEYS } from "../common/queryKeys"
-import { getPost, getPostList, createPost } from "../../api/post"
+import { getPost, getPostList, createPost, deletePostList } from "../../api/post"
 import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import remarkGfm from "remark-gfm"
 import { compileMDX } from "next-mdx-remote/rsc"
-import { PostCreate, PostRawCreate } from "../../api/interfaces/post"
+import { PostCreate, PostDelete, PostRawCreate } from "../../api/interfaces/post"
 import { getEncPublicKey } from "../../security/enc"
 import { KeyLike } from "jose"
 import { makeStringErrorByResponse } from "../../api/utils/common"
@@ -17,6 +17,7 @@ import { tokenState, userInfoState } from "../../recoil/states/user"
 import { ReactFragment } from "react"
 
 const DEFAULT_LIMIT = 20;
+const RECENT_LIST_LIMIT = 10;
 export const TAG_SEPARATOR = "(/*/)";
 
 const getMdxPost = async (id: string) => {
@@ -150,10 +151,31 @@ export const usePostMutation = () => {
     })
 }
 
+export const useDeletePostListMutation = () => {
+    const {data: encPublicKey} = useEncPubicKey()
+    const [token, setToken] = useRecoilState(tokenState)
+    return useMutation({
+        mutationFn: async (data: Array<PostDelete>) => {
+            return await deletePostList(data, encPublicKey!!, token!!)
+        }
+    })
+}
+
+export const useRecentPostList = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.POST.POST_LIST, RECENT_LIST_LIMIT],
+        queryFn: async () => {
+            return await getPostList({ limit: RECENT_LIST_LIMIT, offset: 0 })
+        },
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 10,
+    })
+}
+
 
 export const usePostListInfinity = () => {
     return useInfiniteQuery({
-        queryKey: [QUERY_KEYS.POST.POST_LIST],
+        queryKey: [QUERY_KEYS.POST.POST_LIST, DEFAULT_LIMIT],
         queryFn: async ({ pageParam = 0}) => {
             return await getPostList({ limit: DEFAULT_LIMIT, offset: pageParam * DEFAULT_LIMIT })
         },
@@ -163,6 +185,8 @@ export const usePostListInfinity = () => {
                 return allPage.length + 1
         },
         getPreviousPageParam: (firstPage) => {
-        }
+        },
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 10,
     })
 }

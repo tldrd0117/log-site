@@ -1,4 +1,4 @@
-import LoginRequired from "@/app/LoginRequired"
+import LoginRequired from "@/app/common/LoginRequired"
 import { AppBar } from "@/components/AppBar/AppBar"
 import { BorderBox } from "@/components/Box/BorderBox"
 import { Breadcrumbs, LinkProps } from "@/components/Breadcrumbs/Breadcrumbs"

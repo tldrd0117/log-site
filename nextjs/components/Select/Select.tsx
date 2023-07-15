@@ -43,7 +43,7 @@ export const Select = (props: SelectProps) => {
         inputProps?.onChange && inputProps.onChange(e)
     }
     return <>
-        <TextInput ref={inputRef} rightIcon={<DropdownIcon/>} readOnly placeholder="select" {...inputProps} 
+        <TextInput className="cursor-pointer" ref={inputRef} rightIcon={<DropdownIcon/>} readOnly placeholder="select" {...inputProps} 
             onFocus={handleOnFocus} onBlur={handleOnBlur} onChange={handleOnChange}
             value={selected?.value}/>
         <ContextMenu selected={selected} {...contextMenuProps} hide={!isSelect} onItemClick={handleOnItemClick}/>

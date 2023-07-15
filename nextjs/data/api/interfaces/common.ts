@@ -11,3 +11,8 @@ export interface BasicTypes{
     name: string
     uid: string
 }
+
+export interface SelectList{
+    id: string
+    value: string
+}
