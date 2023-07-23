@@ -1,5 +1,5 @@
 import getQueryClient from "@/app/getQueryClient"
-import { QUERY_KEYS } from "../common/queryKeys"
+import { QUERY_KEYS } from "../common/constants"
 import { getCategories } from "@/data/api/setting"
 
 export const prefetchCategories = () => {

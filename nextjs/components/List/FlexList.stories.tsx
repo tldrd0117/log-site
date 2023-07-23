@@ -21,7 +21,7 @@ type Story = StoryObj<typeof FlexList>;
 
 export const Normal: Story = {
     render: (args) => {
-        return <FlexList {...args} tagType={BorderBox}>
+        return <FlexList {...args} tagtype={BorderBox}>
         {
             [1,2,3].map((item) => <ListItem key={item.toString()}>{item}</ListItem>)
         }
@@ -38,7 +38,7 @@ export const Normal: Story = {
 
 export const Card: Story = {
     render: (args) => {
-        return <FlexList {...args} tagType={BorderBox}>
+        return <FlexList {...args} tagtype={BorderBox}>
         {
             [1,2,3].map((item) => <CardListItem key={item.toString()} 
                 title={"title"+item.toString()}

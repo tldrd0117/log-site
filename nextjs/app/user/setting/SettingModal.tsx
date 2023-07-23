@@ -4,9 +4,9 @@ import { TextInput } from "@/components/Input/TextInput";
 import { Modal } from "@/components/Modal/Modal";
 import { Select } from "@/components/Select/Select";
 import { Text } from '@/components/Text/Text'
-import { QUERY_KEYS } from "@/data/query/common/queryKeys";
-import { useTypes } from "@/data/query/info/info";
-import { useAddSettingMutation } from "@/data/query/setting/setting";
+import { QUERY_KEYS } from "@/data/query/common/constants";
+import { useTypes } from "@/data/query/info/query";
+import { useAddSettingMutation } from "@/data/query/setting/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import React from "react";
@@ -55,7 +55,7 @@ export const SettingModal = ({isShow, onClose}: SettingModalProps) => {
                     }}
                     contextMenuProps={{
                         className: "mt-2",
-                        tagType: CardBox,
+                        tagtype: CardBox,
                         firstListItemProps: {
                             className: "rounded-t-lg",
                         },

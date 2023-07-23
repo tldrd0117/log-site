@@ -7,6 +7,8 @@ import getQueryClient from "@/app/getQueryClient";
 import { prefetchPublicKey } from "@/data/query/auth";
 import { prefetchPost } from "@/data/query/post/prefetch";
 import { AppBarContentsTemplate } from "@/templates/AppBarContentsTemplate";
+import { VisitRecord } from "@/app/common/VisitRecord";
+import { prefetchCategoryList } from "@/data/query/category/prefetch";
 
 export interface WriteProps{
     code: MDXRemoteSerializeResult
@@ -18,10 +20,15 @@ export default async function WritePage (context: GetServerSidePropsContext<{id:
     const id = context.params?.id as string || ""
     await prefetchPublicKey()
     await prefetchPost(id)
+    await prefetchCategoryList()
     const state = dehydrate(getQueryClient())
     return <>
         <Hydrate state={state}>
-            <Write id={id}/>
+            <AppBarContentsTemplate>
+                <VisitRecord>
+                    <Write id={id}/>
+                </VisitRecord>
+            </AppBarContentsTemplate>
         </Hydrate>
     </>
 }

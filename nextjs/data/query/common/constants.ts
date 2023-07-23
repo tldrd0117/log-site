@@ -4,7 +4,7 @@ export const QUERY_KEYS = {
         ENC_PUBLIC_KEY: "encPublicKey"
     },
     POST: {
-        POST_LIST: 'postList',
+        LIST: 'postList',
         POST: 'post'
     },
     USER: {
@@ -20,5 +20,15 @@ export const QUERY_KEYS = {
     },
     INFO: {
         TYPE: "infoType",
+    },
+    VISIT: {
+        LIST: "visitList"
+    },
+    CATEGORY: {
+        LIST: "categoryList"
     }
+}
+
+export const VISIT_TARGET = {
+    BLOG: "blog"
 }

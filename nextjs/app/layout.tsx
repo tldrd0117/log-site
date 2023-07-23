@@ -1,8 +1,6 @@
 import React from 'react'
 import '@/styles/tailwind.css'
 import '@/styles/globals.css'
-import getQueryClient from './getQueryClient'
-import { Hydrate, QueryClientProvider, dehydrate } from '@tanstack/react-query'
 import Providers from './Provider'
 import { PageLayout } from '@/containers/layout/PageLayout'
 

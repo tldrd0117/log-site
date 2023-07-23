@@ -10,5 +10,5 @@ export const FlexList = (props: FlexListProps) => {
     if(!className?.includes("gap")){
         className += " gap-4"
     }
-    return <Container {...props} as={"ul"} className={clsx([`flex flex-wrap`, className])} />
+    return <Container {...props} tagtype={"ul"} className={clsx([`flex flex-wrap`, className])} />
 }

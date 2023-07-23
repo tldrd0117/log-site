@@ -22,7 +22,7 @@ type Story = StoryObj<typeof List>;
 
 export const Normal: Story = {
     render: (args) => {
-        return <List {...args} tagType={BorderBox}>
+        return <List {...args} tagtype={BorderBox}>
         {
             [1,2,3].map((item) => <ListItem key={item.toString()}>{item}</ListItem>)
         }
@@ -39,7 +39,7 @@ export const Normal: Story = {
 
 export const Card: Story = {
     render: (args) => {
-        return <List {...args} tagType={BorderBox}>
+        return <List {...args} tagtype={BorderBox}>
         {
             [1,2,3].map((item) => <CardListItem key={item.toString()} 
                 title={"title"+item.toString()}

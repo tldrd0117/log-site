@@ -8,7 +8,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs'
 import { Text } from '@/components/Text/Text'
 import { TagInput } from '@/components/Input/TagInput'
 import { INPUT_STYLE_TYPE } from '@/components/Input/StylableInput'
-import { usePost } from '@/data/query/post/post'
+import { usePost } from '@/data/query/post/query'
 
 
 export interface PostProps{
@@ -23,7 +23,6 @@ export default function Post ({id}: PostProps){
         tags,
         title,
         category,
-        categories
     }: any = data
     console.log("mdxContent", mdxContent)
     return (
@@ -40,8 +39,8 @@ export default function Post ({id}: PostProps){
             }]}/>
             <div className ={"prose mt-16 mx-auto"}>
                 <Text h3>{title}</Text>
-                <Text p>{category}</Text>
-                <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tags} readOnly/>
+                <Text p>{category.name}</Text>
+                <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tags.map((item:any) => item.name)} readOnly/>
                 {
                     mdxContent
                 }

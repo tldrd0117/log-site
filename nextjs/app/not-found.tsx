@@ -7,7 +7,7 @@ import { BorderBox } from '@/components/Box/BorderBox'
 export default function NotFound() {
   return (
     <PageLayout className='flex flex-col items-center justify-center'>
-        <ContentsLayout className='mt-4' tagType={BorderBox}>
+        <ContentsLayout className='mt-4' tagtype={BorderBox}>
             <Text h3>Not Found</Text>
             <Text p className='mt-4'>Could not find requested resource</Text>
             <Text span className='mt-4'>

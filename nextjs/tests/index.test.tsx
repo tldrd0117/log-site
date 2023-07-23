@@ -1,14 +1,11 @@
 // __tests__/index.test.jsx
 
 import { act, render, screen, waitFor } from '@testing-library/react'
-import Home, {getServerSideProps} from '../pages/index'
 import '@testing-library/jest-dom'
+import { parsePostText } from '@/data/post/util'
 
 describe('Home', () => {
-  it('renders a heading', async () => {
-    const {props} = await getServerSideProps()
-    render(<Home {...props}/>)
-    const msg = screen.getByText('BLOG')
-    await waitFor(() => expect(msg).toBeInTheDocument())
+  it("test post util", () => {
+    console.log(parsePostText("---\ntitle: 새로운 제목\ncategory: 10\ntags: (/*/)무엇\n---\n입니다"))
   })
 })

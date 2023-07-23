@@ -9,16 +9,20 @@ import { CardListItem } from "@/components/ListItem/CardListItem";
 import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
 import { PageLayout } from "@/containers/layout/PageLayout";
 import { BorderBox } from "@/components/Box/BorderBox";
-import { usePostListInfinity } from "@/data/query/post/post";
+import { usePostListInfinity } from "@/data/query/post/query";
 import { PrimaryButton } from "@/components/Button/PrimaryButton";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Text } from "@/components/Text/Text";
+import { parseISO } from "date-fns";
 
 export interface PostListProps{
 }
 
 export function PostList (props: PostListProps) {
     const { data, fetchNextPage, hasNextPage} = usePostListInfinity()
+    if(!data){
+        redirect("/")
+    }
     const { pages }: any = data
     console.log(data, pages)
     const router = useRouter()
@@ -38,9 +42,12 @@ export function PostList (props: PostListProps) {
             {
                 pages? pages.map((page: any) => {
                     return (page && page.list && page.list.length)? page.list.map((item: any) => {
-                        return <>
-                            <CardListItem onClick={() => handleItemClick(item._id)} key={item._id} title={item.summary} subTitle={item.createAt} summary={item.authorName}/>
-                        </>
+                        return <CardListItem onClick={() => handleItemClick(item._id)}
+                            key={item._id} 
+                            title={item.title} 
+                            date={parseISO(item.createAt)}
+                            tags={item.tags.map((tag:any) => tag.name)}
+                            author={item.authorName}/>
                     }): <Text p>없습니다</Text>
                 }): <Text p>없습니다</Text>
             }

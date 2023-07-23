@@ -26,7 +26,7 @@ export const AppBarContentsTemplate = ({children}: AppBarPageTemplateProps) => {
                 title: "글작성",
                 path: "post/write"
             }]}></TopMenu>
-            <ContentsLayout tagType={BorderBox} className='mt-4'>
+            <ContentsLayout tagtype={BorderBox} className='mt-4'>
                 <Suspense fallback={<p>loading...</p>}>
                     {children}
                 </Suspense>

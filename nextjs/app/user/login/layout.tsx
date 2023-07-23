@@ -4,7 +4,7 @@ import { PageLayout } from "@/containers/layout/PageLayout";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <PageLayout className="flex justify-center items-center">
-        <ContentsLayout tagType={BorderBox} className='w-80'>
+        <ContentsLayout tagtype={BorderBox} className='w-80'>
             {children}
         </ContentsLayout>
     </PageLayout>

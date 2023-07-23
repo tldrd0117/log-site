@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "../common/queryKeys"
+import { QUERY_KEYS } from "../common/constants"
 import { getTypes } from "@/data/api/info"
 import { useSetRecoilState } from "recoil"
 import { roleTypeMapState, roleTypeSelectList, settingTypeMapState, settingTypeSelectList } from "@/data/recoil/states/user"

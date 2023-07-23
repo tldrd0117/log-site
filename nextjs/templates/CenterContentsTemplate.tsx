@@ -13,7 +13,7 @@ export interface AppBarPageTemplateProps{
 
 export const AppBarContentsTemplate = ({children}: AppBarPageTemplateProps) => {
     return <>
-        <ContentsLayout tagType={BorderBox} className='mt-4'>
+        <ContentsLayout tagtype={BorderBox} className='mt-4'>
             <Suspense fallback={<p>loading...</p>}>
                 {children}
             </Suspense>

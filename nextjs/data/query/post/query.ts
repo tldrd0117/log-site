@@ -1,102 +1,30 @@
-import getQueryClient from "@/app/getQueryClient"
-import { getPublicKey } from "../../api/auth"
-import { QUERY_KEYS } from "../common/queryKeys"
+import { QUERY_KEYS } from "../common/constants"
 import { getPost, getPostList, createPost, deletePostList } from "../../api/post"
 import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import remarkGfm from "remark-gfm"
 import { compileMDX } from "next-mdx-remote/rsc"
 import { PostCreate, PostDelete, PostRawCreate } from "../../api/interfaces/post"
-import { getEncPublicKey } from "../../security/enc"
 import { KeyLike } from "jose"
 import { makeStringErrorByResponse } from "../../api/utils/common"
 import { useRouter } from "next/navigation"
-import { UserLogin } from "../../api/interfaces/user"
 import { useEncPubicKey } from "../auth"
 import { useRecoilState } from "recoil"
 import { tokenState, userInfoState } from "../../recoil/states/user"
-import { ReactFragment } from "react"
+import { PaginationState } from "@tanstack/react-table"
+import { parsePostText } from "@/data/post/util"
+import { convertList, convertMdxPost } from "../common/converters"
 
 const DEFAULT_LIMIT = 20;
 const RECENT_LIST_LIMIT = 10;
 export const TAG_SEPARATOR = "(/*/)";
 
-const getMdxPost = async (id: string) => {
-    console.log("getMdxPost", id)
-    if(id==="") return {
-        id: "",
-        source: "",
-        mdxContent: "",
-        tags: [],
-        title : "",
-        category : "",
-        categories : ["카테고리1", "카테고리2", "카테고리3"]
-    }
-    let post: any
-    if(id==="example.mdx"){
-        let text = await fetch(`http://localhost:3000/example.mdx`).then(res => res.text())
-        post = {
-            text,
-            result: "success"
-        }
-    } else {
-        post = await getPost({_id: id})
-    }
-    if(!post || post.result === "fail") {
-        console.log("fail")
-        return {
-            id: "",
-            source: "",
-            mdxContent: "",
-            tags: [],
-            title: "",
-            category: "",
-            categories: ["카테고리1", "카테고리2", "카테고리3"]
-        }
-    }
-    let {text: source} = post
-    console.log(source)
-
-    const {content, frontmatter} = await compileMDX({source, options: {
-        mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [],
-            development: true,  
-        },
-        parseFrontmatter: true,
-        
-    }})
-
-    if(source.indexOf("---")>=0){
-        source = source.slice(source.indexOf("---")+3)
-        source = source.slice(source.indexOf("---")+3)
-    }
-    let tagStr = frontmatter.tags as string
-    let tags: string[] = []
-
-    console.log(content, frontmatter, source)
-    
-    if(tagStr && tagStr.indexOf(TAG_SEPARATOR)>=0){
-        tags = tagStr.split(TAG_SEPARATOR).slice(1)
-    }
-    const title = frontmatter.title as string
-    const category = frontmatter.category as string
-    const categories = ["카테고리1", "카테고리2", "카테고리3"];
-    return {
-        id,
-        source,
-        mdxContent: content,
-        tags,
-        title,
-        category,
-        categories
-    }
-}
-
-export const usePost = (id: string) => {
+export const usePost = (_id: string) => {
     return useQuery<any, any, any, any>({
-        queryKey: [QUERY_KEYS.POST.POST, id],
+        queryKey: [QUERY_KEYS.POST.POST, _id],
         queryFn: async () => {
-            return await getMdxPost(id)
+            const post = await getPost({_id})
+            const mdxPost =  await convertMdxPost(post)
+            return mdxPost
         },
         initialData: () => {
             return {
@@ -105,24 +33,20 @@ export const usePost = (id: string) => {
                 tags: [],
                 title: "",
                 category: "",
-                categories: []
             }
         }
     })
 }
 
 const sendCreatePost = async (encPublicKey: KeyLike, token: string, userInfo: any, postData: PostRawCreate) => {
-    const text = `---
-title: ${postData.title}
-category: ${postData.category}
-tags: ${TAG_SEPARATOR}${postData.tags.join(TAG_SEPARATOR)}
----
-${postData.text}`
     const postInfo: PostCreate = {
+        title: postData.title,
         author: userInfo._id,
         authorName: userInfo.name,
         summary: postData.title,
-        text,
+        text: postData.text,
+        tags: postData.tags,
+        category: postData.category,
     }
 
     const res = await createPost(postInfo, encPublicKey, token)
@@ -163,9 +87,10 @@ export const useDeletePostListMutation = () => {
 
 export const useRecentPostList = () => {
     return useQuery({
-        queryKey: [QUERY_KEYS.POST.POST_LIST, RECENT_LIST_LIMIT],
+        queryKey: [QUERY_KEYS.POST.LIST, RECENT_LIST_LIMIT],
         queryFn: async () => {
-            return await getPostList({ limit: RECENT_LIST_LIMIT, offset: 0 })
+            let list =  await getPostList({ limit: RECENT_LIST_LIMIT, offset: 0 })
+            return await convertList(list)
         },
         cacheTime: 1000 * 10,
         staleTime: 1000 * 10,
@@ -175,9 +100,10 @@ export const useRecentPostList = () => {
 
 export const usePostListInfinity = () => {
     return useInfiniteQuery({
-        queryKey: [QUERY_KEYS.POST.POST_LIST, DEFAULT_LIMIT],
+        queryKey: [QUERY_KEYS.POST.LIST, DEFAULT_LIMIT],
         queryFn: async ({ pageParam = 0}) => {
-            return await getPostList({ limit: DEFAULT_LIMIT, offset: pageParam * DEFAULT_LIMIT })
+            let list = await getPostList({ limit: DEFAULT_LIMIT, offset: pageParam * DEFAULT_LIMIT })
+            return await convertList(list)
         },
         getNextPageParam: (lastPage, allPage) => {
             // DEFAULT_LIMIT * lastPage
@@ -188,5 +114,16 @@ export const usePostListInfinity = () => {
         },
         cacheTime: 1000 * 10,
         staleTime: 1000 * 10,
+    })
+}
+
+export const usePostList = (fetchDataOptions: PaginationState) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.POST.LIST, fetchDataOptions],
+        queryFn: async () => {
+            const items = await getPostList({ limit: fetchDataOptions.pageSize, 
+                offset: fetchDataOptions.pageSize * fetchDataOptions.pageIndex })
+            return convertList(items)
+        },
     })
 }

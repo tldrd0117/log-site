@@ -26,6 +26,7 @@ export default function Providers({ children }: any) {
     storage: typeof window != "undefined"? window.localStorage: undefined,
   }))
 
+
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={{persister}}
         onSuccess={() => {

@@ -14,6 +14,8 @@ import QUERY_KEYS from '@/data/query/auth'
 import { PrimaryButton } from '@/components/Button/PrimaryButton'
 import { SettingModal } from './SettingModal'
 import _ from 'lodash'
+import { useCategoryDeleteMutation, useCategoryList, useCategoryUpdateMutation } from '@/data/query/category/query'
+import { CategoryModal } from './CategoryModal'
 
 export type Setting = {
     _id: string
@@ -30,24 +32,21 @@ const columnHeader = (text: string) => {
     return <p className='text-left ml-2 text-slate-400 font-normal'>{text}</p>
 }
 
-export function SettingTable() {
-    const {data: types} = useTypes()
-    const settingTypes = useRecoilValue(settingTypeSelectList)
-    const roleTypes = useRecoilValue(roleTypeSelectList)
+export function CategoryTable() {
     const [showAdd, setShowAdd] = React.useState(false);
     const [isEditable, setIsEditable] = React.useState(false);
-    const {mutate} = useDeleteSettingsMutation()
-    const {mutate: putMutate} = useUpdateSettingListMutation()
+    const {mutate} = useCategoryDeleteMutation()
+    const {mutate: putMutate} = useCategoryUpdateMutation()
     const queryClient = useQueryClient()
     const [pagination, setPagination] = React.useState<PaginationState>({
         pageIndex: 0,
         pageSize: 10,
     })
-    const {data: items, isSuccess} = useSettingList(pagination)
+    const {data: items, isSuccess} = useCategoryList(pagination)
     const onHandleDelete = (rowIndex: number) => {
-        mutate({ids: [items.list[rowIndex]._id]}, {
+        mutate({_id: items.list[rowIndex]._id}, {
             onSuccess: () => {
-                queryClient.invalidateQueries([QUERY_KEYS.SETTING.LIST, pagination])
+                queryClient.invalidateQueries([QUERY_KEYS.CATEGORY.LIST, pagination])
             }
         })
     }
@@ -65,22 +64,20 @@ export function SettingTable() {
 
     const onHandleChangeComplete = () => {
         if(isEditable){
-            const target = modifyItems.map( (id: string) => {
-                const item = _.cloneDeep(items.list.find((item: Setting) => item._id === id))
-                item.type = item.type._id
-                item.role = item.role._id
-                item.userId = item.userId._id
+            const targets = modifyItems.map( (id: string) => {
+                const item = _.cloneDeep(items.list.find((item: any) => item._id === id))
                 delete item.__v
                 delete item.createAt
                 delete item.updateAt
                 return item
             })
-            console.log(target)
-            putMutate({list: target}, {
-                onSuccess: () => {
-                    setModifyItems([])
-                    queryClient.invalidateQueries([QUERY_KEYS.SETTING.LIST, pagination])
-                }
+            targets.forEach((item: any) => {
+                putMutate(item, {
+                    onSuccess: () => {
+                        setModifyItems([])
+                        queryClient.invalidateQueries([QUERY_KEYS.SETTING.LIST, pagination])
+                    }
+                })
             })
         }
         setIsEditable(!isEditable)
@@ -91,45 +88,10 @@ export function SettingTable() {
         () => {
             let columnData = [
             {
-                accessorKey: 'type',
-                header: () => columnHeader('type'),
-                size: 80,
-                footer: (props: any) => props.column.id,
-                meta: {
-                    inputType: "select",
-                    selectList: settingTypes,
-                },
-            },
-            {
-                accessorKey: 'role',
-                size: 80,
-                header: () => columnHeader('role'),
-                inputType: "select",
-                footer: (props: any) => props.column.id,
-                meta: {
-                    inputType: "select",
-                    selectList: roleTypes,
-                },
-            },
-            {
-                accessorKey: 'userId',
-                size: 100,
-                header: () =>  columnHeader('userId'),
-                footer: (props: any) => props.column.id,
-                meta: {
-                    inputType: "textReadOnly",
-                },
-            },
-            {
                 accessorKey: 'name',
                 header: () => columnHeader('name'),
                 footer: (props: any) => props.column.id,
                 
-            },
-            {
-                accessorKey: 'value',
-                header: () => columnHeader('value'),
-                footer: (props: any) => props.column.id,
             },
             {
                 accessorKey: 'createAt',
@@ -170,7 +132,7 @@ export function SettingTable() {
             <PrimaryButton label="설정 추가" onClick={()=>setShowAdd(true)}/>
             <PrimaryButton className='ml-4' label={isEditable?"수정 완료": "설정 수정"} onClick={()=>onHandleChangeComplete()}/>
         </div>
-        <SettingModal isShow={showAdd} onClose={()=>setShowAdd(false)}/>
+        <CategoryModal isShow={showAdd} onClose={()=>setShowAdd(false)}/>
         {
             isSuccess?<EditableTable<Setting> 
                 isEditable={isEditable} 

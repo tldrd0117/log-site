@@ -6,6 +6,7 @@ import { GetServerSidePropsContext } from 'next'
 import { prefetchPost } from '@/data/query/post/prefetch'
 import { prefetchPublicKey } from '@/data/query/auth'
 import { AppBarContentsTemplate } from '@/templates/AppBarContentsTemplate'
+import { VisitRecord } from '@/app/common/VisitRecord'
 
 
 export default async function Page(context: GetServerSidePropsContext<{id: string}>) {
@@ -15,7 +16,11 @@ export default async function Page(context: GetServerSidePropsContext<{id: strin
     const state = dehydrate(getQueryClient())
     return <>
         <Hydrate state={state}>
-            <Post id={id}/>
+            <AppBarContentsTemplate>
+                <VisitRecord>
+                    <Post id={id}/>
+                </VisitRecord>
+            </AppBarContentsTemplate>
         </Hydrate>
     </>
 }

@@ -21,12 +21,18 @@ import { CardBox } from '../Box/CardBox'
 import { format } from 'date-fns'
 import _ from 'lodash'
 import { PrimaryButton } from '../Button/PrimaryButton'
+import { IconButton } from '../IconButton/IconButton'
+import { ArrowIcon } from '../Icon/ArrowIcon'
+import { Text } from '../Text/Text'
+import { TextInput } from '../Input/TextInput'
+import { type } from 'os'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => void
     isEditable?: boolean
     onDeleteRow?: (rowIndex: number) => void
+    onChangeRow?: (rowIndex: number, value: string, rowData: any) => void
   }
 }
 
@@ -40,7 +46,7 @@ declare module '@tanstack/react-table' {
 // Give our default column cell renderer editing superpowers!
 export const defaultColumn: Partial<ColumnDef<any>> = {
   cell: function Cell(cellProps){
-    const { getValue, row: { index }, column: { id, getSize, columnDef}, table } = cellProps
+    const { getValue, row: { index, original }, column: { id, getSize, columnDef}, table } = cellProps
     const initialValue = getValue()
     const inputType = columnDef?.meta?.inputType;
     const selectList = columnDef?.meta?.selectList;
@@ -53,18 +59,42 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
             table.options.meta?.onDeleteRow(index)
     }
 
+    const onChangeRow = (value: any) => {
+        const newData = {...original}
+        if(typeof value === "string")
+            newData[id] = value
+        else{
+            newData[id] = {
+                _id: value.id,
+                name: value.value
+            }
+        }
+        if(table.options.meta?.onChangeRow){
+            table.options.meta?.onChangeRow(index, id, newData[id])
+            table.options.meta?.updateData(index, id, newData[id])
+        }
+        setValue(value)
+    }
+
     // If the initialValue is changed external, sync it up with our state
     useEffect(() => {
       setValue(initialValue)
     }, [initialValue])
 
-    if(!table.options.meta?.isEditable){
-        let formatId = ""
-        let formatValue = ""
-        if(value !== undefined){
-            formatId = typeof value === "string" ? value : value._id ? value._id : value.name
-            formatValue = typeof value === "string" ? value : value.name
+    let formatId = ""
+    let formatValue = ""
+    if(value !== undefined && value !== null){
+        if(typeof value === "object"){
+            console.log(value)
+            formatId = value._id ? value._id : value.name ? value.name : value.toString()
+            formatValue = value.name ? value.name : value.toString()
+        } else {
+            formatId = value.toString()
+            formatValue = value.toString()
         }
+    }
+
+    if(!table.options.meta?.isEditable){
         if(inputType === "calendarReadOnly"){
             return <div className='flex'>
                 <p className='ml-2 h-full'>{format(new Date(formatValue), "yyyy-MM-dd")}</p>
@@ -76,12 +106,6 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
         }
 
     } else {
-        let formatId = ""
-        let formatValue = ""
-        if(value !== undefined){
-            formatId = typeof value === "string" ? value : value._id ? value._id : value.name
-            formatValue = typeof value === "string" ? value : value.name
-        }
         if(inputType === "textReadOnly"){
             return <p className='ml-2'>{formatValue}</p>
         }
@@ -95,7 +119,7 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
                 inputClassName: "w-20 pl-2",
             }} contextMenuProps={{
                 className: "mt-2",
-                tagType: CardBox,
+                tagtype: CardBox,
                 firstListItemProps: {
                     className: "rounded-t-lg",
                 },
@@ -110,6 +134,7 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
                 },
                 listItemsData: selectList
             }}
+            onItemSelect={(item) => (onChangeRow(item))}
             selected={selectedValue}
             />
         }
@@ -121,35 +146,14 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
         }
         else {
             return (
-                <input
-                  className='pl-2'
-                  style={{width: "100%"}}
-                  value={formatValue}
-                  onChange={e => setValue(e.target.value)}
-                  onBlur={onBlur}
-                />
+                <TextInput inputBgStyleType={INPUT_STYLE_TYPE.OUTLINE} value={formatValue}
+                    onChange={e => onChangeRow(e.target.value)}
+                    onBlur={onBlur}
+                    />
               )
         }
     }
-
-    
   },
-}
-
-function useSkipper() {
-  const shouldSkipRef = React.useRef(true)
-  const shouldSkip = shouldSkipRef.current
-
-  // Wrap a function with this to skip a pagination reset temporarily
-  const skip = React.useCallback(() => {
-    shouldSkipRef.current = false
-  }, [])
-
-  React.useEffect(() => {
-    shouldSkipRef.current = true
-  })
-
-  return [shouldSkip, skip] as const
 }
 
 export interface TableProps<Type>{
@@ -158,6 +162,7 @@ export interface TableProps<Type>{
     isEditable?: boolean
     onDeleteRow?: (rowIndex: number) => void
     setPagination: OnChangeFn<PaginationState>
+    onChangeRow?: (rowIndex: number, id: string ,value: string) => void
 }
 
 // const columnHeader = (text: string) => {
@@ -165,7 +170,7 @@ export interface TableProps<Type>{
 // }
 
 export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow, 
-    setPagination}: TableProps<Type>) {
+    setPagination, onChangeRow}: TableProps<Type>) {
 
   const rerender = React.useReducer(() => ({}), {})[1]
   const displayData = (items: Array<Type>) => {
@@ -174,12 +179,11 @@ export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow,
 
   const [data, setData] = React.useState(() => items.list)
   const refreshData = () => setData(() => items.list)
-
+  console.log(data)
   useEffect(() => {
     refreshData()
-  }, [items.pageIndex])
-  console.log(data)
-  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
+    console.log("refresh")
+  }, [...items.list.map((item: any)=>item._id), items.pageIndex, items.pageSize])
 
   const table = useReactTable<Type>({
     data,
@@ -198,8 +202,8 @@ export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow,
         isEditable: isEditable,
         updateData: (rowIndex, columnId, value) => {
             // Skip page index reset until after next rerender
-            setData(old =>
-            old.map((row, index) => {
+            setData((old: any) =>
+            old.map((row: any, index: number) => {
                 if (index === rowIndex) {
                 return {
                     ...old[rowIndex]!,
@@ -210,7 +214,8 @@ export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow,
             })
             )
         },
-        onDeleteRow: onDeleteRow
+        onDeleteRow: onDeleteRow,
+        onChangeRow: onChangeRow
     },
     debugTable: true,
   })
@@ -218,6 +223,83 @@ export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow,
   return (
     <div className="p-2 block max-w-full overflow-x-auto overflow-y-hidden">
         <div className="h-2" />
+        <div className='flex justify-between mb-4'>
+            <div className='flex items-center'>
+                <Text p>{table.getRowModel().rows.length} 개</Text>
+                <div className='w-40 ml-8'>
+                <Select 
+                    inputProps={{
+                        bgClassName: "w-40 ring-slate-200",
+                        placeholder: "카테고리",
+                        inputStyleType: INPUT_STYLE_TYPE.OUTLINE,
+                        inputClassName: "w-40 pl-2",
+                    }} contextMenuProps={{
+                        className: "mt-2",
+                        tagtype: CardBox,
+                        firstListItemProps: {
+                            className: "rounded-t-lg",
+                        },
+                        lastListItemProps: {
+                            className: "rounded-b-lg",
+                        },
+                        listProps: {
+                            className: "w-40",
+                        },
+                        listItemProps: {
+                            className: "w-40",
+                        },
+                        listItemsData: [10, 20, 30, 40, 50].map(item => ({id: item.toString(), value: "페이지 당 "+item.toString() + "행"}))
+                    }}
+                    onItemSelect={(item) => {
+                        table.setPageSize(Number(item.id))
+                    }}
+                    selected={{id: items.pageSize?.toString(), 
+                        value: "페이지 당 "+items.pageSize?.toString() + "행"}}
+                    />
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+        <IconButton icon={<ArrowIcon doubleLeft/>} 
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+        />
+        <IconButton icon={<ArrowIcon left/>}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+        />
+        <IconButton icon={<ArrowIcon right/>}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+        />
+        <IconButton icon={<ArrowIcon doubleRight/>}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+        />
+        <span className="flex items-center gap-1">
+          <div>페이지</div>
+          <strong>
+            {table.getState().pagination.pageIndex + 1}/
+            {table.getPageCount()}
+          </strong>
+        </span>
+        <span className="flex items-center gap-1">
+          | 페이지 이동:
+          <input
+            type="number"
+            value={table.getState().pagination.pageIndex + 1}
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              table.setPageIndex(page)
+            }}
+            className="border p-1 rounded w-16"
+          />
+        </span>
+      </div>
+        </div>
+        
+        
+        
       <table className='w-full border-x-0'>
         <thead className='bg-slate-100'>
           {table.getHeaderGroups().map(headerGroup => (
@@ -263,69 +345,7 @@ export function EditableTable<Type>({ items, columns, isEditable, onDeleteRow,
         </tbody>
       </table>
       <div className="h-2" />
-      <div className="flex items-center gap-2">
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>>'}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="flex items-center gap-1">
-          | Go to page:
-          <input
-            type="number"
-            value={table.getState().pagination.pageIndex + 1}
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
-            }}
-            className="border p-1 rounded w-16"
-          />
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            table.setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>{table.getRowModel().rows.length} Rows</div>
+      
       <div className='hidden'>
         <button onClick={() => rerender()}>Force Rerender</button>
       </div>

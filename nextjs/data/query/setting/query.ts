@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import QUERY_KEYS, { useEncPubicKey } from "../auth"
-import { addCategories, addSetting, deleteSettings, getCategories, getSettingList } from "../../api/setting"
-import { CategoriesCreate, SettingCreate, SettingsDelete } from "../../api/interfaces/setting"
+import { addCategories, addSetting, deleteSettings, getCategories, getSettingList, putSettingList } from "../../api/setting"
+import { CategoriesCreate, SettingCreate, SettingUpdateList, SettingsDelete } from "../../api/interfaces/setting"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { settingTypeMapState, tokenState } from "../../recoil/states/user"
 import _ from "lodash"
@@ -14,38 +14,26 @@ export const useSettingList = (fetchDataOptions: PaginationState) => {
     return useQuery({
         queryKey: [QUERY_KEYS.SETTING.LIST, fetchDataOptions],
         queryFn: async () => {
-            console.log("queryFn", fetchDataOptions)
-            return await getSettingList({ limit: fetchDataOptions.pageSize, 
+            const items = await getSettingList({ limit: fetchDataOptions.pageSize, 
                 offset: fetchDataOptions.pageSize * fetchDataOptions.pageIndex }, encPublicKey!!, token!!)
+            return items
         },
     })
 }
 
-export const useSettingListInfinity = (limit: number) => {
-    const {data: encPublicKey} = useEncPubicKey()
-    const [token, setToken] = useRecoilState(tokenState)
-    return useInfiniteQuery({
-        queryKey: [QUERY_KEYS.POST.POST_LIST, limit],
-        queryFn: async ({ pageParam = 0}) => {
-            return await getSettingList({ limit: limit, offset: pageParam * limit }, encPublicKey!!, token!!)
-        },
-        getNextPageParam: (lastPage, allPage) => {
-            // DEFAULT_LIMIT * lastPage
-            if( allPage.length * limit < lastPage.total)
-                return allPage.length + 1
-        },
-        getPreviousPageParam: (firstPage) => {
-        },
-        cacheTime: 1000 * 10,
-        staleTime: 1000 * 10,
-    })
-}
 
 export const useCategories = () => {
     return useQuery({
         queryKey:[QUERY_KEYS.SETTING.CATEGORIES],
         queryFn: async () => {
-            return await getCategories()
+            const categories  = await getCategories()
+            const map: {[key: string]: string} = {}
+            categories.list.forEach((item: any) => {
+                map[item._id] = item.value
+            })
+            return {
+                map, list: categories.list
+            }
         }
     })
 }
@@ -80,6 +68,16 @@ export const useDeleteSettingsMutation = () => {
     return useMutation({
         mutationFn: async (data: SettingsDelete) => {
             return await deleteSettings(data, encPublicKey!!, token!!)
+        }
+    })
+}
+
+export const useUpdateSettingListMutation = () => {
+    const {data: encPublicKey} = useEncPubicKey()
+    const [token, setToken] = useRecoilState(tokenState)
+    return useMutation({
+        mutationFn: async (data: SettingUpdateList) => {
+            return await putSettingList(data, encPublicKey!!, token!!)
         }
     })
 }

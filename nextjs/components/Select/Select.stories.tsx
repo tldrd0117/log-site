@@ -19,7 +19,7 @@ const meta: Meta<typeof Select> = {
         },
         contextMenuProps: {
             className: "mt-2",
-            tagType: CardBox,
+            tagtype: CardBox,
             firstListItemProps: {
                 className: "rounded-t-lg",
             },

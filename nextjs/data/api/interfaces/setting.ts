@@ -13,6 +13,10 @@ export interface SettingUpdate{
     updateAt?: Date;
 }
 
+export interface SettingUpdateList{
+    list: Array<SettingUpdate>
+}
+
 export interface SettingCreate{
     type: string
     name: string;

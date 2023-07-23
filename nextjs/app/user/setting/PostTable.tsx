@@ -2,54 +2,65 @@ import React from 'react'
 
 //
 import {
-  ColumnDef,
+  ColumnDef, PaginationState,
 } from '@tanstack/react-table'
 import { useRecoilValue } from 'recoil'
 import { roleTypeSelectList, settingTypeSelectList } from '@/data/recoil/states/user'
-import { useTypes } from '@/data/query/info/info'
+import { useTypes } from '@/data/query/info/query'
 import { EditableTable } from '../../../components/Table/EditableTable'
-import { useDeleteSettingsMutation } from '@/data/query/setting/setting'
+import { useDeleteSettingsMutation } from '@/data/query/setting/query'
 import { useQueryClient } from '@tanstack/react-query'
 import QUERY_KEYS from '@/data/query/auth'
+import { PrimaryButton } from '@/components/Button/PrimaryButton'
+import { useDeletePostListMutation, usePostList } from '@/data/query/post/query'
 
-export type Setting = {
+export type Post = {
     _id: string
-    type: any
-    role: any
-    userId: any
-    name: string
-    value: string
+    author: any
+    authorName: any
+    summary: any
+    text: string
     createAt: string
     updateAt: string
+    order: number
 }
 
-export interface TableProps{
-    items: Array<Setting>
-    isEditable?: boolean
-}
 
 const columnHeader = (text: string) => {
     return <p className='text-left ml-2 text-slate-400 font-normal'>{text}</p>
 }
 
-export function PostTable({ items, isEditable }: TableProps) {
-    const {data: types} = useTypes()
-    const {mutate} = useDeleteSettingsMutation()
-    const queryClient = useQueryClient() 
+export function PostTable() {
+    const [isEditable, setIsEditable] = React.useState(false);
+    const {mutate: delMutate} = useDeletePostListMutation()
+    const queryClient = useQueryClient()
+
+    const [pagination, setPagination] = React.useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    })
+    const {data: items, isSuccess} = usePostList(pagination)
+
     const onHandleDelete = (rowIndex: number) => {
-        mutate({ids: [items[rowIndex]._id]}, {
+        delMutate([{
+            _id: items.list[rowIndex]._id
+        }],{
             onSuccess: () => {
-                queryClient.invalidateQueries([QUERY_KEYS.POST.POST_LIST])
+                queryClient.invalidateQueries([QUERY_KEYS.POST.LIST, pagination])
             }
         })
     }
 
-    const columns = React.useMemo<ColumnDef<Setting>[]>(
+    const onHandleChangeComplete = () => {
+        setIsEditable(!isEditable)
+    }
+
+    const columns = React.useMemo<ColumnDef<Post>[]>(
         () => {
             let columnData = [
             {
                 accessorKey: 'author',
-                header: () => columnHeader('type'),
+                header: () => columnHeader('author'),
                 size: 80,
                 footer: (props: any) => props.column.id,
                 meta: {
@@ -59,7 +70,7 @@ export function PostTable({ items, isEditable }: TableProps) {
             {
                 accessorKey: 'authorName',
                 size: 80,
-                header: () => columnHeader('role'),
+                header: () => columnHeader('authorName'),
                 inputType: "select",
                 footer: (props: any) => props.column.id,
                 meta: {
@@ -69,7 +80,7 @@ export function PostTable({ items, isEditable }: TableProps) {
             {
                 accessorKey: 'summary',
                 size: 100,
-                header: () =>  columnHeader('userId'),
+                header: () =>  columnHeader('summary'),
                 footer: (props: any) => props.column.id,
                 meta: {
                     inputType: "textReadOnly",
@@ -77,7 +88,7 @@ export function PostTable({ items, isEditable }: TableProps) {
             },
             {
                 accessorKey: 'text',
-                header: () => columnHeader('name'),
+                header: () => columnHeader('text'),
                 footer: (props: any) => props.column.id,
                 meta: {
                     inputType: "textReadOnly",
@@ -105,7 +116,7 @@ export function PostTable({ items, isEditable }: TableProps) {
             {
                 accessorKey: 'order',
                 size: 100,
-                header: () => columnHeader('updateAt'),
+                header: () => columnHeader('order'),
                 footer: (props: any) => props.column.id,
                 meta: {
                     inputType: "textReadOnly",
@@ -128,7 +139,18 @@ export function PostTable({ items, isEditable }: TableProps) {
         [isEditable]
     )
     return <>
-        <EditableTable isEditable={isEditable} items={items} columns={columns} onDeleteRow={onHandleDelete} />
+        <div className='flex justify-end'>
+            <PrimaryButton className='ml-4' label={isEditable?"수정 완료": "설정 수정"} onClick={()=>onHandleChangeComplete()}/>
+        </div>
+        {
+            isSuccess?<EditableTable<Post> 
+                isEditable={isEditable} 
+                items={items}
+                columns={columns} 
+                onDeleteRow={onHandleDelete}
+                setPagination={setPagination}
+            />: <p>loading</p>
+        }
     </>
 
 }

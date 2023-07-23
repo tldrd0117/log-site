@@ -1,7 +1,7 @@
 import { KeyLike } from "jose";
 import { UserJoin, UserLogin } from "./interfaces/user";
 import { BASE_URL, encrypt, makeQueryString, makeStringErrorByResponse } from "./utils/common";
-import { CategoriesCreate, SettingCreate, SettingGetList, SettingUpdate, SettingsDelete } from "./interfaces/setting";
+import { CategoriesCreate, SettingCreate, SettingGetList, SettingUpdate, SettingUpdateList, SettingsDelete } from "./interfaces/setting";
 
 export const getSettingList = async (queryStringObj: SettingGetList, key: KeyLike, token: string) => {
     const queryString = makeQueryString<SettingGetList>(queryStringObj);
@@ -38,6 +38,23 @@ export const getCategories = async () => {
 
 export const putSetting = async (obj: SettingUpdate, key: KeyLike, token: string) => {
     const response = await fetch(`${BASE_URL}/setting`, {
+        method: "PUT",
+        body: await encrypt(obj, key),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const res = await response.json();
+    if(res.result === "fail"){
+        const errorStr = makeStringErrorByResponse(res)
+        throw new Error(errorStr)
+    }
+    return res
+};
+
+export const putSettingList = async (obj: SettingUpdateList, key: KeyLike, token: string) => {
+    const response = await fetch(`${BASE_URL}/setting/list`, {
         method: "PUT",
         body: await encrypt(obj, key),
         headers: {

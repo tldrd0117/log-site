@@ -19,8 +19,9 @@ import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
-import { usePost, usePostMutation } from "@/data/query/post/post";
+import { usePost, usePostMutation } from "@/data/query/post/query";
 import { DynamicLoginRequired } from "@/app/common/DynamicLoginRequired";
+import { useCategoryAll, useCategoryList } from "@/data/query/category/query";
 
 export interface WriteProps{
     id: string
@@ -34,15 +35,15 @@ export default function Write ({id}: WriteProps){
         tags,
         title,
         category,
-        categories
     }: any = data
     const isEdit = id !== ""
-    const {mutate} = usePostMutation() 
+    const {mutate} = usePostMutation()
+    const {data: categories} = useCategoryAll()
 
     const [code, setCode] = useState(source || "")
     const [tagValue, setTagValue] = useState(tags || [])
     const [titleValue, setTitleValue] = useState(title || "")
-    const [categoryValue, setCategoryValue] = useState(category || "")
+    const [selectedCategory, setSelectedCategory] = useState(category?{id: category._id, value: category.name} : {})
     const [isPreview, setIsPreview] = useState(false)
     const [mdxModule, setMdxModule]:any = useState()
     const MdxContent = mdxModule ? mdxModule.default : Fragment
@@ -52,7 +53,7 @@ export default function Write ({id}: WriteProps){
     }
 
     const handleCategoryChange = (itemData: ListItemData, e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-        setCategoryValue(itemData.value)
+        setSelectedCategory(itemData)
     }
 
     const handleOnTitleChange = (e: any) => {
@@ -84,7 +85,7 @@ export default function Write ({id}: WriteProps){
             text: code,
             title: titleValue,
             tags: tagValue,
-            category: categoryValue,
+            category: selectedCategory.id,
         })
     }
 
@@ -112,7 +113,7 @@ export default function Write ({id}: WriteProps){
                 inputStyleType: INPUT_STYLE_TYPE.UNDERLINE,
             }} contextMenuProps={{
                 className: "mt-2",
-                tagType: CardBox,
+                tagtype: CardBox,
                 firstListItemProps: {
                     className: "rounded-t-lg",
                 },
@@ -125,10 +126,10 @@ export default function Write ({id}: WriteProps){
                 listItemProps: {
                     className: "w-40",
                 },
-                listItemsData: categories.map((item:any)=>({id: item, value: item})),
+                listItemsData: categories?.list?.map((item:any)=>({id: item._id, value: item.name})),
             }}
             onItemSelect={handleCategoryChange}
-            selected={isEdit?{id:category as string, value: category as string}: undefined}
+            selected={isEdit?{id: category._id as string, value: category.name || ""}: undefined}
             />
             <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
                 onTagChange={handleOnTagsChange}
@@ -157,7 +158,7 @@ export default function Write ({id}: WriteProps){
         <Modal isShow={isPreview} onClose={() => setIsPreview(false)}>
             <BorderBox className="p-16 prose max-h-screen overflow-auto min-w-[62ch]">
                 <Text h3>{titleValue}</Text>
-                <Text p>{categoryValue}</Text>
+                <Text p>{selectedCategory.value}</Text>
                 <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" tagValue={tagValue} readOnly/>
                 <MdxContent/>
             </BorderBox>

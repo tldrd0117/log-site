@@ -34,7 +34,7 @@ export const deletePost = async (obj: PostDelete, key: KeyLike, token: string) =
 };
 
 export const deletePostList = async (arr: Array<PostDelete>, key: KeyLike, token: string) => {
-    const response = await fetch(`${BASE_URL}/post/`, {
+    const response = await fetch(`${BASE_URL}/post/list`, {
         method: "DELETE",
         body: await encrypt(arr, key),
         headers: {

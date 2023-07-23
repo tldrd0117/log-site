@@ -15,7 +15,7 @@ const meta: Meta<typeof ContextMenu> = {
     title: "ContextMenu/ContextMenu",
     component: ContextMenu,
     args: {
-        tagType: CardBox,
+        tagtype: CardBox,
         className: "w-40",
         firstListItemProps: {
             className: "rounded-t-lg",

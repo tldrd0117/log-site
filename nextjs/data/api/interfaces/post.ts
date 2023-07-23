@@ -3,10 +3,13 @@ export interface PostCreate{
     author: string
     authorName: string;
     summary: string;
+    category?: string;
+    title: string;
     text: string;
     parent?: string;
     relatedPosts?: Array<string>;
     order?: number
+    tags?: Array<string>;
 }
 
 export interface PostRawCreate{
@@ -24,10 +27,12 @@ export interface PostUpdate{
     author?: string
     authorName?: string;
     summary?: string;
+    title?: string;
     text: string;
     parent?: string;
     relatedPosts?: Array<string>;
     order?: number
+    tags?: Array<string>;
 }
 
 export interface PostGetList{

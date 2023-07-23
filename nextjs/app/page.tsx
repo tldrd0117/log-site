@@ -4,50 +4,25 @@ import { Home } from './home'
 import remarkGfm from 'remark-gfm'
 import { AppBarContentsTemplate } from '@/templates/AppBarContentsTemplate'
 import { prefetchRecentPostList } from '@/data/query/post/prefetch'
+import { prefetchVisit } from '@/data/query/visit/prefetch'
+import { VISIT_TARGET } from '@/data/query/common/constants'
+import { prefetchPublicKey } from '@/data/query/auth'
+import { VisitRecord } from './common/VisitRecord'
+import { Hydrate, dehydrate } from '@tanstack/react-query'
+import getQueryClient from './getQueryClient'
 
 export default async function HomePage() {
+    await prefetchPublicKey()
     await prefetchRecentPostList()
-    const data = await getData()
+    await prefetchVisit(VISIT_TARGET.BLOG)
+    const state = dehydrate(getQueryClient())
     return <>
-        <AppBarContentsTemplate>
-            <Home data={data}/>
-        </AppBarContentsTemplate>
+        <Hydrate state={state}>
+            <AppBarContentsTemplate>
+                <VisitRecord>
+                    <Home/>
+                </VisitRecord>
+            </AppBarContentsTemplate>
+        </Hydrate>
     </>
 }
-
-async function getData() {
-    const data =`
-        - [Home](/)
-        - Post
-            - [Post List](/post/list)
-            - [Post Detail](/post/example.mdx)
-            - [Post Write](/post/write)
-        - User
-            - [Login](/user/login)
-            - [Join](/user/join)
-            - [Setting](/user/setting)
-    `
-
-// | [Home](/)                | Post          | User           |
-// | -----------------------  | ------------ | ------------------ |
-// |                          | [Post List](/post/list)  | [Login](/user/login)       |
-// |                          | [Post Detail](/post/[:id])   | [Join](/user/join) |
-// |                          | [Post Write](/post/write) |       |
-    const mdxSource = await serialize(data, {
-        mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: []
-        },
-        parseFrontmatter: true
-    })
-    
-    const source = await fetch(`http://localhost:3000/calendarExample.json`).then(res => res.text())
-    // const source = 'Some **mdx** text, with a component '
-    console.log(source)
-    const calendar = JSON.parse(source)
-    return {
-        calendar,
-        siteMap: mdxSource
-    }
-}
-

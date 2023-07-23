@@ -6,6 +6,7 @@ export interface BaseContainerProps{
     className?: string
     as?: React.ElementType
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+    key?: string
 }
 
 export const BaseContainer = (props: BaseContainerProps) => {
