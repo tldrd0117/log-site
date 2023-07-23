@@ -69,6 +69,8 @@
   "joinUser": "join user",
   "loginUser": "login user",
   "userinfo": "user info",
+  "title": "title",
+  "tags": "tags",
   "post": "post",
   "postSearchList": "post search list",
   "postCreate": "post create",
@@ -82,9 +84,17 @@
   "settingValue": "setting Value",
   "settingCreate": "setting create",
   "settingUpdate": "setting update",
+  "settingUpdateArr": "setting update arr",
+  "settingUpdateList": "setting update list",
   "settingDelete": "setting delete",
   "category": "category",
   "categories": "categories",
   "addCategory": "addCategory",
-  "addCategories": "addCategories"
+  "addCategories": "addCategories",
+  "categoryCreate": "category create",
+  "categoryUpdate": "category update",
+  "categoryDel": "category delete",
+  "categoryId": "category id",
+  "visit": "visit",
+  "visitTarget": "visit target"
 }

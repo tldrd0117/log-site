@@ -53,11 +53,15 @@ const autoGen =async () => {
                 ...await toSwagger(require("./object/user")),
                 ...await toSwagger(require("./object/post")),
                 ...await toSwagger(require("./object/setting")),
+                ...await toSwagger(require("./object/visit")),
+                ...await toSwagger(require("./object/category")),
             },
             parameters: {
                 ...await toSwaggerQueryParam(require("./object/user")),
                 ...await toSwaggerQueryParam(require("./object/post")),
                 ...await toSwaggerQueryParam(require("./object/setting")),
+                ...await toSwaggerQueryParam(require("./object/visit")),
+                ...await toSwaggerQueryParam(require("./object/category")),
             },
             securitySchemes: {
                 bearer: {

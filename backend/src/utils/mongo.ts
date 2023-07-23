@@ -6,6 +6,10 @@ import Setting from '../models/setting.model';
 import SettingType from '../models/settingType.model';
 import Role from '../models/role.model';
 import { MD5, SHA256 } from 'crypto-js';
+import VisitHistory from '../models/visitHistory.model';
+import Visit from '../models/visit.model';
+import Tag from '../models/tags.model';
+import Category from '../models/category.model';
 
 set("strictQuery", false)
 set('debug', true);
@@ -36,6 +40,10 @@ class Mongo{
         await Setting.syncIndexes()
         await SettingType.syncIndexes()
         await Role.syncIndexes()
+        await Visit.syncIndexes()
+        await VisitHistory.syncIndexes()
+        await Tag.syncIndexes()
+        await Category.syncIndexes()
         await this.initializeRows()
     }
 
@@ -70,6 +78,7 @@ class Mongo{
                 upsert: true
             });
         }
+
     }
 
     async resetDatabase(){

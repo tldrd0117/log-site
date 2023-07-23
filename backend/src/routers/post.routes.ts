@@ -30,7 +30,7 @@ router.get("/", validateMiddlewareFactory(getPostObject), async (ctx) => {
     */
     const postGet: PostGet = ctx.request.query as unknown as PostGet;
     const result = await postService.getPost(postGet._id)
-    ctx.body = response.makeSuccessBody(result.toJSON());
+    ctx.body = response.makeSuccessBody(result);
 });
 
 router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getPostCreateObject), async (ctx) => {
@@ -50,9 +50,11 @@ router.post("/", decMiddleware, validateTokenMiddleware, validateMiddlewareFacto
                         "author": "...(authorId)",
                         "authorName": "testUser",
                         "summary": "example summary",
+                        "title": "example title",
                         "text": "example text",
                         "parent": "",
-                        "relatedPosts": []
+                        "relatedPosts": [],
+                        "tags": [],
                     }
                 }
             }
@@ -77,6 +79,7 @@ router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareF
                     },
                     "example": [{
                         "author": "...(authorId)",
+                        "title": "test title",
                         "authorName": "testUser",
                         "summary": "example summary",
                         "text": "example text",
@@ -84,6 +87,7 @@ router.post("/list", decMiddleware, validateTokenMiddleware, validateMiddlewareF
                     }, {
                         "author": "...(authorId)",
                         "authorName": "testUser",
+                        "title": "test title2",
                         "summary": "example summary2",
                         "text": "example text2",
                         "relatedPosts": []

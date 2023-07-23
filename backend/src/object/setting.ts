@@ -54,6 +54,24 @@ export const getSettingUpdateObject = async (lng: string) => {
     })
 }
 
+export const getSettingListUpdateObject = async (lng: string) => {
+    const i18next = await getI18next(lng)
+    return Joi.object({
+        list: Joi.array().items(await getSettingUpdateObject(lng))
+            .min(1).max(1000)
+            .label(i18next.t("settingUpdateArr"))
+            .messages({
+                "array.base": i18next.t("validate.array.type"),
+                "array.max": i18next.t("validate.array.max"),
+                "array.min": i18next.t("validate.array.min")
+            })
+    })
+    .label(i18next.t("settingUpdateList"))
+    .messages({
+        "object.base": i18next.t("validate.object.type"),
+    })
+}
+
 export const getAddCategoryString=async (lng: string) => {
     const i18next = await getI18next(lng)
     

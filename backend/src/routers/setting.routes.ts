@@ -3,9 +3,9 @@ import authService from '../services/auth.service';
 import settingService from '../services/setting.service';
 import { decMiddleware, validateMiddlewareFactory, validateTokenMiddleware } from '../middlewares/middlewares';
 import { DecodedUserInfo } from '../interfaces/auth';
-import { SettingCreate, SettingGetList, SettingUpdate, SettingsDelete } from '../interfaces/setting';
+import { SettingCreate, SettingGetList, SettingUpdate, SettingUpdateList, SettingsDelete } from '../interfaces/setting';
 import response from '../utils/response';
-import { getAddCategoriesObject, getSettingCreateObject, getSettingListObject, getSettingUpdateObject, getSettingsDeleteObject } from '../object/setting';
+import { getAddCategoriesObject, getSettingCreateObject, getSettingListObject, getSettingListUpdateObject, getSettingUpdateObject, getSettingsDeleteObject } from '../object/setting';
 import { MD5 } from 'crypto-js';
 
 const router = new Router({
@@ -140,6 +140,39 @@ router.put('/', decMiddleware, validateTokenMiddleware, validateMiddlewareFactor
     */
     const settingUpdate: SettingUpdate = ctx.request.body as SettingUpdate;
     const result = await settingService.putSetting(settingUpdate)
+    ctx.body = response.makeSuccessBody({ one: result});
+
+})
+
+router.put('/list', decMiddleware, validateTokenMiddleware, validateMiddlewareFactory(getSettingListUpdateObject), async (ctx) => {
+    /*
+        #swagger.tags = ['Setting']
+        #swagger.summary = 'put Setting List'
+        #swagger.security = [{
+            bearer:[]
+        }]
+        #swagger.requestBody = {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/definitions/getSettingListUpdateObject"
+                    },
+                    "example": {
+                        "list":[{
+                            "_id": "(...settingId)",
+                            "type": "user",
+                            "role": "user",
+                            "userId": "userId",
+                            "name": "category",
+                            "value": "new Category"
+                        }]
+                    }
+                }
+            }
+        }
+    */
+    const settingUpdate: SettingUpdateList = ctx.request.body as SettingUpdateList;
+    const result = await settingService.putSettingList(settingUpdate.list)
     ctx.body = response.makeSuccessBody({ list: result});
 
 })

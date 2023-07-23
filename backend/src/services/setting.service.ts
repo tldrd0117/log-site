@@ -14,22 +14,40 @@ const getSettingList = async (userInfo: DecodedUserInfo, limit: number, offset: 
     try{
         if(role.name === "admin"){
             total = await Setting.countDocuments()
-            list = await Setting.find().limit(limit).skip(offset).sort({order: -1}).populate("type").populate("role").populate({
+            list = await Setting.find().limit(limit).skip(offset).sort({updateAt: -1}).populate("type").populate("role").populate({
                 path:"userId",
                 select: "name"
             }).lean().exec()
-            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
+            return { 
+                total, 
+                list, 
+                pageCount: Math.ceil(total/limit), 
+                pageIndex: Math.floor(offset/limit),
+                pageSize: limit  
+            }
         } else if(role.name === "user") {
             total = await Setting.countDocuments({userId: userInfo._id})
-            list = await Setting.find({userId: userInfo._id}).limit(limit).skip(offset).sort({order: -1}).populate("type").populate("role").populate({
+            list = await Setting.find({userId: userInfo._id}).limit(limit).skip(offset).sort({updateAt: -1}).populate("type").populate("role").populate({
                 path:"userId",
                 select: "name"
             }).lean().exec()
-            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
+            return { 
+                total, 
+                list, 
+                pageCount: Math.ceil(total/limit), 
+                pageIndex: Math.floor(offset/limit),
+                pageSize: limit  
+            }
         } else {
             total = 0
             list = []
-            return { total, list, pageCount: Math.ceil(total/limit), pageIndex: Math.floor(offset/limit) }
+            return { 
+                total, 
+                list, 
+                pageCount: Math.ceil(total/limit), 
+                pageIndex: Math.floor(offset/limit),
+                pageSize: limit  
+            }
         }
     } catch(e) {
         throw new MessageError("setting.notFound")
@@ -64,6 +82,12 @@ const putSetting = async (setting: SettingUpdate) => {
     }
 }
 
+const putSettingList =async (settingList: Array<SettingUpdate>) => {
+    for(let i = 0; i < settingList.length; ++i){
+        await putSetting(settingList[i])
+    }
+}
+
 const deleteSetting = async (ids: Array<string>) => {
     return await Setting.deleteMany({_id: { $in: ids}})
 }
@@ -77,6 +101,7 @@ const settingService = {
     getCategories,
     addSettings,
     putSetting,
+    putSettingList,
     deleteSetting,
     getSettingTypes
 }

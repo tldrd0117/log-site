@@ -2,7 +2,7 @@ import Joi from 'joi'
 import { getI18next } from "../utils/i18n";
 import _ from 'lodash'
 import { id, limit, offset, searchWord,
-    userName, summary, text, order, idArray } from './common'
+    userName, summary, text, order, idArray, title, stringArray } from './common'
 import i18next from 'i18next';
 
 
@@ -95,9 +95,12 @@ export const getPostCreateObject = async (lng: string) => {
             .label(i18next.t("authorName")).messages(messages),
         summary: _.cloneDeep(summary).required()
             .label(i18next.t("summary")).messages(messages),
+        title: _.cloneDeep(title).label(i18next.t("title")).required(),
         text: _.cloneDeep(text).label(i18next.t("text")).required().messages(messages),
         parent: _.cloneDeep(id).label(i18next.t("parent")).messages(messages),
         relatedPosts: _.cloneDeep(idArray).label(i18next.t("relatedPosts")).messages(messages),
+        tags: _.cloneDeep(stringArray).label(i18next.t("tags")).messages(messages),
+        category: _.cloneDeep(id).label(i18next.t("category")).messages(messages)
     })
     .label(i18next.t("postCreate"))
     .messages({
@@ -132,9 +135,12 @@ export const getPostUpdateObject = async (lng: string) => {
         author: _.cloneDeep(id).label(i18next.t("author")).messages(messages),
         authorName: _.cloneDeep(userName).label(i18next.t("authorName")).messages(messages),
         summary: _.cloneDeep(summary).label(i18next.t("summary")).messages(messages),
+        title: _.cloneDeep(title).label(i18next.t("title")).messages(messages),
         text: _.cloneDeep(text).label(i18next.t("text")).messages(messages),
         parent: _.cloneDeep(id).label(i18next.t("parent")).messages(messages),
         relatedPosts: _.cloneDeep(idArray).label(i18next.t("relatedPosts")).messages(messages),
+        tags: _.cloneDeep(idArray).label(i18next.t("tags")).messages(messages),
+        category: _.cloneDeep(id).label(i18next.t("category")).messages(messages)
     })
     .label(i18next.t("postUpdate"))
     .messages({

@@ -5,9 +5,12 @@ export interface PostCreate{
     author: Types.ObjectId
     authorName: string;
     summary: string;
+    category: string;
+    title: string;
     text: string;
     parent?: Types.ObjectId;
     relatedPosts?: Array<Types.ObjectId>;
+    tags?: Array<Types.ObjectId>;
     order?: number
 }
 
@@ -16,9 +19,12 @@ export interface PostUpdate{
     author?: Types.ObjectId
     authorName?: string;
     summary?: string;
+    category?: string;
+    title?: string;
     text: string;
     parent?: Types.ObjectId;
     relatedPosts?: Array<Types.ObjectId>;
+    tags?: Array<Types.ObjectId>;
     order?: number
 }
 

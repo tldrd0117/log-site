@@ -56,7 +56,7 @@ export const validateMiddlewareFactory = (getObjectFunction: (param: any) => Pro
                     errors: { wrap: { label: '' } },
                     abortEarly: false,
                 })
-            } else if(ctx.request.method === "POST"){
+            } else {
                 const result = await objectFunction.validateAsync(ctx.request.body, {
                     errors: { wrap: { label: '' } },
                     abortEarly: false,

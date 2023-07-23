@@ -7,7 +7,9 @@ import postRouter from './routers/post.routes'
 import userRouter from './routers/user.routes'
 import testRouter from './routers/test.routes'
 import infoRouter from './routers/info.routes'
+import visitRouter from './routers/visit.routes'
 import settingRouter from './routers/setting.routes'
+import categoryRouter from './routers/category.routes'
 import { errorHandleMiddleware } from './middlewares/middlewares';
 
 import Cabin from 'cabin';
@@ -68,6 +70,8 @@ const getApp = async () => {
     app.use(testRouter.routes())
     app.use(settingRouter.routes())
     app.use(infoRouter.routes())
+    app.use(visitRouter.routes())
+    app.use(categoryRouter.routes())
 
     app.use(router.routes());
 
