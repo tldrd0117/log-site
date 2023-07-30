@@ -1,6 +1,6 @@
 import { KeyLike } from "jose";
 import { PostCreate, PostDelete, PostGet, PostGetList, PostSearchList, PostUpdate } from "./interfaces/post";
-import { BASE_URL, encrypt, makeQueryString } from "./utils/common";
+import { BASE_URL, encrypt, makeQueryString, makeStringErrorByResponse } from "./utils/common";
 
 export const getPostList = async (queryStringObj: PostGetList) => {
     const queryString = makeQueryString<PostGetList>(queryStringObj);
@@ -17,7 +17,12 @@ export const createPost = async (requestObj: PostCreate, key: KeyLike, token: st
             "Authorization": `Bearer ${token}`
         }
     });
-    return await response.json();
+    const res = await response.json();
+    if(res.result === "fail"){
+        const errorStr = makeStringErrorByResponse(res)
+        throw new Error(errorStr)
+    }
+    return res
 };
 
 export const deletePost = async (obj: PostDelete, key: KeyLike, token: string) => {

@@ -4,12 +4,15 @@ import { useEncPubicKey } from '@/data/query/auth'
 import { useVisitMutation } from '@/data/query/visit/query'
 import React, { Suspense, useEffect } from 'react'
 
-export const VisitRecord = ({ children }: { children: React.ReactNode }) => {
+export const VisitRecord = ({ children, postId }: { children: React.ReactNode, postId?: string }) => {
     const {data, isLoading}: any = useEncPubicKey()
     const {mutate} = useVisitMutation()
     useEffect(() => {
         if(!isLoading && data.algorithm){
-            mutate("blog")
+            mutate({target: "today", type: "blog"})
+            if(postId){
+                mutate({target: postId, type: "Post"})
+            }
         }
     }, [isLoading, data])
     return <>

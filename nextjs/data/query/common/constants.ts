@@ -1,3 +1,5 @@
+import { VisitType } from "@/data/api/interfaces/visit"
+
 export const QUERY_KEYS = {
     AUTH: {
         PUBLIC_KEY: "publicKey",
@@ -5,7 +7,8 @@ export const QUERY_KEYS = {
     },
     POST: {
         LIST: 'postList',
-        POST: 'post'
+        POST: 'post',
+        SEARCH_LIST: 'postSearchList',
     },
     USER: {
         TOKEN: "token",
@@ -22,7 +25,8 @@ export const QUERY_KEYS = {
         TYPE: "infoType",
     },
     VISIT: {
-        LIST: "visitList"
+        LIST: "visitList",
+        POPULAR_LIST: "popularVisitList",
     },
     CATEGORY: {
         LIST: "categoryList"
@@ -30,5 +34,17 @@ export const QUERY_KEYS = {
 }
 
 export const VISIT_TARGET = {
-    BLOG: "blog"
+    TODAY: "today",
+}
+
+export const VISIT_TYPES = {
+    BLOG: "blog" as VisitType,
+    POST: "Post" as VisitType,
+    TAG: "Tag" as VisitType,
+    CATEGORY: "Category" as VisitType,
+}
+
+export const POST_LIST = {
+    DEFAULT_LIMIT: 20,
+    RECENT_LIST_LIMIT: 10,
 }

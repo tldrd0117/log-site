@@ -19,9 +19,13 @@ import * as runtime from 'react/jsx-runtime'
 import {compile, run} from '@mdx-js/mdx'
 import { Text } from "@/components/Text/Text";
 import { ListItemData } from "@/components/ContextMenu/ContextMenu";
-import { usePost, usePostMutation } from "@/data/query/post/query";
+import { usePost, usePostMutation, usePostUpdateMutation } from "@/data/query/post/query";
 import { DynamicLoginRequired } from "@/app/common/DynamicLoginRequired";
 import { useCategoryAll, useCategoryList } from "@/data/query/category/query";
+import QUERY_KEYS from "@/data/query/auth";
+import { POST_LIST } from "@/data/query/common/constants";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export interface WriteProps{
     id: string
@@ -36,17 +40,21 @@ export default function Write ({id}: WriteProps){
         title,
         category,
     }: any = data
-    const isEdit = id !== ""
+    const isEdit = id?.length
     const {mutate} = usePostMutation()
+    const {mutate: mutateUpdate} = usePostUpdateMutation()
     const {data: categories} = useCategoryAll()
+    const router = useRouter()
 
     const [code, setCode] = useState(source || "")
-    const [tagValue, setTagValue] = useState(tags || [])
+    const [tagValue, setTagValue] = useState(tags?.map((item: any)=>item.name) || [])
     const [titleValue, setTitleValue] = useState(title || "")
-    const [selectedCategory, setSelectedCategory] = useState(category?{id: category._id, value: category.name} : {})
+    const [selectedCategory, setSelectedCategory]: any = useState(category?{id: category?._id, value: category?.name} : {})
     const [isPreview, setIsPreview] = useState(false)
     const [mdxModule, setMdxModule]:any = useState()
     const MdxContent = mdxModule ? mdxModule.default : Fragment
+
+    const queryClient = useQueryClient()
 
     const handleCodeMirrorChange = (value: string) => {
         setCode(value)
@@ -81,12 +89,41 @@ export default function Write ({id}: WriteProps){
     }
 
     const handleOnClickComplete = async () => {
-        mutate({
-            text: code,
-            title: titleValue,
-            tags: tagValue,
-            category: selectedCategory.id,
-        })
+        if(isEdit){
+            mutateUpdate({
+                _id: data._id,
+                text: code,
+                title: titleValue,
+                tags: tagValue,
+                category: selectedCategory.id,
+            }, {
+                onSuccess: async () => {
+                    setTimeout(() => {
+                        queryClient.invalidateQueries({
+                            queryKey: [QUERY_KEYS.POST.LIST],
+                        })
+                        router.push('/post/list')
+                    }, 500)
+                }
+            })
+        } else {
+            mutate({
+                text: code,
+                title: titleValue,
+                tags: tagValue,
+                category: selectedCategory.id,
+            }, {
+                onSuccess: async () => {
+                    setTimeout(() => {
+                        queryClient.invalidateQueries({
+                            queryKey: [QUERY_KEYS.POST.LIST],
+                        })
+                        router.push('/post/list')
+                    }, 500)
+                }
+            })
+        }
+        
     }
 
     return <>
@@ -129,11 +166,11 @@ export default function Write ({id}: WriteProps){
                 listItemsData: categories?.list?.map((item:any)=>({id: item._id, value: item.name})),
             }}
             onItemSelect={handleCategoryChange}
-            selected={isEdit?{id: category._id as string, value: category.name || ""}: undefined}
+            selected={isEdit?selectedCategory: undefined}
             />
             <TagInput inputStyleType={INPUT_STYLE_TYPE.UNDERLINE} className="mt-4"
                 onTagChange={handleOnTagsChange}
-                tagValue={tags}/>
+                tagValue={tagValue}/>
             <CodeMirror
                 className="mt-4"
                 value={code}

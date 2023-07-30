@@ -7,7 +7,7 @@ import {
 import { useRecoilValue } from 'recoil'
 import { roleTypeSelectList, settingTypeSelectList } from '@/data/recoil/states/user'
 import { useTypes } from '@/data/query/info/query'
-import { EditableTable } from '../../../components/Table/EditableTable'
+import { EditableTable } from '@/components/Table/EditableTable'
 import { useDeleteSettingsMutation } from '@/data/query/setting/query'
 import { useQueryClient } from '@tanstack/react-query'
 import QUERY_KEYS from '@/data/query/auth'

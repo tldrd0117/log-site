@@ -17,7 +17,7 @@ export default async function Page(context: GetServerSidePropsContext<{id: strin
     return <>
         <Hydrate state={state}>
             <AppBarContentsTemplate>
-                <VisitRecord>
+                <VisitRecord postId={id}>
                     <Post id={id}/>
                 </VisitRecord>
             </AppBarContentsTemplate>

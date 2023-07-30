@@ -12,15 +12,20 @@ import { SiteMap } from '@/components/SiteMap/SiteMap'
 import { DynamicCalendarCart } from './DynamicCalendarCart'
 import { useRecentPostList } from '@/data/query/post/query'
 import { useRouter } from 'next/navigation'
-import { useVisit } from '@/data/query/visit/query'
-import { VISIT_TARGET } from '@/data/query/common/constants'
+import { usePopularVisit, useVisit } from '@/data/query/visit/query'
+import { VISIT_TARGET, VISIT_TYPES } from '@/data/query/common/constants'
 import { parseISO } from 'date-fns'
+import { TagInput } from '@/components/Input/TagInput'
+import { INPUT_STYLE_TYPE } from '@/components/Input/StylableInput'
 
 export function Home() {
-    const { data: recentPostList} = useRecentPostList()
-    const { data: calendar } = useVisit(VISIT_TARGET.BLOG)
+    const { data: recentPostList, isFetching} = useRecentPostList()
+    const { data: tags} = usePopularVisit(500, VISIT_TYPES.TAG)
+    const { data: categories} = usePopularVisit(30, VISIT_TYPES.CATEGORY)
+    const { data: posts} = usePopularVisit(10, VISIT_TYPES.POST)
+    const { data: calendar } = useVisit(VISIT_TARGET.TODAY, VISIT_TYPES.BLOG)
     const router = useRouter()
-
+    console.log(posts)
     const handleItemClick = (id: string) => {
         router.push(`/post/${id}`)
         
@@ -30,21 +35,46 @@ export function Home() {
             href: "/",
             label: "Home"
         }]}/>
-        <Text className='mt-8' h5>Recent Post</Text>
-        <FlexList className='flex-nowrap overflow-auto mt-4'>
+        <Text className='mt-8' h5>최신 포스트</Text>
         {
-            recentPostList?.list.map((item: any) => {
-                console.log(item)
-                return <CardListItem onClick={() => handleItemClick(item._id)} 
-                    key={item._id} 
-                    title={item.title} 
-                    date={parseISO(item.createAt)}
-                    tags={item.tags.map((tag:any) => tag.name)}
-                    author={item.authorName}/>
-            })
+            <FlexList className='flex-nowrap overflow-auto mt-4'>
+            {
+                recentPostList?.list?.map((item: any) => {
+                    return <CardListItem onClick={() => handleItemClick(item._id)} 
+                        key={item._id} 
+                        title={item.title} 
+                        date={parseISO(item.createAt)}
+                        tags={item.tags.map((tag:any) => tag.name)}
+                        author={item.authorName}/>
+                })
+            }
+            </FlexList>
         }
-        </FlexList>
-        <Text className='mt-8' h5>usage</Text>
+        <Text className='mt-8' h5>인기 포스트</Text>
+        {
+            <FlexList className='flex-nowrap overflow-auto mt-4'>
+            {
+                posts?.map((post: any) => {
+                    const item = post.target
+                    console.log(item)
+                    return <CardListItem onClick={() => handleItemClick(item._id)} 
+                        key={item._id} 
+                        title={item.title} 
+                        date={parseISO(item.createAt)}
+                        tags={item.tags.map((tag:any) => tag.name)}
+                        author={item.authorName}/>
+                })
+            }
+            </FlexList>
+        }
+        <Text className='mt-8' h5>인기 카테고리</Text>
+        <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" 
+            tagValue={categories?.map((item:any) => item.target.name)} readOnly/>
+        <Text className='mt-8' h5>인기 태그</Text>
+        <TagInput inputStyleType={INPUT_STYLE_TYPE.NONE} className="mt-4 bg-transparent" 
+            tagValue={tags?.map((item:any) => item.target.name)} readOnly/>
+        
+        <Text className='mt-8' h5>방문자</Text>
         <DynamicCalendarCart data={calendar}/>
     </>
 }

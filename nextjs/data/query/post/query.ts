@@ -1,9 +1,9 @@
 import { QUERY_KEYS } from "../common/constants"
-import { getPost, getPostList, createPost, deletePostList } from "../../api/post"
+import { getPost, getPostList, createPost, deletePostList, updatePost, searchPosts } from "../../api/post"
 import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import remarkGfm from "remark-gfm"
 import { compileMDX } from "next-mdx-remote/rsc"
-import { PostCreate, PostDelete, PostRawCreate } from "../../api/interfaces/post"
+import { PostCreate, PostDelete, PostRawCreate, PostUpdate } from "../../api/interfaces/post"
 import { KeyLike } from "jose"
 import { makeStringErrorByResponse } from "../../api/utils/common"
 import { useRouter } from "next/navigation"
@@ -13,6 +13,7 @@ import { tokenState, userInfoState } from "../../recoil/states/user"
 import { PaginationState } from "@tanstack/react-table"
 import { parsePostText } from "@/data/post/util"
 import { convertList, convertMdxPost } from "../common/converters"
+import { en } from "@faker-js/faker"
 
 const DEFAULT_LIMIT = 20;
 const RECENT_LIST_LIMIT = 10;
@@ -34,27 +35,39 @@ export const usePost = (_id: string) => {
                 title: "",
                 category: "",
             }
-        }
+        },
+    },{
+        enabled: !!_id?.length,
     })
 }
 
-const sendCreatePost = async (encPublicKey: KeyLike, token: string, userInfo: any, postData: PostRawCreate) => {
-    const postInfo: PostCreate = {
-        title: postData.title,
-        author: userInfo._id,
-        authorName: userInfo.name,
-        summary: postData.title,
-        text: postData.text,
-        tags: postData.tags,
-        category: postData.category,
-    }
-
-    const res = await createPost(postInfo, encPublicKey, token)
-    if(res.result === "fail"){
-        const errorStr = makeStringErrorByResponse(res)
-        throw new Error(errorStr)
-    }
-    return res
+export const usePostUpdateMutation = () => {
+    const router = useRouter()
+    const {data: encPublicKey} = useEncPubicKey()
+    const [token, setToken] = useRecoilState(tokenState)
+    const [userInfo, setUserInfo] = useRecoilState(userInfoState)
+    return useMutation({
+        mutationFn: async (post: PostUpdate) => {
+            const summary = `${post.title} ${(post?.tags?.join("") || "")} ${post?.category||""} ${userInfo.name}`
+            const postInfo: PostUpdate = {
+                _id: post._id,
+                title: post.title,
+                author: userInfo._id,
+                authorName: userInfo.name,
+                summary,
+                text: post.text,
+                tags: post.tags,
+                category: post.category,
+            }
+            return await updatePost(postInfo, encPublicKey!!, token)
+        },
+        onError: (error) => {
+            console.log(error)
+        },
+        onSuccess: async () => {
+            router.push("/post/list")
+        }
+    })
 }
 
 export const usePostMutation = () => {
@@ -63,8 +76,18 @@ export const usePostMutation = () => {
     const [token, setToken] = useRecoilState(tokenState)
     const [userInfo, setUserInfo] = useRecoilState(userInfoState)
     return useMutation({
-        mutationFn: (post: PostRawCreate) => {
-            return sendCreatePost(encPublicKey!!, token, userInfo, post)
+        mutationFn: async (post: PostRawCreate) => {
+            const summary = `${post.title} ${(post?.tags?.join("") || "")} ${post?.category||""} ${userInfo.name}`
+            const postInfo: PostCreate = {
+                title: post.title,
+                author: userInfo._id,
+                authorName: userInfo.name,
+                summary,
+                text: post.text,
+                tags: post.tags,
+                category: post.category,
+            }
+            return await createPost(postInfo, encPublicKey!!, token)
         },
         onError: (error) => {
             console.log(error)
@@ -93,7 +116,26 @@ export const useRecentPostList = () => {
             return await convertList(list)
         },
         cacheTime: 1000 * 10,
-        staleTime: 1000 * 10,
+        staleTime: 1000 * 1,
+    })
+}
+
+export const usePostSearchInfinity = (word: string) => {
+    return useInfiniteQuery({
+        queryKey: [QUERY_KEYS.POST.SEARCH_LIST, DEFAULT_LIMIT, word],
+        queryFn: async ({ pageParam = 0}) => {
+            let list = await searchPosts({ limit: DEFAULT_LIMIT, offset: pageParam * DEFAULT_LIMIT, word })
+            return await convertList(list)
+        },
+        getNextPageParam: (lastPage, allPage) => {
+            // DEFAULT_LIMIT * lastPage
+            if( allPage.length * DEFAULT_LIMIT < lastPage.total)
+                return allPage.length + 1
+        },
+        getPreviousPageParam: (firstPage) => {
+        },
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 1,
     })
 }
 
@@ -113,7 +155,7 @@ export const usePostListInfinity = () => {
         getPreviousPageParam: (firstPage) => {
         },
         cacheTime: 1000 * 10,
-        staleTime: 1000 * 10,
+        staleTime: 1000 * 1,
     })
 }
 
@@ -125,5 +167,7 @@ export const usePostList = (fetchDataOptions: PaginationState) => {
                 offset: fetchDataOptions.pageSize * fetchDataOptions.pageIndex })
             return convertList(items)
         },
+        cacheTime: 1000 * 10,
+        staleTime: 1000 * 1,
     })
 }

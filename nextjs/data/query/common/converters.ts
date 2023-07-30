@@ -1,9 +1,10 @@
 import { parsePostText } from "@/data/post/util"
+import _ from "lodash"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 
 export const convertMdxPost = async (post: any) => {
-    let {text: source} = post
+    let source = _.cloneDeep(post?.text)
     const {content, frontmatter} = await compileMDX({source, options: {
         mdxOptions: {
             remarkPlugins: [remarkGfm],
@@ -13,13 +14,11 @@ export const convertMdxPost = async (post: any) => {
         parseFrontmatter: true,
         
     }})
+    delete post.text
     return {
-        id: post._id,
+        ...post,
         source,
         mdxContent: content,
-        tags: post.tags,
-        title: post.title,
-        category: post.category,
     }
 }
 

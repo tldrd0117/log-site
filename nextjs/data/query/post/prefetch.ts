@@ -15,6 +15,9 @@ export const prefetchPost = (_id: string) => {
         const post = await getPost({_id})
         const mdxPost =  await convertMdxPost(post)
         return mdxPost
+    }, {
+        staleTime: 1000 * 1,
+        cacheTime: 1000 * 60
     })
 }
 
@@ -23,8 +26,8 @@ export const prefetchRecentPostList = () => {
         let list =  await getPostList({ limit: RECENT_LIST_LIMIT, offset: 0 })
         return await convertList(list)
     }, {
-        cacheTime: 1000 * 10,
-        staleTime: 1000 * 10,
+        staleTime: 1000 * 1,
+        cacheTime: 1000 * 60
     })
 }
 
@@ -33,7 +36,7 @@ export const prefetchPostListInfinity = () => {
         let list = await getPostList({ limit: DEFAULT_LIMIT, offset: pageParam * DEFAULT_LIMIT })
         return await convertList(list)
     }, {
-        cacheTime: 1000 * 10,
-        staleTime: 1000 * 10,
+        staleTime: 1000 * 1,
+        cacheTime: 1000 * 60
     })
 }

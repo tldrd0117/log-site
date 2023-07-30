@@ -8,7 +8,7 @@ interface CardListItemProps extends CardProps{
 
 export const CardListItem = (props: CardListItemProps) => {
     return <>
-        <li>
+        <li className={props.className}>
             <Card {...props} className={"list-none"}/>
         </li>
         {/* <ListItem {...props} tagtype={Card} className="list-none"/> */}

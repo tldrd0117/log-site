@@ -27,6 +27,7 @@ export interface PostUpdate{
     author?: string
     authorName?: string;
     summary?: string;
+    category?: string;
     title?: string;
     text: string;
     parent?: string;
