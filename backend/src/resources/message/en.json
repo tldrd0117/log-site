@@ -96,5 +96,6 @@
   "categoryDel": "category delete",
   "categoryId": "category id",
   "visit": "visit",
-  "visitTarget": "visit target"
+  "visitTarget": "visit target",
+  "visitType": "visit type"
 }

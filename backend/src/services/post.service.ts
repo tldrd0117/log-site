@@ -44,21 +44,25 @@ const getList = async (limit: number, offset: number) => {
 const searchList = async (limit: number, offset: number, word: string) => {
     const total = await Post.countDocuments({
         $or: [
-            {authorName: {$regex: word, $options: 'i'}},
             {text: {$regex: word, $options: 'i'}},
             {summary: {$regex: word, $options: 'i'}},
         ]
     })
     const list = await Post.find({
         $or: [
-            {authorName: {$regex: word, $options: 'i'}},
             {text: {$regex: word, $options: 'i'}},
             {summary: {$regex: word, $options: 'i'}},
         ]
     }).limit(limit).skip(offset).sort({order: 1}).populate({
         path: 'author',
-        select: '_id name',
-    })
+        select: '_id name'
+    }).populate({
+        path: 'tags',
+        select: '_id name'
+    }).populate({
+        path: 'category',
+        select: '_id name'
+    }).lean().exec()
     return {
         total, list
     }

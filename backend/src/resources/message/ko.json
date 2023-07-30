@@ -96,5 +96,6 @@
   "categoryDel": "카테고리 삭제",
   "categoryId": "카테고리 아이디",
   "visit": "방문",
-  "visitTarget": "방문 대상"
+  "visitTarget": "방문 대상",
+  "visitType": "방문 유형"
 }

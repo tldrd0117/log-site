@@ -139,7 +139,7 @@ export const getPostUpdateObject = async (lng: string) => {
         text: _.cloneDeep(text).label(i18next.t("text")).messages(messages),
         parent: _.cloneDeep(id).label(i18next.t("parent")).messages(messages),
         relatedPosts: _.cloneDeep(idArray).label(i18next.t("relatedPosts")).messages(messages),
-        tags: _.cloneDeep(idArray).label(i18next.t("tags")).messages(messages),
+        tags: _.cloneDeep(stringArray).label(i18next.t("tags")).messages(messages),
         category: _.cloneDeep(id).label(i18next.t("category")).messages(messages)
     })
     .label(i18next.t("postUpdate"))

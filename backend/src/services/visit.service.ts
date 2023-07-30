@@ -1,29 +1,59 @@
 import { add, endOfDay, startOfDay } from "date-fns"
 import Visit from "../models/visit.model"
 import VisitHistory from "../models/visitHistory.model"
+import { GetPopularVisit, GetVisit, VisitType } from "../interfaces/visit"
+import postService from "./post.service"
 
-const getVisit = async (target: string) => {
-    const result = await Visit.find({ target }).lean().exec()
+const getVisit = async (obj: GetVisit) => {
+    const result = await Visit.find(obj).lean().exec()
     if(result.length === 0){
-        return makeEmptyVisit(target)
+        return makeEmptyVisit(obj)
     } else {
         return result
     }
 }
 
-const makeEmptyVisit = (target: string) => {
+const getPopularVisit = async (obj: GetPopularVisit) => {
+    const { limit, type } = obj
+    if(type === "Post"){
+        return await Visit.find({ type }).sort({ count: -1 }).limit(limit).populate({
+            path: "target",
+            populate: [{
+                path: "author",
+                select: '_id name'
+            },{
+                path: "category",
+                select: '_id name'
+            },{
+                path: "tags",
+                select: '_id name'
+            }]
+        }).lean().exec()
+    } else {
+        return await Visit.find({ type }).sort({ count: -1 }).limit(limit).populate("target").lean().exec()
+
+    } 
+}
+
+const makeEmptyVisit = (visit: GetVisit) => {
     return [{
-        target,
+        ...visit,
         count: 0
     }]
 }
 
-const addVisit = async (ip: string, target: string) => {
-    return addVisitByDate(ip, target, new Date())
+const addVisit = async (ip: string, target: string, type: VisitType) => {
+    if(type === "Post"){
+        return await addPostVisit(ip, target, new Date(), type)
+    } else if( type === "blog"){
+        return await addVisitByDate(ip, target, new Date(), type)
+    }
+    return {}
+
 }
 
-const validateDate = async (ip: string, target: string, date: Date) => {
-    const data = await VisitHistory.find({ ip, target, createAt: {
+const validateHistory = async (ip: string, target: string, date: Date, type: VisitType) => {
+    const data = await VisitHistory.find({ ip, target, type, createAt: {
         $lte: date
     }, expiredAt: {
         $gte: date
@@ -31,13 +61,38 @@ const validateDate = async (ip: string, target: string, date: Date) => {
     return !data.length
 }
 
-const addVisitByDate = async (ip: string, target: string, date: Date) => {
-    const validate = await validateDate(ip, target, date)
+const addVisitByDate = async (ip: string, target: string, date: Date, type: VisitType) => {
+    const validate = await validateHistory(ip, target, date, type)
     if(validate){
         const tomorrow = add(date, { days: 1})
-        await VisitHistory.create({ ip, target, createAt: date, expiredAt: tomorrow })
-        return await Visit.updateOne({ target, createAt: startOfDay(date) }, { $inc: { count: 1 } }, { upsert: true })
+        await VisitHistory.create({ ip, target, type, createAt: date, expiredAt: tomorrow })
+        return await Visit.updateOne({ target, type, createAt: startOfDay(date) }, { $inc: { count: 1 } }, { upsert: true })
     }
+    return {}
+}
+
+const addPostVisit = async (ip: string, target: string, date: Date, type: VisitType) => {
+    const post = await postService.getPost(target)
+    if(post){
+        console.log(post)
+        const validate = await validateHistory(ip, target, date, type)
+        if(validate){
+            const tomorrow = add(date, { days: 1})
+            await VisitHistory.create({ ip, target, type, createAt: date, expiredAt: tomorrow })
+            const res = await Visit.updateOne({ target, type: "Post"}, { $inc: { count: 1 } }, { upsert: true })
+            if(post?.tags?.length){
+                for(let tag of post.tags){
+                    await Visit.updateOne({ target: tag._id, type: "Tag", createAt: startOfDay(date) }, { $inc: { count: 1 } }, { upsert: true })
+                }
+            }
+            if(post?.category?._id){
+                await Visit.updateOne({ target: post.category._id, type: "Category", createAt: startOfDay(date) }, { $inc: { count: 1 } }, { upsert: true })
+            }
+            return res
+        }
+    }
+    return {}
+
 }
 
 const removeVisit = async (target: string) => {
@@ -46,6 +101,7 @@ const removeVisit = async (target: string) => {
 
 const visitService = {
     getVisit,
+    getPopularVisit,
     addVisit,
     removeVisit,
     addVisitByDate

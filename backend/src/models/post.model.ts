@@ -36,6 +36,7 @@ const postSchema = new Schema<IPost>({
 })
 
 postSchema.plugin(AutoIncrement, {inc_field: 'order'})
+postSchema.index({'summary': 'text', 'text':'text'})
 
 const Post = model<IPost>('Post', postSchema);
 

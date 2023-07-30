@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import _ from 'lodash'
+import { visitTypes } from '../interfaces/visit'
 
 export const id = Joi.string().trim().pattern(/^[a-fA-F0-9]{24}$/, "str")
 export const optionId = Joi.string().trim().allow("").pattern(/^[a-fA-F0-9]{24}$/, "str")
@@ -23,3 +24,4 @@ export const role = Joi.string().trim().pattern(/^[a-fA-F0-9]{24}$/, "str")
 export const category = Joi.string().min(1).max(40)
 export const categories = Joi.array().items(_.cloneDeep(category)).min(1).max(1000)
 export const visitTarget = Joi.string().trim().min(4).max(24)
+export const visitType = Joi.string().valid(...visitTypes).trim().min(1).max(20)

@@ -697,6 +697,24 @@
           }
         }
       }
+    },
+    "/visit/popular": {
+      "get": {
+        "tags": [
+          "Visit"
+        ],
+        "summary": "Get popular tags",
+        "description": "",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/type"
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "components": {
@@ -1241,6 +1259,27 @@
                   }
                 }
               },
+              "title": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 200
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "제목"
+                  }
+                }
+              },
               "text": {
                 "type": "object",
                 "properties": {
@@ -1319,9 +1358,13 @@
                         "type": "string",
                         "example": "string"
                       },
-                      "pattern": {
-                        "type": "string",
-                        "example": "^[a-fA-F0-9]{24}$"
+                      "minLength": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "maxLength": {
+                        "type": "number",
+                        "example": 100
                       }
                     }
                   },
@@ -1356,6 +1399,7 @@
               "author",
               "authorName",
               "summary",
+              "title",
               "text"
             ],
             "items": {
@@ -1452,6 +1496,27 @@
                       }
                     }
                   },
+                  "title": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "minLength": {
+                        "type": "number",
+                        "example": 3
+                      },
+                      "maxLength": {
+                        "type": "number",
+                        "example": 200
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "제목"
+                      }
+                    }
+                  },
                   "text": {
                     "type": "object",
                     "properties": {
@@ -1530,9 +1595,13 @@
                             "type": "string",
                             "example": "string"
                           },
-                          "pattern": {
-                            "type": "string",
-                            "example": "^[a-fA-F0-9]{24}$"
+                          "minLength": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "maxLength": {
+                            "type": "number",
+                            "example": 100
                           }
                         }
                       },
@@ -1567,6 +1636,7 @@
                   "author",
                   "authorName",
                   "summary",
+                  "title",
                   "text"
                 ],
                 "items": {
@@ -2654,13 +2724,208 @@
                     "example": "방문 대상"
                   }
                 }
+              },
+              "type": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "blog",
+                      "tag",
+                      "post",
+                      "category"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "방문 유형"
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "방문"
+          }
+        }
+      },
+      "getPopularVisitObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "가져올 리스트 갯수"
+                  }
+                }
+              },
+              "type": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "blog",
+                      "tag",
+                      "post",
+                      "category"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "방문 유형"
+                  }
+                }
               }
             }
           },
           "required": {
             "type": "array",
             "example": [
-              "target"
+              "limit"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "title": {
+            "type": "string",
+            "example": "방문"
+          }
+        }
+      },
+      "getVisitCreateObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 4
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 24
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "방문 대상"
+                  }
+                }
+              },
+              "type": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maxLength": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "blog",
+                      "tag",
+                      "post",
+                      "category"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "방문 유형"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "target",
+              "type"
             ],
             "items": {
               "type": "string"
@@ -2699,7 +2964,7 @@
                   },
                   "maximum": {
                     "type": "number",
-                    "example": 100
+                    "example": 1000
                   },
                   "title": {
                     "type": "string",
@@ -3008,6 +3273,15 @@
           "type": "string"
         }
       },
+      "title": {
+        "in": "query",
+        "name": "title",
+        "required": false,
+        "description": "제목",
+        "schema": {
+          "type": "string"
+        }
+      },
       "text": {
         "in": "query",
         "name": "text",
@@ -3053,20 +3327,11 @@
           "type": "string"
         }
       },
-      "title": {
-        "in": "query",
-        "name": "title",
-        "required": false,
-        "description": "제목",
-        "schema": {
-          "type": "string"
-        }
-      },
       "type": {
         "in": "query",
         "name": "type",
         "required": true,
-        "description": "설정 타입",
+        "description": "방문 유형",
         "schema": {
           "type": "string"
         }
